@@ -3,114 +3,38 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Galeria Amador Exclusivo</title>
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <title>Galeria Amador VIP</title>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: #0f0f0f; color: #fff; padding: 20px; }
-    
-    header { display: flex; justify-content: space-between; align-items: center; max-width: 1400px; margin: 0 auto 30px; }
-    .btn-back { background: #333; color: #fff; text-decoration: none; padding: 10px 18px; border-radius: 6px; font-weight: bold; }
-
-    /* Grid Responsivo de Vídeos (4 a 5 colunas em desktops) */
-    .video-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-      gap: 15px;
-      max-width: 1400px;
-      margin: 0 auto;
-    }
-
-    .video-card {
-      background: #181818;
-      border-radius: 8px;
-      overflow: hidden;
-      border: 1px solid #2a2a2a;
-    }
-
-    .video-container {
-      position: relative;
-      padding-top: 56.25%; /* Ratio 16:9 */
-      background: #000;
-    }
-
-    .video-container iframe {
-      position: absolute;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-      border: 0;
-    }
-
-    .video-info { padding: 10px; font-size: 14px; color: #ddd; }
+    body { background: #0f0f0f; color: #fff; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; padding: 20px; }
+    .header-page { display: flex; justify-content: space-between; align-items: center; max-width: 1200px; margin: 0 auto 20px; }
+    .btn-voltar { color: #fff; text-decoration: none; background: #333; padding: 10px 15px; border-radius: 5px; font-weight: bold; }
+    .galeria { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; max-width: 1200px; margin: 0 auto; }
+    .video-card { background: #1f1f1f; padding: 15px; border-radius: 8px; border: 1px solid #333; text-align: center; }
+    .video-card h3 { margin-bottom: 10px; font-size: 16px; color: #ddd; }
   </style>
 </head>
 <body>
 
-  <header>
-    <h2>🔞 Categoria Amador Exclusivo</h2>
-    <a href="index.html" class="btn-back">← Voltar à Vitrine</a>
-  </header>
-
-  <!-- LISTA DE VÍDEOS -->
-  <div class="video-grid" id="galeria-videos">
-    <!-- Os vídeos serão renderizados via JavaScript -->
+  <div class="header-page">
+    <h2>Galeria Amador Exclusiva 🔞</h2>
+    <a href="index.html" class="btn-voltar">← Voltar para o início</a>
   </div>
 
+  <!-- Container onde o player.js vai inserir os vídeos -->
+  <div id="galeria-container" class="galeria"></div>
+
+  <!-- 1. Carrega os links exclusivos da categoria -->
+  <script src="links-amador.js"></script>
+
+  <!-- 2. Carrega a lógica do player -->
+  <script src="player.js"></script>
+
+  <!-- 3. Renderiza os vídeos ao carregar a página -->
   <script>
-    const SUPABASE_URL = 'https://xjvkyofktqojuyequuxe.supabase.co';
-    const SUPABASE_ANON_KEY = 'sb_publishable__w-crANhzjiYKJuh2AX39w_Kz1-Rf74';
-    const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-
-    // Adicione os links Iframe dos seus vídeos do Bunny.net nesta lista:
-    const VIDEOS_AMADOR = [
-      { titulo: "Vídeo 01", embed: "https://iframe.mediadelivery.net/embed/SUA_LIB/VIDEO_ID_1" },
-      { titulo: "Vídeo 02", embed: "https://iframe.mediadelivery.net/embed/SUA_LIB/VIDEO_ID_2" },
-      { titulo: "Vídeo 03", embed: "https://iframe.mediadelivery.net/embed/SUA_LIB/VIDEO_ID_3" },
-      { titulo: "Vídeo 04", embed: "https://iframe.mediadelivery.net/embed/SUA_LIB/VIDEO_ID_4" },
-      { titulo: "Vídeo 05", embed: "https://iframe.mediadelivery.net/embed/SUA_LIB/VIDEO_ID_5" }
-    ];
-
-    window.onload = async () => {
-      // 1. Verifica se há sessão ativa
-      const { data: { session } } = await _supabase.auth.getSession();
-      
-      if (!session) {
-        alert("Acesso restrito. Faça login primeiro.");
-        window.location.href = "index.html";
-        return;
-      }
-
-      // 2. Trava de segurança no Supabase para validar acesso pago
-      const { data: permissao } = await _supabase
-        .from('compras_usuario')
-        .select('id')
-        .eq('user_id', session.user.id)
-        .eq('categoria_id', 'amador')
-        .gt('data_expiracao', new Date().toISOString());
-
-      if (!permissao || permissao.length === 0) {
-        alert("Você precisa adquirir a categoria Amador para ver estes vídeos.");
-        window.location.href = "index.html";
-        return;
-      }
-
-      // 3. Renderiza a lista de vídeos na tela
-      renderizarGaleria();
+    window.onload = () => {
+      carregarVideos(window.linksAmador);
     };
-
-    function renderizarGaleria() {
-      const container = document.getElementById('galeria-videos');
-      container.innerHTML = VIDEOS_AMADOR.map(video => `
-        <div class="video-card">
-          <div class="video-container">
-            <iframe src="${video.embed}" allowfullscreen loading="lazy"></iframe>
-          </div>
-          <div class="video-info">
-            <strong>${video.titulo}</strong>
-          </div>
-        </div>
-      `).join('');
-    }
   </script>
 </body>
 </html>
