@@ -1,98 +1,200 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Área VIP - Testes</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Plataforma VIP - Conteúdo Exclusivo</title>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
-    body { font-family: Arial, sans-serif; background: #121212; color: #fff; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; }
-    .card { background: #1e1e1e; padding: 25px; border-radius: 8px; width: 320px; box-shadow: 0 4px 10px rgba(0,0,0,0.5); }
-    h2 { margin-top: 0; text-align: center; }
-    input { width: 100%; padding: 10px; margin: 8px 0; border-radius: 4px; border: 1px solid #333; background: #2a2a2a; color: #fff; box-sizing: border-box; }
-    button { width: 100%; padding: 10px; background: #e50914; color: #fff; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; margin-top: 8px; }
-    button:hover { background: #b80710; }
-    .hidden { display: none; }
-    .video-container { text-align: center; background: #000; padding: 20px; border-radius: 8px; margin-top: 15px; }
-    #msg { margin-top: 10px; font-size: 0.9em; text-align: center; color: #ff5555; }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: #0f0f0f; color: #fff; padding: 20px; }
+    header { display: flex; justify-content: space-between; align-items: center; max-width: 1000px; margin: 0 auto 30px; }
+    .auth-btn { background: #e50914; color: #fff; border: none; padding: 10px 20px; border-radius: 6px; font-weight: bold; cursor: pointer; }
+    
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; max-width: 1000px; margin: 0 auto; }
+    .card { background: #1f1f1f; border-radius: 10px; padding: 20px; text-align: center; border: 1px solid #333; position: relative; }
+    .card h3 { margin-bottom: 10px; text-transform: uppercase; }
+    .status-badge { display: inline-block; padding: 4px 10px; border-radius: 20px; font-size: 12px; font-weight: bold; margin-bottom: 15px; }
+    .bloqueado { background: #333; color: #aaa; }
+    .liberado { background: #22c55e; color: #fff; }
+
+    .btn-buy { display: block; background: #2563eb; color: #fff; text-decoration: none; padding: 12px; border-radius: 6px; font-weight: bold; margin-top: 10px; }
+    .btn-watch { background: #22c55e; width: 100%; border: none; padding: 12px; border-radius: 6px; font-weight: bold; color: #fff; cursor: pointer; }
+    
+    /* Modal CSS */
+    .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); justify-content: center; align-items: center; z-index: 100; }
+    .modal { background: #181818; padding: 30px; border-radius: 10px; width: 90%; max-width: 400px; text-align: center; }
+    .modal input { width: 100%; padding: 10px; margin: 10px 0; border-radius: 5px; border: 1px solid #333; background: #222; color: #fff; }
+    
+    .video-container { display: none; margin-top: 15px; position: relative; padding-top: 56.25%; background: #000; border-radius: 8px; overflow: hidden; }
   </style>
 </head>
 <body>
 
-  <!-- Tela de Login -->
-  <div id="login-box" class="card">
-    <h2>Acesso VIP</h2>
-    <input type="email" id="email" placeholder="Seu E-mail">
-    <input type="password" id="password" placeholder="Sua Senha">
-    <button onclick="fazerLogin()">Entrar</button>
-    <div id="msg"></div>
-  </div>
+  <header>
+    <h2>Área VIP Premium</h2>
+    <div id="user-area">
+      <button class="auth-btn" onclick="abrirModal()">Entrar / Cadastrar</button>
+    </div>
+  </header>
 
-  <!-- Área Restrita (Conteúdo Protegido) -->
-  <div id="vip-box" class="card hidden">
-    <h2>Bem-vindo à Área VIP!</h2>
-    <p id="vip-status"></p>
+  <!-- LISTA DE CATEGORIAS -->
+  <div class="grid">
     
-    <div class="video-container">
-      <p>[ Player de Teste - O vídeo do Bunny entra aqui ]</p>
+    <!-- Categoria 1: Amador -->
+    <div class="card" id="card-amador">
+      <h3>Amador Exclusivo 🔞</h3>
+      <span class="status-badge bloqueado" id="badge-amador">🔒 Bloqueado</span>
+      <p style="color:#aaa; font-size:14px; margin-bottom:15px;">Vídeos amadores inéditos atualizados toda semana.</p>
+      
+      <!-- Ação se bloqueado -->
+      <a href="#" id="buy-amador" class="btn-buy" target="_blank">Liberar por R$ 19,90</a>
+      
+      <!-- Action se liberado -->
+      <button id="watch-amador" class="btn-watch" style="display:none;" onclick="abrirPlayer('amador', 'https://iframe.mediadelivery.net/embed/SUA_LIB/SEU_VIDEO_AMADOR')">Assistir Conteúdo</button>
+      
+      <div class="video-container" id="player-amador"></div>
     </div>
 
-    <button onclick="fazerLogout()" style="background: #555;">Sair</button>
+    <!-- Categoria 2: Lives -->
+    <div class="card" id="card-lives">
+      <h3>Gravados de Lives 🔥</h3>
+      <span class="status-badge bloqueado" id="badge-lives">🔒 Bloqueado</span>
+      <p style="color:#aaa; font-size:14px; margin-bottom:15px;">Gravações de lives privadas sem cortes.</p>
+      
+      <a href="#" id="buy-lives" class="btn-buy" target="_blank">Liberar por R$ 29,90</a>
+      <button id="watch-lives" class="btn-watch" style="display:none;" onclick="abrirPlayer('lives', 'https://iframe.mediadelivery.net/embed/SUA_LIB/SEU_VIDEO_LIVES')">Assistir Conteúdo</button>
+      
+      <div class="video-container" id="player-lives"></div>
+    </div>
+
+    <!-- Categoria 3: Hentai -->
+    <div class="card" id="card-hentai">
+      <h3>Coleção Hentai 🎨</h3>
+      <span class="status-badge bloqueado" id="badge-hentai">🔒 Bloqueado</span>
+      <p style="color:#aaa; font-size:14px; margin-bottom:15px;">Animações completas em alta definição.</p>
+      
+      <a href="#" id="buy-hentai" class="btn-buy" target="_blank">Liberar por R$ 14,90</a>
+      <button id="watch-hentai" class="btn-watch" style="display:none;" onclick="abrirPlayer('hentai', 'https://iframe.mediadelivery.net/embed/SUA_LIB/SEU_VIDEO_HENTAI')">Assistir Conteúdo</button>
+      
+      <div class="video-container" id="player-hentai"></div>
+    </div>
+
+  </div>
+
+  <!-- MODAL AUTH -->
+  <div class="modal-overlay" id="modalAuth">
+    <div class="modal">
+      <h3 id="modal-title">Acessar ou Criar Conta</h3>
+      <input type="email" id="auth-email" placeholder="Seu E-mail" />
+      <input type="password" id="auth-pass" placeholder="Sua Senha" />
+      <button class="auth-btn" style="width:100%; margin-top:10px;" onclick="fazerAuth()">Continuar</button>
+      <button onclick="fecharModal()" style="background:none; border:none; color:#aaa; margin-top:15px; cursor:pointer;">Cancelar</button>
+    </div>
   </div>
 
   <script>
-    // Configuração do Supabase
+    // Configurações do Supabase
     const SUPABASE_URL = 'https://xjvkyofktqojuyequuxe.supabase.co';
-    const SUPABASE_KEY = 'sb_publishable__w-crANhzjiYKJuh2AX39w_Kz1-Rf74';
-    const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+    const SUPABASE_ANON_KEY = 'sb_publishable__w-crANhzjiYKJuh2AX39w_Kz1-Rf74'; // Adicione sua Anon Key
+    const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-    async function fazerLogin() {
-      const email = document.getElementById('email').value;
-      const password = document.getElementById('password').value;
-      const msg = document.getElementById('msg');
-      msg.innerText = "Verificando...";
+    let usuarioAtual = null;
 
-      const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
+    // Links de Checkout da SyncPay (Substitua pelos seus links reais do painel SyncPay)
+    const CHECKOUTS = {
+      amador: "https://checkout.syncpay.com.br/SEU_CHECKOUT_AMADOR",
+      lives: "https://checkout.syncpay.com.br/SEU_CHECKOUT_LIVES",
+      hentai: "https://checkout.syncpay.com.br/SEU_CHECKOUT_HENTAI"
+    };
 
+    window.onload = async () => {
+      const { data: { session } } = await _supabase.auth.getSession();
+      if (session) {
+        usuarioAtual = session.user;
+        atualizarHeader();
+        await checarPermissoes();
+      } else {
+        atualizarLinksCheckout("");
+      }
+    };
+
+    function abrirModal() { document.getElementById('modalAuth').style.display = 'flex'; }
+    function fecharModal() { document.getElementById('modalAuth').style.display = 'none'; }
+
+    async function fazerAuth() {
+      const email = document.getElementById('auth-email').value;
+      const password = document.getElementById('auth-pass').value;
+
+      // Tenta login primeiro; se falhar, tenta criar conta
+      let { data, error } = await _supabase.auth.signInWithPassword({ email, password });
+      
       if (error) {
-        msg.innerText = "Erro: " + error.message;
-      } else {
-        msg.innerText = "";
-        verificarAssinatura(data.user);
+        const create = await _supabase.auth.signUp({ email, password });
+        if (create.error) {
+          alert("Erro: " + create.error.message);
+          return;
+        }
+        data = create;
+      }
+
+      usuarioAtual = data.user;
+      fecharModal();
+      atualizarHeader();
+      await checarPermissoes();
+    }
+
+    function atualizarHeader() {
+      document.getElementById('user-area').innerHTML = `
+        <span style="margin-right:15px; font-size:14px; color:#aaa;">${usuarioAtual.email}</span>
+        <button class="auth-btn" style="background:#333;" onclick="deslogar()">Sair</button>
+      `;
+      atualizarLinksCheckout(usuarioAtual.email);
+    }
+
+    function deslogar() {
+      _supabase.auth.signOut();
+      location.reload();
+    }
+
+    function atualizarLinksCheckout(email) {
+      // Passa o e-mail do cliente na URL do Checkout para preenchimento automático na SyncPay
+      for (let cat in CHECKOUTS) {
+        const el = document.getElementById(`buy-${cat}`);
+        if (el) el.href = email ? `${CHECKOUTS[cat]}?email=${encodeURIComponent(email)}` : CHECKOUTS[cat];
       }
     }
 
-    async function verificarAssinatura(user) {
-      // Busca os dados da tabela profiles
-      const { data, error } = await supabaseClient
-        .from('profiles')
-        .select('expiration_date, is_active')
-        .eq('id', user.id)
-        .single();
+    async function checarPermissoes() {
+      if (!usuarioAtual) return;
 
-      if (error || !data) {
-        alert("Erro ao validar plano VIP.");
-        return;
-      }
+      // Consulta no Supabase a tabela de compras que você criou
+      const { data: compras } = await _supabase
+        .from('compras_usuario')
+        .select('categoria_id')
+        .eq('user_id', usuarioAtual.id)
+        .gt('data_expiracao', new Date().toISOString());
 
-      const dataExpiracao = new Date(data.expiration_date);
-      const hoje = new Date();
+      if (compras) {
+        compras.forEach(item => {
+          const cat = item.categoria_id;
+          
+          // Libera visualmente o card
+          const badge = document.getElementById(`badge-${cat}`);
+          const btnBuy = document.getElementById(`buy-${cat}`);
+          const btnWatch = document.getElementById(`watch-${cat}`);
 
-      if (!data.is_active || dataExpiracao < hoje) {
-        document.getElementById('msg').innerText = "Sua assinatura expirou ou está inativa.";
-        await supabaseClient.auth.signOut();
-      } else {
-        // Acesso Liberado
-        document.getElementById('login-box').classList.add('hidden');
-        document.getElementById('vip-box').classList.remove('hidden');
-        document.getElementById('vip-status').innerText = "Acesso válido até: " + dataExpiracao.toLocaleDateString('pt-BR');
+          if (badge) { badge.innerText = "🔓 Liberado"; badge.className = "status-badge liberado"; }
+          if (btnBuy) btnBuy.style.display = "none";
+          if (btnWatch) btnWatch.style.display = "block";
+        });
       }
     }
 
-    async function fazerLogout() {
-      await supabaseClient.auth.signOut();
-      document.getElementById('vip-box').classList.add('hidden');
-      document.getElementById('login-box').classList.remove('hidden');
+    function abrirPlayer(cat, embedUrl) {
+      const container = document.getElementById(`player-${cat}`);
+      container.style.display = "block";
+      container.innerHTML = `<iframe src="${embedUrl}" style="position:absolute;top:0;left:0;width:100%;height:100%;border:0;" allowfullscreen></iframe>`;
     }
   </script>
 </body>
