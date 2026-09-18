@@ -9,7 +9,6 @@ function carregarVideos(listaLinks, tituloPersonalizado = "") {
     const card = document.createElement('div');
     card.className = 'video-card';
 
-    // Define se exibe o título ou deixa sem texto
     const elementoTitulo = tituloPersonalizado 
       ? `<h3>${tituloPersonalizado} #${index + 1}</h3>` 
       : '';
@@ -17,10 +16,11 @@ function carregarVideos(listaLinks, tituloPersonalizado = "") {
     card.innerHTML = `
       ${elementoTitulo}
       <div class="video-wrapper">
-        <div class="hide-drive-btn"></div>
         <iframe 
           src="${url}" 
           frameborder="0" 
+          loading="lazy"
+          allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture;" 
           allowfullscreen>
         </iframe>
       </div>
