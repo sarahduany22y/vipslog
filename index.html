@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Área VIP - Testes</title>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <style>
+    body { font-family: Arial, sans-serif; background: #121212; color: #fff; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; }
+    .card { background: #1e1e1e; padding: 25px; border-radius: 8px; width: 320px; box-shadow: 0 4px 10px rgba(0,0,0,0.5); }
+    h2 { margin-top: 0; text-align: center; }
+    input { width: 100%; padding: 10px; margin: 8px 0; border-radius: 4px; border: 1px solid #333; background: #2a2a2a; color: #fff; box-sizing: border-box; }
+    button { width: 100%; padding: 10px; background: #e50914; color: #fff; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; margin-top: 8px; }
+    button:hover { background: #b80710; }
+    .hidden { display: none; }
+    .video-container { text-align: center; background: #000; padding: 20px; border-radius: 8px; margin-top: 15px; }
+    #msg { margin-top: 10px; font-size: 0.9em; text-align: center; color: #ff5555; }
+  </style>
+</head>
+<body>
+
+  <!-- Tela de Login -->
+  <div id="login-box" class="card">
+    <h2>Acesso VIP</h2>
+    <input type="email" id="email" placeholder="Seu E-mail">
+    <input type="password" id="password" placeholder="Sua Senha">
+    <button onclick="fazerLogin()">Entrar</button>
+    <div id="msg"></div>
+  </div>
+
+  <!-- Área Restrita (Conteúdo Protegido) -->
+  <div id="vip-box" class="card hidden">
+    <h2>Bem-vindo à Área VIP!</h2>
+    <p id="vip-status"></p>
+    
+    <div class="video-container">
+      <p>[ Player de Teste - O vídeo do Bunny entra aqui ]</p>
+    </div>
+
+    <button onclick="fazerLogout()" style="background: #555;">Sair</button>
+  </div>
+
+  <script>
+    // Configuração do Supabase
+    const SUPABASE_URL = 'SUA_SUPABASE_URL';
+    const SUPABASE_KEY = 'SUA_SUPABASE_ANON_KEY';
+    const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+    async function fazerLogin() {
+      const email = document.getElementById('email').value;
+      const password = document.getElementById('password').value;
+      const msg = document.getElementById('msg');
+      msg.innerText = "Verificando...";
+
+      const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
+
+      if (error) {
+        msg.innerText = "Erro: " + error.message;
+      } else {
+        msg.innerText = "";
+        verificarAssinatura(data.user);
+      }
+    }
+
+    async function verificarAssinatura(user) {
+      // Busca os dados da tabela profiles
+      const { data, error } = await supabaseClient
+        .from('profiles')
+        .select('expiration_date, is_active')
+        .eq('id', user.id)
+        .single();
+
+      if (error || !data) {
+        alert("Erro ao validar plano VIP.");
+        return;
+      }
+
+      const dataExpiracao = new Date(data.expiration_date);
+      const hoje = new Date();
+
+      if (!data.is_active || dataExpiracao < hoje) {
+        document.getElementById('msg').innerText = "Sua assinatura expirou ou está inativa.";
+        await supabaseClient.auth.signOut();
+      } else {
+        // Acesso Liberado
+        document.getElementById('login-box').classList.add('hidden');
+        document.getElementById('vip-box').classList.remove('hidden');
+        document.getElementById('vip-status').innerText = "Acesso válido até: " + dataExpiracao.toLocaleDateString('pt-BR');
+      }
+    }
+
+    async function fazerLogout() {
+      await supabaseClient.auth.signOut();
+      document.getElementById('vip-box').classList.add('hidden');
+      document.getElementById('login-box').classList.remove('hidden');
+    }
+  </script>
+</body>
+</html>
