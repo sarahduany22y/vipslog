@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Galeria Amador Exclusivo</title>
+  <title>Galeria lives Exclusivo</title>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -47,7 +47,7 @@
 <body>
 
   <header>
-    <h2>🔞 Categoria Amador Exclusivo</h2>
+    <h2>🔞 Categoria lives Exclusivo</h2>
     <a href="index.html" class="btn-back">← Voltar à Vitrine</a>
   </header>
 
@@ -85,7 +85,7 @@
         .from('compras_usuario')
         .select('id')
         .eq('user_id', session.user.id)
-        .eq('categoria_id', 'amador')
+        .eq('categoria_id', 'lives')
         .gt('data_expiracao', new Date().toISOString());
 
       if (!permissao || permissao.length === 0) {
