@@ -7,11 +7,41 @@
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body { background: #0f0f0f; color: #fff; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; padding: 20px; }
+    
     .header-page { display: flex; justify-content: space-between; align-items: center; max-width: 1200px; margin: 0 auto 20px; }
     .btn-voltar { color: #fff; text-decoration: none; background: #333; padding: 10px 15px; border-radius: 5px; font-weight: bold; }
+    
     .galeria { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; max-width: 1200px; margin: 0 auto; }
     .video-card { background: #1f1f1f; padding: 15px; border-radius: 8px; border: 1px solid #333; text-align: center; }
     .video-card h3 { margin-bottom: 10px; font-size: 16px; color: #ddd; }
+
+    /* Estilos para o player e a máscara do botão */
+    .video-wrapper {
+      position: relative;
+      width: 100%;
+      height: 315px;
+      overflow: hidden;
+      border-radius: 6px;
+      background: #000;
+    }
+
+    .video-wrapper iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+
+    /* Oculta o botão no canto superior direito do Google Drive */
+    .hide-drive-btn {
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: 60px;
+      height: 60px;
+      background: #000;
+      z-index: 10;
+      pointer-events: auto;
+    }
   </style>
 </head>
 <body>
@@ -21,19 +51,19 @@
     <a href="index.html" class="btn-voltar">← Voltar para o início</a>
   </div>
 
-  <!-- Container onde o player.js vai inserir os vídeos -->
   <div id="galeria-container" class="galeria"></div>
 
-  <!-- 1. Carrega os links exclusivos da categoria -->
+  <!-- 1. Importa os links da categoria -->
   <script src="links-amador.js"></script>
 
-  <!-- 2. Carrega a lógica do player -->
+  <!-- 2. Importa o motor do player -->
   <script src="player.js"></script>
 
-  <!-- 3. Renderiza os vídeos ao carregar a página -->
+  <!-- 3. Inicializa a galeria -->
   <script>
     window.onload = () => {
-      carregarVideos(window.linksAmador);
+      // Se quiser sem o texto acima do vídeo, use apenas: carregarVideos(window.linksAmador);
+      carregarVideos(window.linksAmador, "Amador");
     };
   </script>
 </body>
