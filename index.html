@@ -19,14 +19,12 @@
     .liberado { background: #22c55e; color: #fff; }
 
     .btn-buy { display: block; background: #2563eb; color: #fff; text-decoration: none; padding: 12px; border-radius: 6px; font-weight: bold; margin-top: 10px; }
-    .btn-watch { background: #22c55e; width: 100%; border: none; padding: 12px; border-radius: 6px; font-weight: bold; color: #fff; cursor: pointer; }
+    .btn-access { display: block; background: #22c55e; color: #fff; text-decoration: none; padding: 12px; border-radius: 6px; font-weight: bold; margin-top: 10px; }
     
     /* Modal CSS */
     .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); justify-content: center; align-items: center; z-index: 100; }
     .modal { background: #181818; padding: 30px; border-radius: 10px; width: 90%; max-width: 400px; text-align: center; }
     .modal input { width: 100%; padding: 10px; margin: 10px 0; border-radius: 5px; border: 1px solid #333; background: #222; color: #fff; }
-    
-    .video-container { display: none; margin-top: 15px; position: relative; padding-top: 56.25%; background: #000; border-radius: 8px; overflow: hidden; }
   </style>
 </head>
 <body>
@@ -47,13 +45,8 @@
       <span class="status-badge bloqueado" id="badge-amador">🔒 Bloqueado</span>
       <p style="color:#aaa; font-size:14px; margin-bottom:15px;">Vídeos amadores inéditos atualizados toda semana.</p>
       
-      <!-- Ação se bloqueado -->
       <a href="#" id="buy-amador" class="btn-buy" target="_blank">Liberar por R$ 19,90</a>
-      
-      <!-- Action se liberado -->
-      <button id="watch-amador" class="btn-watch" style="display:none;" onclick="abrirPlayer('amador', 'https://iframe.mediadelivery.net/embed/SUA_LIB/SEU_VIDEO_AMADOR')">Assistir Conteúdo</button>
-      
-      <div class="video-container" id="player-amador"></div>
+      <a href="amador.html" id="access-amador" class="btn-access" style="display:none;">Acessar Galeria Amador</a>
     </div>
 
     <!-- Categoria 2: Lives -->
@@ -63,9 +56,7 @@
       <p style="color:#aaa; font-size:14px; margin-bottom:15px;">Gravações de lives privadas sem cortes.</p>
       
       <a href="#" id="buy-lives" class="btn-buy" target="_blank">Liberar por R$ 29,90</a>
-      <button id="watch-lives" class="btn-watch" style="display:none;" onclick="abrirPlayer('lives', 'https://iframe.mediadelivery.net/embed/SUA_LIB/SEU_VIDEO_LIVES')">Assistir Conteúdo</button>
-      
-      <div class="video-container" id="player-lives"></div>
+      <a href="lives.html" id="access-lives" class="btn-access" style="display:none;">Acessar Galeria Lives</a>
     </div>
 
     <!-- Categoria 3: Hentai -->
@@ -75,9 +66,7 @@
       <p style="color:#aaa; font-size:14px; margin-bottom:15px;">Animações completas em alta definição.</p>
       
       <a href="#" id="buy-hentai" class="btn-buy" target="_blank">Liberar por R$ 14,90</a>
-      <button id="watch-hentai" class="btn-watch" style="display:none;" onclick="abrirPlayer('hentai', 'https://iframe.mediadelivery.net/embed/SUA_LIB/SEU_VIDEO_HENTAI')">Assistir Conteúdo</button>
-      
-      <div class="video-container" id="player-hentai"></div>
+      <a href="hentai.html" id="access-hentai" class="btn-access" style="display:none;">Acessar Galeria Hentai</a>
     </div>
 
   </div>
@@ -94,14 +83,12 @@
   </div>
 
   <script>
-    // Configurações do Supabase
     const SUPABASE_URL = 'https://xjvkyofktqojuyequuxe.supabase.co';
-    const SUPABASE_ANON_KEY = 'sb_publishable__w-crANhzjiYKJuh2AX39w_Kz1-Rf74'; // Adicione sua Anon Key
+    const SUPABASE_ANON_KEY = 'sb_publishable__w-crANhzjiYKJuh2AX39w_Kz1-Rf74';
     const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
     let usuarioAtual = null;
 
-    // Links de Checkout da SyncPay (Substitua pelos seus links reais do painel SyncPay)
     const CHECKOUTS = {
       amador: "https://link.syncpayments.com.br/MicvMz",
       lives: "https://checkout.syncpay.com.br/SEU_CHECKOUT_LIVES",
@@ -126,7 +113,6 @@
       const email = document.getElementById('auth-email').value;
       const password = document.getElementById('auth-pass').value;
 
-      // Tenta login primeiro; se falhar, tenta criar conta
       let { data, error } = await _supabase.auth.signInWithPassword({ email, password });
       
       if (error) {
@@ -158,7 +144,6 @@
     }
 
     function atualizarLinksCheckout(email) {
-      // Passa o e-mail do cliente na URL do Checkout para preenchimento automático na SyncPay
       for (let cat in CHECKOUTS) {
         const el = document.getElementById(`buy-${cat}`);
         if (el) el.href = email ? `${CHECKOUTS[cat]}?email=${encodeURIComponent(email)}` : CHECKOUTS[cat];
@@ -168,7 +153,6 @@
     async function checarPermissoes() {
       if (!usuarioAtual) return;
 
-      // Consulta no Supabase a tabela de compras que você criou
       const { data: compras } = await _supabase
         .from('compras_usuario')
         .select('categoria_id')
@@ -179,22 +163,15 @@
         compras.forEach(item => {
           const cat = item.categoria_id;
           
-          // Libera visualmente o card
           const badge = document.getElementById(`badge-${cat}`);
           const btnBuy = document.getElementById(`buy-${cat}`);
-          const btnWatch = document.getElementById(`watch-${cat}`);
+          const btnAccess = document.getElementById(`access-${cat}`);
 
           if (badge) { badge.innerText = "🔓 Liberado"; badge.className = "status-badge liberado"; }
           if (btnBuy) btnBuy.style.display = "none";
-          if (btnWatch) btnWatch.style.display = "block";
+          if (btnAccess) btnAccess.style.display = "block";
         });
       }
-    }
-
-    function abrirPlayer(cat, embedUrl) {
-      const container = document.getElementById(`player-${cat}`);
-      container.style.display = "block";
-      container.innerHTML = `<iframe src="${embedUrl}" style="position:absolute;top:0;left:0;width:100%;height:100%;border:0;" allowfullscreen></iframe>`;
     }
   </script>
 </body>
