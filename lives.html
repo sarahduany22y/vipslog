@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <!-- 1. TÍTULO DA ABA NAVEGADOR MUDADO AQUI -->
   <title>Galeria Lives VIP</title>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -17,21 +18,22 @@
 <body>
 
   <div class="header-page">
+    <!-- 2. TÍTULO DA PÁGINA MUDADO AQUI -->
     <h2>Gravados de Lives 🔥</h2>
     <a href="index.html" class="btn-voltar">← Voltar para o início</a>
   </div>
 
   <div id="galeria-container" class="galeria"></div>
 
-  <!-- 1. Carrega a lista de Lives -->
+  <!-- 3. NOME DO ARQUIVO JS MUDADO AQUI -->
   <script src="links-lives.js"></script>
 
-  <!-- 2. Carrega o mesmo player.js -->
+  <!-- O player.js continua IGUAL para todos -->
   <script src="player.js"></script>
 
-  <!-- 3. Executa usando a variável de Lives -->
   <script>
     window.onload = () => {
+      // 4. NOME DA VARIÁVEL MUDADO AQUI
       carregarVideos(window.linksLives);
     };
   </script>
