@@ -3,39 +3,57 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <!-- 1. TÍTULO DA ABA NAVEGADOR MUDADO AQUI -->
-  <title>Galeria Lives VIP</title>
+  <title>Galeria Lives VIP 🔥</title>
+  <link rel="stylesheet" href="estilo-telegram.css">
   <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { background: #0f0f0f; color: #fff; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; padding: 20px; }
-    .header-page { display: flex; justify-content: space-between; align-items: center; max-width: 1200px; margin: 0 auto 20px; }
-    .btn-voltar { color: #fff; text-decoration: none; background: #333; padding: 10px 15px; border-radius: 5px; font-weight: bold; }
-    .galeria { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; max-width: 1200px; margin: 0 auto; }
-    .video-card { background: #1f1f1f; padding: 15px; border-radius: 8px; border: 1px solid #333; text-align: center; }
-    .video-card h3 { margin-bottom: 10px; font-size: 16px; color: #ddd; }
+    .header-page {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      max-width: 650px;
+      margin: 0 auto 15px;
+      width: 100%;
+    }
+    .header-page h2 {
+      font-size: 1.2rem;
+      color: #64b5ef;
+    }
+    .btn-voltar {
+      color: #fff;
+      text-decoration: none;
+      background: #242f3d;
+      padding: 8px 14px;
+      border-radius: 8px;
+      font-size: 0.85rem;
+      font-weight: bold;
+      border: 1px solid #2b3a4c;
+    }
   </style>
 </head>
 <body>
 
-  <div class="header-page">
-    <!-- 2. TÍTULO DA PÁGINA MUDADO AQUI -->
-    <h2>Gravados de Lives 🔥</h2>
-    <a href="index.html" class="btn-voltar">← Voltar para o início</a>
-  </div>
+  <main class="telegram-feed">
+    <div class="header-page">
+      <h2>Gravados de Lives 🔥</h2>
+      <a href="index.html" class="btn-voltar">← Início</a>
+    </div>
 
-  <div id="galeria-container" class="galeria"></div>
+    <!-- Container dos Vídeos da Categoria -->
+    <div id="feed-container" class="telegram-feed"></div>
 
-  <!-- 3. NOME DO ARQUIVO JS MUDADO AQUI -->
+    <!-- Controles de Paginação -->
+    <div id="pagination-controls" class="pagination-container"></div>
+  </main>
+
+  <!-- Script com os Links de Vídeo -->
   <script src="links-lives.js"></script>
 
-  <!-- O player.js continua IGUAL para todos -->
-  <script src="player.js"></script>
-
+  <!-- Motor da Paginação Estilo Telegram -->
+  <script src="app.js"></script>
   <script>
-    window.onload = () => {
-      // 4. NOME DA VARIÁVEL MUDADO AQUI
-      carregarVideos(window.linksLives);
-    };
+    document.addEventListener('DOMContentLoaded', () => {
+      iniciarCategoria('lives', window.linksLives);
+    });
   </script>
 </body>
 </html>
