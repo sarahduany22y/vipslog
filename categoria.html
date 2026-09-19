@@ -3,26 +3,25 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Canal do Telegram - Vídeos</title>
+  <title>Canal VIP</title>
   <link rel="stylesheet" href="estilo-telegram.css">
 </head>
 <body>
 
   <main class="telegram-feed">
-    <!-- Lista de Vídeos -->
+    <!-- Container dos vídeos no estilo Telegram -->
     <div id="feed-container" class="telegram-feed"></div>
 
     <!-- Controles de Paginação -->
     <div id="pagination-controls" class="pagination-container"></div>
   </main>
 
-  <!-- Scripts dos Bancos de Dados das Categorias -->
+  <!-- Carrega todos os seus arquivos de links já existentes -->
   <script src="links-amador.js"></script>
-  <!-- Adicione os scripts das novas categorias conforme criar, ex: -->
-  <!-- <script src="links-lives.js"></script> -->
-  <!-- <script src="links-hentai.js"></script> -->
+  <script src="links-lives.js"></script>
+  <script src="links-hentai.js"></script>
 
-  <!-- Script Principal de Paginação -->
+  <!-- Lógica da Paginação de 20 vídeos por página -->
   <script src="app.js"></script>
 </body>
 </html>
