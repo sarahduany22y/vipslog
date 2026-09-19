@@ -1,22 +1,19 @@
-// player.js - Com Paginação Automática
+// player.js - Com Paginação e Vídeos Pausados por Padrão
 let paginaAtual = 1;
-const videosPorPagina = 10; // Altere este número se quiser exibir mais ou menos vídeos por página
+const videosPorPagina = 10; 
 
 function carregarVideos(listaLinks, tituloPersonalizado = "") {
   const container = document.getElementById('galeria-container');
   if (!container || !listaLinks) return;
 
-  // Calcula o total de páginas
   const totalPaginas = Math.ceil(listaLinks.length / videosPorPagina);
   if (paginaAtual > totalPaginas) paginaAtual = totalPaginas;
   if (paginaAtual < 1) paginaAtual = 1;
 
-  // Descobre quais vídeos exibir na página atual
   const inicio = (paginaAtual - 1) * videosPorPagina;
   const fim = inicio + videosPorPagina;
   const videosDaPagina = listaLinks.slice(inicio, fim);
 
-  // Renderiza os cards de vídeo da página atual
   container.innerHTML = ''; 
 
   videosDaPagina.forEach((url, index) => {
@@ -28,12 +25,18 @@ function carregarVideos(listaLinks, tituloPersonalizado = "") {
       ? `<h3>${tituloPersonalizado} #${numeroVideo}</h3>` 
       : '';
 
+    // Garante que o link não tenha parâmetro de autoplay
+    let urlPausada = url.replace("autoplay=1", "autoplay=0");
+    if (!urlPausada.includes("autoplay=0")) {
+      urlPausada += urlPausada.includes("?") ? "&autoplay=0" : "?autoplay=0";
+    }
+
     card.innerHTML = `
       ${elementoTitulo}
       <div class="video-wrapper">
         <div class="hide-drive-btn"></div>
         <iframe 
-          src="${url}" 
+          src="${urlPausada}" 
           frameborder="0" 
           allowfullscreen>
         </iframe>
@@ -43,7 +46,6 @@ function carregarVideos(listaLinks, tituloPersonalizado = "") {
     container.appendChild(card);
   });
 
-  // Renderiza os botões de navegação da paginação
   renderizarPaginacao(listaLinks, tituloPersonalizado, totalPaginas);
 }
 
