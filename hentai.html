@@ -1,168 +1,89 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Galeria Hentai</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Galeria Hentai VIP</title>
   <style>
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: #0f0f0f; color: #fff; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; padding: 20px; }
+    
+    /* Cabeçalho centralizado com botão de voltar à direita */
+    .header-page { 
+      display: flex; 
+      justify-content: space-between; 
+      align-items: center; 
+      max-width: 1200px; 
+      margin: 0 auto 20px; 
+    }
+    
+    .btn-voltar { 
+      color: #fff; 
+      text-decoration: none; 
+      background: #333; 
+      padding: 10px 15px; 
+      border-radius: 5px; 
+      font-weight: bold; 
+      transition: background 0.2s;
     }
 
-    body {
-      background-color: #121212;
-      color: #ffffff;
-      font-family: Arial, sans-serif;
-      padding: 20px;
+    .btn-voltar:hover {
+      background: #444;
     }
+    
+    .galeria { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; max-width: 1200px; margin: 0 auto; }
+    .video-card { background: #1f1f1f; padding: 15px; border-radius: 8px; border: 1px solid #333; text-align: center; }
+    .video-card h3 { margin-bottom: 10px; font-size: 16px; color: #ddd; }
 
-    h1 {
-      text-align: center;
-      margin-bottom: 20px;
-    }
-
-    /* Layout do Grid de Vídeos */
-    .grid-container {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-      gap: 20px;
-      max-width: 1200px;
-      margin: 0 auto;
-    }
-
-    .video-card {
+    /* Estilos do Player e Máscara para Google Drive */
+    .video-wrapper {
       position: relative;
-      padding-bottom: 56.25%; /* Proporção 16:9 */
-      height: 0;
+      width: 100%;
+      height: 315px;
       overflow: hidden;
-      background-color: #1a2332;
-      border-radius: 8px;
+      border-radius: 6px;
+      background: #000;
     }
 
-    .video-card iframe {
-      position: absolute;
-      top: 0;
-      left: 0;
+    .video-wrapper iframe {
       width: 100%;
       height: 100%;
-      border: 0;
-    }
-
-    /* Botoes de Paginação */
-    .paginacao-container {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      gap: 15px;
-      margin-top: 30px;
-    }
-
-    .paginacao-container button {
-      background-color: #007bff;
-      color: white;
       border: none;
-      padding: 10px 20px;
-      font-size: 16px;
-      border-radius: 5px;
-      cursor: pointer;
-      transition: background-color 0.2s;
     }
 
-    .paginacao-container button:hover:not(:disabled) {
-      background-color: #0056b3;
-    }
-
-    .paginacao-container button:disabled {
-      background-color: #444;
-      cursor: not-allowed;
-      opacity: 0.6;
-    }
-
-    .paginacao-container span {
-      font-size: 16px;
-      font-weight: bold;
+    .hide-drive-btn {
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: 60px;
+      height: 60px;
+      background: #000;
+      z-index: 10;
+      pointer-events: auto;
     }
   </style>
 </head>
 <body>
 
-  <h1>Galeria Hentai</h1>
+  <!-- CABEÇALHO COM O BOTÃO DE VOLTAR -->
+  <div class="header-page">
+    <h2>Coleção Hentai 🎨</h2>
+    <a href="index.html" class="btn-voltar">← Voltar para o início</a>
+  </div>
 
-  <!-- Container onde os 20 vídeos da página serão renderizados -->
-  <div id="grid-videos" class="grid-container"></div>
+  <div id="galeria-container" class="galeria"></div>
 
-  <!-- Controles da Paginação -->
-  <div id="paginacao" class="paginacao-container"></div>
-
-  <!-- Importa o ficheiro com a lista de links (window.linksHentai) -->
+  <!-- 1. Importa os links específicos da categoria -->
   <script src="links-hentai.js"></script>
 
+  <!-- 2. Importa o motor do player -->
+  <script src="player.js"></script>
+
+  <!-- 3. Inicializa os vídeos -->
   <script>
-    let paginaAtual = 1;
-    const videosPorPagina = 20;
-    let listaCompletaVideos = [];
-
-    function carregarVideos(arrayLinks, pagina = 1) {
-      if (!arrayLinks || arrayLinks.length === 0) return;
-      
-      listaCompletaVideos = arrayLinks;
-      paginaAtual = pagina;
-
-      const container = document.getElementById('grid-videos');
-      const paginacaoContainer = document.getElementById('paginacao');
-      
-      if (!container) return;
-      
-      container.innerHTML = ''; // Limpa a página anterior
-
-      // Calcula os índices para carregar no máximo 20 vídeos
-      const inicio = (paginaAtual - 1) * videosPorPagina;
-      const fim = inicio + videosPorPagina;
-      const videosDaPagina = listaCompletaVideos.slice(inicio, fim);
-      const totalPaginas = Math.ceil(listaCompletaVideos.length / videosPorPagina);
-
-      // Renderiza os vídeos com autoplay desativado
-      videosDaPagina.forEach(link => {
-        const urlSemAutoplay = link.includes('?') 
-          ? `${link}&autoplay=false` 
-          : `${link}?autoplay=false`;
-
-        const card = document.createElement('div');
-        card.className = 'video-card';
-
-        const iframe = document.createElement('iframe');
-        iframe.src = urlSemAutoplay;
-        iframe.loading = "lazy";
-        iframe.allow = "accelerometer; gyroscope; encrypted-media; picture-in-picture";
-        iframe.allowFullscreen = true;
-
-        card.appendChild(iframe);
-        container.appendChild(card);
-      });
-
-      // Renderiza os botões de controle de página
-      if (paginacaoContainer) {
-        paginacaoContainer.innerHTML = `
-          <button onclick="mudarPagina(${paginaAtual - 1})" ${paginaAtual === 1 ? 'disabled' : ''}>Anterior</button>
-          <span>Página ${paginaAtual} de ${totalPaginas}</span>
-          <button onclick="mudarPagina(${paginaAtual + 1})" ${paginaAtual === totalPaginas ? 'disabled' : ''}>Próxima</button>
-        `;
-      }
-    }
-
-    function mudarPagina(novaPagina) {
-      carregarVideos(listaCompletaVideos, novaPagina);
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
-
-    // Inicializa a exibição com os 20 primeiros vídeos
-    document.addEventListener('DOMContentLoaded', () => {
-      if (window.linksHentai) {
-        carregarVideos(window.linksHentai, 1);
-      }
-    });
+    window.onload = () => {
+      carregarVideos(window.linksHentai, "Hentai");
+    };
   </script>
 </body>
 </html>
