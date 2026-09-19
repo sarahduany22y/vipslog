@@ -1,0 +1,13 @@
+// Pega a categoria atual da URL
+const urlParams = new URLSearchParams(window.location.search);
+const categoria = urlParams.get('cat') || 'amador';
+
+// Carrega dinamicamente os vídeos correspondentes
+const bancoDeDados = {
+  amador: window.linksAmador,
+  lives: window.linksLives,
+  hentai: window.linksHentai
+};
+
+const listaAtual = bancoDeDados[categoria] || [];
+carregarPagina(listaAtual, 1);
