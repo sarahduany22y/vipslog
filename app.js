@@ -1,36 +1,37 @@
-// Configuração fixa de 20 vídeos por página
+// Configuração de 20 vídeos por página
 const VIDEOS_POR_PAGINA = 20;
 
-// Obtém parâmetros da URL (Ex: categoria.html?cat=amador&pagina=1)
-const urlParams = new URLSearchParams(window.location.search);
-const categoriaAtual = urlParams.get('cat') || 'amador';
-let paginaAtual = parseInt(urlParams.get('pagina')) || 1;
+let listaVideosAtual = [];
+let paginaAtual = 1;
+let nomeCategoriaAtual = '';
 
-// Mapeamento das listas de links por categoria
-const bancoDeDados = {
-  amador: typeof window.linksAmador !== 'undefined' ? window.linksAmador : [],
-  lives: typeof window.linksLives !== 'undefined' ? window.linksLives : [],
-  hentai: typeof window.linksHentai !== 'undefined' ? window.linksHentai : []
-};
+// Função chamada na abertura das páginas
+function iniciarCategoria(nomeCat, listaLinks) {
+  nomeCategoriaAtual = nomeCat;
+  listaVideosAtual = Array.isArray(listaLinks) ? listaLinks : [];
 
-// Seleção dos vídeos da categoria ativa
-const listaVideos = bancoDeDados[categoriaAtual] || [];
+  // Pega a página atual pela URL (se existir) ou inicia na 1
+  const urlParams = new URLSearchParams(window.location.search);
+  paginaAtual = parseInt(urlParams.get('pagina')) || 1;
+
+  renderizarFeed();
+}
 
 function renderizarFeed() {
   const feedContainer = document.getElementById('feed-container');
   feedContainer.innerHTML = '';
 
-  if (listaVideos.length === 0) {
-    feedContainer.innerHTML = '<p style="text-align:center; padding: 20px;">Nenhum vídeo encontrado para esta categoria.</p>';
+  if (listaVideosAtual.length === 0) {
+    feedContainer.innerHTML = '<p style="text-align:center; padding: 20px; color:#888;">Nenhum vídeo encontrado nesta categoria.</p>';
     return;
   }
 
-  // Cálculo de paginação
+  // Recorta os 20 vídeos da página ativa
   const inicio = (paginaAtual - 1) * VIDEOS_POR_PAGINA;
   const fim = inicio + VIDEOS_POR_PAGINA;
-  const videosDaPagina = listaVideos.slice(inicio, fim);
+  const videosDaPagina = listaVideosAtual.slice(inicio, fim);
 
-  // Renderização dos 20 cards
+  // Renderiza cada vídeo no estilo card do Telegram
   videosDaPagina.forEach((link, idx) => {
     const card = document.createElement('div');
     card.className = 'telegram-card';
@@ -40,8 +41,8 @@ function renderizarFeed() {
       </div>
       <div class="card-footer">
         <div class="reactions">
-          <span class="reaction-btn">🔥 ${100 + (idx * 7)}</span>
-          <span class="reaction-btn">❤️ ${40 + (idx * 3)}</span>
+          <span class="reaction-btn">🔥 ${120 + (idx * 5)}</span>
+          <span class="reaction-btn">❤️ ${45 + (idx * 2)}</span>
         </div>
         <span class="time">Postado recente</span>
       </div>
@@ -56,7 +57,7 @@ function renderizarPaginacao() {
   const paginacaoContainer = document.getElementById('pagination-controls');
   paginacaoContainer.innerHTML = '';
 
-  const totalPaginas = Math.ceil(listaVideos.length / VIDEOS_POR_PAGINA);
+  const totalPaginas = Math.ceil(listaVideosAtual.length / VIDEOS_POR_PAGINA);
 
   if (totalPaginas <= 1) return;
 
@@ -88,14 +89,12 @@ function renderizarPaginacao() {
 
 function mudarPagina(novaPagina) {
   paginaAtual = novaPagina;
-  
-  // Atualiza a URL sem recarregar a página
-  const novaUrl = `${window.location.pathname}?cat=${categoriaAtual}&pagina=${novaPagina}`;
-  window.history.pushState({ path: novaUrl }, '', novaUrl);
-  
+
+  // Atualiza parâmetro da URL de forma limpa
+  const url = new URL(window.location);
+  url.searchParams.set('pagina', novaPagina);
+  window.history.pushState({}, '', url);
+
   renderizarFeed();
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
-
-// Inicializa a exibição na carga do documento
-document.addEventListener('DOMContentLoaded', renderizarFeed);
