@@ -1,5 +1,3 @@
-// links-amador.js
-window.linksAmador = [
 window.linksAmador = [
   "https://iframe.mediadelivery.net/embed/756775/2d91bb66-81f6-48ed-a491-66655ed33038",
   "https://iframe.mediadelivery.net/embed/756775/1b556d6c-8810-4dc1-9d3d-6d01947533c2",
