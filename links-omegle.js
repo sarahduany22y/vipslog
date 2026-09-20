@@ -1,4 +1,4 @@
-window.linksomegle = [
+window.linksOmegle = [
   "https://iframe.mediadelivery.net/embed/756775/a2ae1893-6434-4087-93fc-22ea9fb11e77",
   "https://iframe.mediadelivery.net/embed/756775/f09ea7cb-8967-4793-8deb-159558ff7c53",
   "https://iframe.mediadelivery.net/embed/756775/2e7481ae-3f5d-4025-8d86-1d22fe73f85f",
