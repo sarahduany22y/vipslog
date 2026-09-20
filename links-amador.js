@@ -1,51 +1,50 @@
 window.linksAmador = window.linksAmador || [];
 
 async function carregarVideosAmadorAuto() {
-  const STORAGE_ZONE_NAME = 'fotos-vip'; // Altere para a Storage Zone onde estão os vídeos
-  const ACCESS_KEY = '933bafdd-56a8-40a5-92ddaa282360-fad2-4831';
-  const PULL_ZONE_URL = 'https://midia-vip.b-cdn.net';
-  const PASTA = 'ama'; // Nome da pasta na Bunny onde ficam os vídeos de amador
+  const LIBRARY_ID = '756775';
+  const API_KEY = '9a701c8d-c881-4027-bdc7ca3d98d3-bf22-4d84';
+  const PASTA = 'ama'; // Nome da pasta/coleção ou tag
 
-  const path = PASTA ? `${STORAGE_ZONE_NAME}/${encodeURIComponent(PASTA)}/` : `${STORAGE_ZONE_NAME}/`;
+  try {
+    const response = await fetch(`https://video.bunnycdn.com/library/${LIBRARY_ID}/videos?itemsPerPage=100`, {
+      method: 'GET',
+      headers: {
+        'accept': 'application/json',
+        'AccessKey': API_KEY
+      }
+    });
 
-  const endpoints = [
-    `https://storage.bunnycdn.com/${path}`,
-    `https://br.storage.bunnycdn.com/${path}`,
-    `https://la.storage.bunnycdn.com/${path}`
-  ];
+    if (response.ok) {
+      const data = await response.json();
+      const items = data.items || [];
 
-  for (const url of endpoints) {
-    try {
-      const res = await fetch(url, {
-        headers: {
-          'AccessKey': ACCESS_KEY,
-          'accept': 'application/json'
-        }
+      // Filtra os vídeos pela pasta/coleção 'ama' ou pega todos se a pasta não estiver configurada no painel
+      const videosFiltrados = items.filter(v => {
+        if (!PASTA) return true;
+        return (v.collectionId === PASTA || v.title.toLowerCase().includes(PASTA.toLowerCase()));
       });
 
-      if (res.ok) {
-        const data = await res.json();
-        const arquivos = data.filter(item => !item.IsDirectory);
-        const pastaFormatada = PASTA ? `${encodeURIComponent(PASTA.trim())}/` : '';
-        
-        window.linksVideosAmador = arquivos.map(
-          f => `${PULL_ZONE_URL}/${pastaFormatada}${encodeURIComponent(f.ObjectName)}`
-        );
+      // Se a filtragem for muito restrita e não achar nada, utiliza a lista completa de vídeos
+      const listaFinal = videosFiltrados.length > 0 ? videosFiltrados : items;
 
-        console.log(`[Bunny API] ${window.linksVideosAmador.length} vídeos amador carregados!`);
+      // Gera as URLs dos IFrames de reprodução da Bunny Stream
+      window.linksAmador = listaFinal.map(
+        v => `https://iframe.mediadelivery.net/embed/${LIBRARY_ID}/${v.guid}`
+      );
 
-        // Atualiza a lista do app.js se a categoria amador estiver ativa
-        if (typeof listaVideos !== 'undefined') {
-          listaVideos = window.linksVideosAmador;
-        }
+      console.log(`[Bunny Stream] ${window.linksAmador.length} vídeos amadores carregados!`);
 
-        if (typeof abaAtiva !== 'undefined' && abaAtiva === 'videos' && typeof renderizarFeed === 'function') {
-          renderizarFeed();
-        }
-
-        return;
+      // Conecta diretamente com o app.js
+      if (typeof listaVideos !== 'undefined') {
+        listaVideos = window.linksAmador;
       }
-    } catch (e) {}
+
+      if (typeof abaAtiva !== 'undefined' && abaAtiva === 'videos' && typeof renderizarFeed === 'function') {
+        renderizarFeed();
+      }
+    }
+  } catch (e) {
+    console.error('[Bunny Stream] Erro ao carregar vídeos amador:', e);
   }
 }
 
