@@ -1,4 +1,4 @@
-// Cria o array global caso o site busque por ele imediatamente
+// Garante o array global
 window.linksFotosAmador = window.linksFotosAmador || [];
 
 async function carregarFotosAutomatico() {
@@ -29,30 +29,33 @@ async function carregarFotosAutomatico() {
         const arquivos = data.filter(item => !item.IsDirectory);
         const pastaFormatada = PASTA ? `${encodeURIComponent(PASTA.trim())}/` : '';
         
-        // Atualiza a variável global
+        // Monta os links das fotos
         window.linksFotosAmador = arquivos.map(
           f => `${PULL_ZONE_URL}/${pastaFormatada}${encodeURIComponent(f.ObjectName)}`
         );
 
         console.log(`[Bunny API] ${window.linksFotosAmador.length} fotos carregadas!`);
 
-        // Dispara eventos e atualizações comuns para renderizar a galeria na tela
-        window.dispatchEvent(new Event('fotosCarregadas'));
-        
-        if (typeof renderizarFotos === 'function') renderizarFotos();
-        if (typeof carregarFotos === 'function') carregarFotos();
-        if (typeof renderGallery === 'function') renderGallery();
-        if (typeof init === 'function') init();
+        // CONEXÃO COM O APP.JS:
+        // Atualiza a variável interna do app.js se ela já existir
+        if (typeof listaFotos !== 'undefined') {
+          listaFotos = window.linksFotosAmador;
+        }
+
+        // Se a aba de fotos estiver ativa no momento, redesenha o feed imediatamente
+        if (typeof abaAtiva !== 'undefined' && abaAtiva === 'fotos' && typeof renderizarFeed === 'function') {
+          renderizarFeed();
+        }
 
         return;
       }
     } catch (e) {
-      // Tenta o próximo servidor
+      // Tenta o próximo endpoint se falhar
     }
   }
 
   console.error('[Bunny API] Falha ao carregar as fotos.');
 }
 
-// Inicia o carregamento
+// Executa a busca assim que o script carregar
 carregarFotosAutomatico();
