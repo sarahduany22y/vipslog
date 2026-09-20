@@ -1,43 +1,30 @@
-const ITENS_POR_PAGINA = 20;
+const ITENS_POR_PAGINA = 12;
 
 let subcategorias = {};
-let abaAtiva = 'videos';
+let abaAtiva = 'amador';
 let paginaAtual = 1;
 
-// ==========================================
-// 1. SUPORTE A PÁGINAS COM VÁRIAS SUB-ABAS (Ex: Amador)
-// ==========================================
+// Inicializa a galeria com as subcategorias
 function iniciarCategoriaMultiabas(catInicial, dadosSubcategorias) {
   subcategorias = dadosSubcategorias || {};
 
   const urlParams = new URLSearchParams(window.location.search);
-  abaAtiva = urlParams.get('aba') || catInicial || Object.keys(subcategorias)[0] || 'videos';
+  abaAtiva = urlParams.get('aba') || catInicial || 'amador';
   paginaAtual = parseInt(urlParams.get('pagina')) || 1;
 
   atualizarBotoesAbas();
   renderizarFeed();
 }
 
-// ==========================================
-// 2. SUPORTE A PÁGINAS TRADICIONAIS (Ex: Hentai, Vazadas, Famosas)
-// ==========================================
-function iniciarCategoria(nomeCategoria, linksVideos = [], linksFotos = []) {
-  subcategorias = {
-    videos: Array.isArray(linksVideos) ? linksVideos : [],
-    fotos: Array.isArray(linksFotos) ? linksFotos : []
-  };
-
-  const urlParams = new URLSearchParams(window.location.search);
-  abaAtiva = urlParams.get('aba') || 'videos';
-  paginaAtual = parseInt(urlParams.get('pagina')) || 1;
-
-  atualizarBotoesAbas();
-  renderizarFeed();
+// Compatibilidade para chamadas do tipo iniciarCategoria(...)
+function iniciarCategoria(catNome, videos, fotos) {
+  iniciarCategoriaMultiabas('videos', {
+    videos: videos || [],
+    fotos: fotos || []
+  });
 }
 
-// ==========================================
-// TROCA DE ABAS / SUB-CATEGORIAS
-// ==========================================
+// Troca de subcategoria ao clicar nos botões
 function alternarAba(novaAba) {
   if (abaAtiva === novaAba) return;
   abaAtiva = novaAba;
@@ -45,7 +32,7 @@ function alternarAba(novaAba) {
 
   atualizarBotoesAbas();
 
-  // Atualiza a URL sem recarregar a página
+  // Atualiza a URL sem dar refresh na página
   const url = new URL(window.location);
   url.searchParams.set('aba', abaAtiva);
   url.searchParams.set('pagina', 1);
@@ -54,34 +41,20 @@ function alternarAba(novaAba) {
   renderizarFeed();
 }
 
-// Destinado a páginas antigas que chamavam alternarTipo('videos' ou 'fotos')
-function alternarTipo(tipo) {
-  alternarAba(tipo);
-}
-
-// Atualiza o botão ativo na tela
+// Atualiza o estado visual dos botões no HTML
 function atualizarBotoesAbas() {
   const botoes = document.querySelectorAll('.tab-btn');
-  botoes.forEach(btn => btn.classList.remove('active'));
+  botoes.forEach(btn => {
+    btn.classList.remove('active');
+  });
 
-  // Tenta encontrar pelo ID padrão ou classe
-  let btnAtivo = document.getElementById(`tab-${abaAtiva}`) || document.getElementById(`btn-${abaAtiva}`);
-  if (!btnAtivo) {
-    botoes.forEach(btn => {
-      if (btn.getAttribute('onclick')?.includes(`'${abaAtiva}'`)) {
-        btnAtivo = btn;
-      }
-    });
-  }
-
+  const btnAtivo = document.getElementById(`tab-${abaAtiva}`);
   if (btnAtivo) {
     btnAtivo.classList.add('active');
   }
 }
 
-// ==========================================
-// RENDERIZAÇÃO DO FEED DE VÍDEOS E FOTOS
-// ==========================================
+// Renderiza os vídeos ou fotos da subcategoria atual
 function renderizarFeed() {
   const feedContainer = document.getElementById('feed-container');
   if (!feedContainer) return;
@@ -90,7 +63,7 @@ function renderizarFeed() {
   const listaAtual = Array.isArray(subcategorias[abaAtiva]) ? subcategorias[abaAtiva] : [];
 
   if (listaAtual.length === 0) {
-    feedContainer.innerHTML = `<p style="text-align:center; padding: 40px; color:#7f91a4; grid-column: 1/-1;">Nenhum conteúdo encontrado nesta categoria.</p>`;
+    feedContainer.innerHTML = `<p style="text-align:center; padding: 30px; color:#7f91a4;">Nenhum conteúdo encontrado nesta categoria.</p>`;
     const paginacao = document.getElementById('pagination-controls');
     if (paginacao) paginacao.innerHTML = '';
     return;
@@ -100,14 +73,16 @@ function renderizarFeed() {
   const fim = inicio + ITENS_POR_PAGINA;
   const itensDaPagina = listaAtual.slice(inicio, fim);
 
-  itensDaPagina.forEach((link, idx) => {
+  itensDaPagina.forEach((item, idx) => {
     const card = document.createElement('div');
     card.className = 'telegram-card';
+
+    const urlOriginal = typeof item === 'string' ? item : (item.link || item.url || '');
 
     if (abaAtiva === 'fotos') {
       card.innerHTML = `
         <div class="photo-wrapper">
-          <img src="${link}" loading="lazy" alt="Foto da Galeria" />
+          <img src="${urlOriginal}" loading="lazy" alt="Foto da Galeria" />
         </div>
         <div class="card-footer">
           <div class="reactions">
@@ -118,16 +93,20 @@ function renderizarFeed() {
         </div>
       `;
     } else {
-      let urlPausada = link;
-      if (urlPausada.includes('autoplay=1')) {
-        urlPausada = urlPausada.replace('autoplay=1', 'autoplay=0');
-      } else if (!urlPausada.includes('autoplay=0')) {
-        urlPausada += urlPausada.includes('?') ? '&autoplay=0' : '?autoplay=0';
-      }
+      // TRATAMENTO RIGOROSO DE AUTOPLAY PARA IFRAMES (MEDIA DELIVERY / BUNNY CDN)
+      let urlFormatada = urlOriginal;
+      
+      // Remove parâmetros antigos de autoplay se existirem
+      urlFormatada = urlFormatada.replace(/([?&])autoplay=[^&]*/g, '');
+      urlFormatada = urlFormatada.replace(/([?&])preload=[^&]*/g, '');
+
+      // Força a inserção dos parâmetros de reprodução pausada
+      const divisor = urlFormatada.includes('?') ? '&' : '?';
+      urlFormatada += `${divisor}autoplay=false&preload=false`;
 
       card.innerHTML = `
         <div class="video-wrapper">
-          <iframe src="${urlPausada}" loading="lazy" allowfullscreen frameborder="0"></iframe>
+          <iframe src="${urlFormatada}" loading="lazy" allowfullscreen frameborder="0"></iframe>
         </div>
         <div class="card-footer">
           <div class="reactions">
@@ -145,9 +124,7 @@ function renderizarFeed() {
   renderizarPaginacao(listaAtual.length);
 }
 
-// ==========================================
-// PAGINAÇÃO
-// ==========================================
+// Gera a paginação sem limites e mantendo o visual
 function renderizarPaginacao(totalItens) {
   const paginacaoContainer = document.getElementById('pagination-controls');
   if (!paginacaoContainer) return;
@@ -157,27 +134,42 @@ function renderizarPaginacao(totalItens) {
 
   if (totalPaginas <= 1) return;
 
-  const btnAnterior = document.createElement('button');
-  btnAnterior.className = 'page-btn';
-  btnAnterior.innerText = '« Anterior';
-  btnAnterior.disabled = paginaAtual === 1;
-  btnAnterior.onclick = () => mudarPagina(paginaAtual - 1);
-  paginacaoContainer.appendChild(btnAnterior);
+  const wrapper = document.createElement('div');
+  wrapper.className = 'paginacao-wrapper';
 
+  // Botão Anterior
+  const btnAnterior = document.createElement('a');
+  btnAnterior.href = '#';
+  btnAnterior.innerText = '« Anterior';
+  if (paginaAtual === 1) {
+    btnAnterior.className = 'disabled';
+  } else {
+    btnAnterior.onclick = (e) => { e.preventDefault(); mudarPagina(paginaAtual - 1); };
+  }
+  wrapper.appendChild(btnAnterior);
+
+  // Botões Numéricos Ilimitados
   for (let i = 1; i <= totalPaginas; i++) {
-    const btnPage = document.createElement('button');
-    btnPage.className = `page-btn ${i === paginaAtual ? 'active' : ''}`;
+    const btnPage = document.createElement('a');
+    btnPage.href = '#';
+    btnPage.className = i === paginaAtual ? 'active' : '';
     btnPage.innerText = i;
-    btnPage.onclick = () => mudarPagina(i);
-    paginacaoContainer.appendChild(btnPage);
+    btnPage.onclick = (e) => { e.preventDefault(); mudarPagina(i); };
+    wrapper.appendChild(btnPage);
   }
 
-  const btnProximo = document.createElement('button');
-  btnProximo.className = 'page-btn';
+  // Botão Próxima
+  const btnProximo = document.createElement('a');
+  btnProximo.href = '#';
   btnProximo.innerText = 'Próxima »';
-  btnProximo.disabled = paginaAtual === totalPaginas;
-  btnProximo.onclick = () => mudarPagina(paginaAtual + 1);
-  paginacaoContainer.appendChild(btnProximo);
+  if (paginaAtual === totalPaginas) {
+    btnProximo.className = 'disabled';
+  } else {
+    btnProximo.onclick = (e) => { e.preventDefault(); mudarPagina(paginaAtual + 1); };
+  }
+  wrapper.appendChild(btnProximo);
+
+  paginacaoContainer.appendChild(wrapper);
 }
 
 function mudarPagina(novaPagina) {
