@@ -457,13 +457,10 @@
       document.getElementById('modalAuth').style.display = 'none';
     }
 
-    // TRAVA DE SEGURANÇA NO BOTÃO DE COMPRA
     function iniciarCompra(categoria) {
       if (!usuarioAtual) {
-        // Se NÃO estiver logado, obriga a fazer login/cadastro primeiro
         abrirModal(categoria);
       } else {
-        // Se JÁ estiver logado, manda direto pro checkout com o e-mail preenchido
         irParaCheckout(categoria, usuarioAtual.email);
       }
     }
@@ -475,6 +472,7 @@
       }
     }
 
+    // FUNÇÃO CORRIGIDA PARA LOGIN/CADASTRO INSTANTÂNEO
     async function fazerAuth() {
       const email = document.getElementById('auth-email').value.trim();
       const password = document.getElementById('auth-pass').value;
@@ -484,29 +482,44 @@
         return;
       }
 
-      // Tenta fazer Login
+      // 1. Tenta realizar Login direto
       let { data, error } = await _supabase.auth.signInWithPassword({ email, password });
       
-      // Se não encontrou a conta, tenta Criar uma nova automaticamente
+      // 2. Se não encontrou o usuário, cria o Cadastro automaticamente
       if (error) {
         const create = await _supabase.auth.signUp({ email, password });
+        
         if (create.error) {
-          alert("Erro: " + create.error.message);
+          alert("Erro no cadastro: " + create.error.message);
           return;
         }
-        data = create;
+
+        // Se o Supabase precisar fazer auto-login pós-cadastro
+        if (!create.data.session) {
+          const relogin = await _supabase.auth.signInWithPassword({ email, password });
+          data = relogin.data;
+        } else {
+          data = create.data;
+        }
       }
 
-      usuarioAtual = data.user;
-      const catAcomprar = categoriaPendente;
+      // 3. Captura o usuário e a sessão ativa
+      const session = data?.session || (await _supabase.auth.getSession()).data.session;
       
-      fecharModal();
-      atualizarHeader();
-      await checarPermissoes();
+      if (session) {
+        usuarioAtual = session.user;
+        const catAcomprar = categoriaPendente;
+        
+        fecharModal();
+        atualizarHeader();
+        await checarPermissoes();
 
-      // Se o usuário clicou em comprar antes de logar, envia ele direto pro checkout agora
-      if (catAcomprar) {
-        irParaCheckout(catAcomprar, usuarioAtual.email);
+        // Direciona na hora pro checkout com o e-mail preenchido
+        if (catAcomprar) {
+          irParaCheckout(catAcomprar, usuarioAtual.email);
+        }
+      } else {
+        alert("Não foi possível autenticar. Tente novamente.");
       }
     }
 
