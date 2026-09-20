@@ -3,75 +3,411 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Plataforma VIP - Conteúdo Exclusivo</title>
+  <title>Canal VIP Oficial 🔞 - Conteúdo Exclusivo</title>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: #0f0f0f; color: #fff; padding: 20px; }
-    header { display: flex; justify-content: space-between; align-items: center; max-width: 1000px; margin: 0 auto 30px; }
-    .auth-btn { background: #e50914; color: #fff; border: none; padding: 10px 20px; border-radius: 6px; font-weight: bold; cursor: pointer; }
-    
-    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; max-width: 1000px; margin: 0 auto; }
-    .card { background: #1f1f1f; border-radius: 10px; padding: 20px; text-align: center; border: 1px solid #333; position: relative; }
-    .card h3 { margin-bottom: 10px; text-transform: uppercase; }
-    .status-badge { display: inline-block; padding: 4px 10px; border-radius: 20px; font-size: 12px; font-weight: bold; margin-bottom: 15px; }
-    .bloqueado { background: #333; color: #aaa; }
-    .liberado { background: #22c55e; color: #fff; }
+    :root {
+      --bg-dark: #0e1621;
+      --card-bg: #17212b;
+      --card-header: #202b36;
+      --telegram-blue: #24a1de;
+      --telegram-hover: #1c8adb;
+      --green-btn: #22c55e;
+      --text-main: #f5f5f5;
+      --text-sub: #7f91a4;
+      --border-color: #242f3d;
+    }
 
-    .btn-buy { display: block; background: #2563eb; color: #fff; text-decoration: none; padding: 12px; border-radius: 6px; font-weight: bold; margin-top: 10px; }
-    .btn-access { display: block; background: #22c55e; color: #fff; text-decoration: none; padding: 12px; border-radius: 6px; font-weight: bold; margin-top: 10px; }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
     
-    /* Modal CSS */
-    .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); justify-content: center; align-items: center; z-index: 100; }
-    .modal { background: #181818; padding: 30px; border-radius: 10px; width: 90%; max-width: 400px; text-align: center; }
-    .modal input { width: 100%; padding: 10px; margin: 10px 0; border-radius: 5px; border: 1px solid #333; background: #222; color: #fff; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background-color: var(--bg-dark);
+      color: var(--text-main);
+      padding-bottom: 50px;
+    }
+
+    /* HEADER FIXO ESTILO CANAL TELEGRAM */
+    header {
+      background: var(--card-bg);
+      border-bottom: 1px solid var(--border-color);
+      padding: 15px 20px;
+      position: sticky;
+      top: 0;
+      z-index: 90;
+    }
+
+    .header-container {
+      max-width: 900px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .channel-info {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .channel-avatar {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #0088cc, #24a1de);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      font-weight: bold;
+    }
+
+    .channel-details h1 {
+      font-size: 18px;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .verified-badge {
+      color: var(--telegram-blue);
+      font-size: 16px;
+    }
+
+    .channel-stats {
+      font-size: 12px;
+      color: var(--text-sub);
+    }
+
+    .auth-btn {
+      background: var(--telegram-blue);
+      color: #fff;
+      border: none;
+      padding: 10px 18px;
+      border-radius: 20px;
+      font-weight: 600;
+      font-size: 14px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .auth-btn:hover { background: var(--telegram-hover); }
+
+    /* LAYOUT PRINCIPAL */
+    .main-container {
+      max-width: 900px;
+      margin: 25px auto;
+      padding: 0 15px;
+    }
+
+    /* MENSAGEM DE BOAS-VINDAS ESTILO TELEGRAM */
+    .welcome-msg {
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 25px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    }
+
+    .welcome-msg h2 {
+      font-size: 20px;
+      margin-bottom: 10px;
+      color: var(--telegram-blue);
+    }
+
+    .welcome-msg p {
+      font-size: 14px;
+      color: #ccc;
+      line-height: 1.5;
+    }
+
+    /* GRID DAS CATEGORIAS VIP */
+    .grid {
+      display: flex;
+      flex-direction: column;
+      gap: 30px;
+    }
+
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 14px;
+      overflow: hidden;
+      box-shadow: 0 6px 16px rgba(0,0,0,0.4);
+    }
+
+    .card-header {
+      background: var(--card-header);
+      padding: 15px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .card-header h3 {
+      font-size: 18px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .status-badge {
+      padding: 5px 12px;
+      border-radius: 15px;
+      font-size: 12px;
+      font-weight: bold;
+    }
+
+    .bloqueado { background: #2b3642; color: var(--text-sub); }
+    .liberado { background: var(--green-btn); color: #fff; }
+
+    .card-body { padding: 20px; }
+
+    /* ÁREA DE PRÉVIA EM VÍDEO */
+    .preview-box {
+      width: 100%;
+      background: #000;
+      border-radius: 10px;
+      overflow: hidden;
+      margin-bottom: 18px;
+      border: 1px solid var(--border-color);
+      aspect-ratio: 16/9;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .preview-box iframe, 
+    .preview-box video {
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+
+    /* LISTA DE BENEFÍCIOS DO VIP */
+    .vip-description {
+      margin-bottom: 20px;
+    }
+
+    .vip-description p {
+      font-size: 14px;
+      color: #ddd;
+      margin-bottom: 12px;
+    }
+
+    .benefits-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .benefits-list li {
+      font-size: 13px;
+      color: #aaa;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .benefits-list li::before {
+      content: "✓";
+      color: var(--telegram-blue);
+      font-weight: bold;
+    }
+
+    /* BOTÕES DE AÇÃO */
+    .btn-buy {
+      display: block;
+      width: 100%;
+      background: linear-gradient(135deg, #0088cc, #24a1de);
+      color: #fff;
+      text-decoration: none;
+      padding: 14px;
+      border-radius: 8px;
+      font-weight: bold;
+      text-align: center;
+      font-size: 15px;
+      transition: transform 0.2s, opacity 0.2s;
+    }
+
+    .btn-buy:hover { opacity: 0.95; transform: translateY(-1px); }
+
+    .btn-access {
+      display: block;
+      width: 100%;
+      background: var(--green-btn);
+      color: #fff;
+      text-decoration: none;
+      padding: 14px;
+      border-radius: 8px;
+      font-weight: bold;
+      text-align: center;
+      font-size: 15px;
+    }
+
+    /* MODAL DE LOGIN/CADASTRO */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0,0,0,0.85);
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+    }
+
+    .modal {
+      background: var(--card-bg);
+      padding: 30px;
+      border-radius: 12px;
+      width: 90%;
+      max-width: 400px;
+      text-align: center;
+      border: 1px solid var(--border-color);
+    }
+
+    .modal h3 { margin-bottom: 15px; font-size: 20px; }
+    
+    .modal input {
+      width: 100%;
+      padding: 12px;
+      margin: 8px 0;
+      border-radius: 6px;
+      border: 1px solid var(--border-color);
+      background: #0e1621;
+      color: #fff;
+    }
+
+    .modal input:focus { outline: 1px solid var(--telegram-blue); }
+
+    @media (max-width: 600px) {
+      .header-container { flex-direction: row; }
+      .channel-details h1 { font-size: 15px; }
+    }
   </style>
 </head>
 <body>
 
+  <!-- HEADER ESTILO CANAL TELEGRAM -->
   <header>
-    <h2>Área VIP Premium</h2>
-    <div id="user-area">
-      <button class="auth-btn" onclick="abrirModal()">Entrar / Cadastrar</button>
+    <div class="header-container">
+      <div class="channel-info">
+        <div class="channel-avatar">VIP</div>
+        <div class="channel-details">
+          <h1>Acervo VIP Oficial <span class="verified-badge">✓</span></h1>
+          <span class="channel-stats">14.820 assinantes • Conteúdo diário</span>
+        </div>
+      </div>
+      <div id="user-area">
+        <button class="auth-btn" onclick="abrirModal()">Entrar / Cadastrar</button>
+      </div>
     </div>
   </header>
 
-  <!-- LISTA DE CATEGORIAS -->
-  <div class="grid">
-    
-    <!-- Categoria 1: Amador -->
-    <div class="card" id="card-amador">
-      <h3>Amador Exclusivo 🔞</h3>
-      <span class="status-badge bloqueado" id="badge-amador">🔒 Bloqueado</span>
-      <p style="color:#aaa; font-size:14px; margin-bottom:15px;">Vídeos amadores inéditos atualizados toda semana.</p>
-      
-      <a href="#" id="buy-amador" class="btn-buy" target="_blank">Liberar por R$ 19,90</a>
-      <a href="amador.html" id="access-amador" class="btn-access" style="display:none;">Acessar Galeria Amador</a>
+  <main class="main-container">
+
+    <!-- AVISO DE BOAS VINDAS -->
+    <div class="welcome-msg">
+      <h2>🔥 Seja bem-vindo ao Acervo Exclusivo</h2>
+      <p>Escolha abaixo a categoria desejada e libere seu acesso imediato. O conteúdo é atualizado semanalmente e fica disponível diretamente na sua conta.</p>
     </div>
 
-    <!-- Categoria 2: Lives -->
-    <div class="card" id="card-lives">
-      <h3>Gravados de Lives 🔥</h3>
-      <span class="status-badge bloqueado" id="badge-lives">🔒 Bloqueado</span>
-      <p style="color:#aaa; font-size:14px; margin-bottom:15px;">Gravações de lives privadas sem cortes.</p>
+    <!-- LISTA DE CATEGORIAS VIP -->
+    <div class="grid">
       
-      <a href="#" id="buy-lives" class="btn-buy" target="_blank">Liberar por R$ 29,90</a>
-      <a href="lives.html" id="access-lives" class="btn-access" style="display:none;">Acessar Galeria Lives</a>
+      <!-- Categoria 1: Amador -->
+      <div class="card" id="card-amador">
+        <div class="card-header">
+          <h3>🔞 Amador Exclusivo</h3>
+          <span class="status-badge bloqueado" id="badge-amador">🔒 Bloqueado</span>
+        </div>
+        
+        <div class="card-body">
+          <!-- CONTAINER DA PRÉVIA (Substitua a URL pelo seu vídeo/iframe de prévia da Bunny) -->
+          <div class="preview-box">
+            <iframe src="https://iframe.mediadelivery.net/embed/SEU_VIDEO_ID_AMADOR" loading="lazy" allow="accelerometer; gyroscope; autoplay; encrypted-media;" allowfullscreen="true"></iframe>
+          </div>
+
+          <div class="vip-description">
+            <p>Acesso completo ao acervo caseiro e amador sem censura.</p>
+            <ul class="benefits-list">
+              <li>Mais de 150 vídeos amadores inéditos</li>
+              <li>Fotos em alta definição exclusivas</li>
+              <li>Atualizações semanais inclusas</li>
+              <li>Assinatura com acesso por 30 dias</li>
+            </ul>
+          </div>
+          
+          <a href="#" id="buy-amador" class="btn-buy" target="_blank">Liberar Acesso Amador • R$ 19,90</a>
+          <a href="amador.html" id="access-amador" class="btn-access" style="display:none;">Entrar na Galeria Amador</a>
+        </div>
+      </div>
+
+      <!-- Categoria 2: Lives -->
+      <div class="card" id="card-lives">
+        <div class="card-header">
+          <h3>🔥 Gravados de Lives</h3>
+          <span class="status-badge bloqueado" id="badge-lives">🔒 Bloqueado</span>
+        </div>
+        
+        <div class="card-body">
+          <!-- CONTAINER DA PRÉVIA -->
+          <div class="preview-box">
+            <iframe src="https://iframe.mediadelivery.net/embed/SEU_VIDEO_ID_LIVES" loading="lazy" allow="accelerometer; gyroscope; autoplay; encrypted-media;" allowfullscreen="true"></iframe>
+          </div>
+
+          <div class="vip-description">
+            <p>Gravações na íntegra de lives privadas de modelos e influenciadoras.</p>
+            <ul class="benefits-list">
+              <li>Gravações sem cortes nem edições</li>
+              <li>Qualidade Full HD 1080p</li>
+              <li>Lives transmitidas no Instagram, TikTok e Privê</li>
+              <li>Acesso liberado por 30 dias</li>
+            </ul>
+          </div>
+          
+          <a href="#" id="buy-lives" class="btn-buy" target="_blank">Liberar Acesso Lives • R$ 29,90</a>
+          <a href="lives.html" id="access-lives" class="btn-access" style="display:none;">Entrar na Galeria Lives</a>
+        </div>
+      </div>
+
+      <!-- Categoria 3: Hentai -->
+      <div class="card" id="card-hentai">
+        <div class="card-header">
+          <h3>🎨 Coleção Hentai</h3>
+          <span class="status-badge bloqueado" id="badge-hentai">🔒 Bloqueado</span>
+        </div>
+        
+        <div class="card-body">
+          <!-- CONTAINER DA PRÉVIA -->
+          <div class="preview-box">
+            <iframe src="https://iframe.mediadelivery.net/embed/SEU_VIDEO_ID_HENTAI" loading="lazy" allow="accelerometer; gyroscope; autoplay; encrypted-media;" allowfullscreen="true"></iframe>
+          </div>
+
+          <div class="vip-description">
+            <p>Animações adultas e artes conceituais em ultra resolução.</p>
+            <ul class="benefits-list">
+              <li>Animações completas legendadas e dubladas</li>
+              <li>Galeria de imagens em 4K</li>
+              <li>Conteúdo organizado por séries e episódios</li>
+              <li>Acesso liberado por 30 dias</li>
+            </ul>
+          </div>
+          
+          <a href="#" id="buy-hentai" class="btn-buy" target="_blank">Liberar Acesso Hentai • R$ 14,90</a>
+          <a href="hentai.html" id="access-hentai" class="btn-access" style="display:none;">Entrar na Galeria Hentai</a>
+        </div>
+      </div>
+
     </div>
+  </main>
 
-    <!-- Categoria 3: Hentai -->
-    <div class="card" id="card-hentai">
-      <h3>Coleção Hentai 🎨</h3>
-      <span class="status-badge bloqueado" id="badge-hentai">🔒 Bloqueado</span>
-      <p style="color:#aaa; font-size:14px; margin-bottom:15px;">Animações completas em alta definição.</p>
-      
-      <a href="#" id="buy-hentai" class="btn-buy" target="_blank">Liberar por R$ 14,90</a>
-      <a href="hentai.html" id="access-hentai" class="btn-access" style="display:none;">Acessar Galeria Hentai</a>
-    </div>
-
-  </div>
-
-  <!-- MODAL AUTH -->
+  <!-- MODAL AUTH (SISTEMA DE SUPABASE MANTIDO) -->
   <div class="modal-overlay" id="modalAuth">
     <div class="modal">
       <h3 id="modal-title">Acessar ou Criar Conta</h3>
@@ -132,8 +468,8 @@
 
     function atualizarHeader() {
       document.getElementById('user-area').innerHTML = `
-        <span style="margin-right:15px; font-size:14px; color:#aaa;">${usuarioAtual.email}</span>
-        <button class="auth-btn" style="background:#333;" onclick="deslogar()">Sair</button>
+        <span style="margin-right:12px; font-size:13px; color:var(--text-sub);">${usuarioAtual.email}</span>
+        <button class="auth-btn" style="background:#2b3642;" onclick="deslogar()">Sair</button>
       `;
       atualizarLinksCheckout(usuarioAtual.email);
     }
