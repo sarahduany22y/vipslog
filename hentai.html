@@ -5,30 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Galeria Hentai VIP 🎨</title>
   <link rel="stylesheet" href="estilo-telegram.css">
-  <style>
-    .header-page {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      max-width: 650px;
-      margin: 0 auto 15px;
-      width: 100%;
-    }
-    .header-page h2 {
-      font-size: 1.2rem;
-      color: #64b5ef;
-    }
-    .btn-voltar {
-      color: #fff;
-      text-decoration: none;
-      background: #242f3d;
-      padding: 8px 14px;
-      border-radius: 8px;
-      font-size: 0.85rem;
-      font-weight: bold;
-      border: 1px solid #2b3a4c;
-    }
-  </style>
 </head>
 <body>
 
@@ -38,21 +14,28 @@
       <a href="index.html" class="btn-voltar">← Início</a>
     </div>
 
-    <!-- Container dos Vídeos da Categoria -->
+    <!-- Seletor de Abas -->
+    <div class="tabs-container">
+      <button id="tab-videos" class="tab-btn active" onclick="alternarAba('videos')">📹 Vídeos</button>
+      <button id="tab-fotos" class="tab-btn" onclick="alternarAba('fotos')">🖼️ Fotos</button>
+    </div>
+
+    <!-- Container do Feed -->
     <div id="feed-container" class="telegram-feed"></div>
 
     <!-- Controles de Paginação -->
     <div id="pagination-controls" class="pagination-container"></div>
   </main>
 
-  <!-- Script com os Links de Vídeo -->
+  <!-- Scripts dos Links -->
   <script src="links-hentai.js"></script>
+  <script src="links-fotos-hentai.js"></script>
 
-  <!-- Motor da Paginação Estilo Telegram -->
+  <!-- Script Principal -->
   <script src="app.js"></script>
   <script>
     document.addEventListener('DOMContentLoaded', () => {
-      iniciarCategoria('hentai', window.linksHentai);
+      iniciarCategoria('hentai', window.linksHentai, window.linksFotosHentai);
     });
   </script>
 </body>
