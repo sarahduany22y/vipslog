@@ -1,4 +1,4 @@
-window.linksVideosAmador = window.linksVideosAmador || [];
+window.linksAmador = window.linksAmador || [];
 
 async function carregarVideosAmadorAuto() {
   const STORAGE_ZONE_NAME = 'fotos-vip'; // Altere para a Storage Zone onde estão os vídeos
