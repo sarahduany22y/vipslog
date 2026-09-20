@@ -6,6 +6,60 @@
   <title>Galeria Hentai VIP 🎨</title>
   <link rel="stylesheet" href="estilo-telegram.css">
 
+  <style>
+    /* ESTILIZAÇÃO DOS BOTÕES DE PAGINAÇÃO (ESTILO PRINT 2) */
+    .pagination-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin: 30px 0;
+      width: 100%;
+    }
+
+    .paginacao-wrapper {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      align-items: center;
+      gap: 8px;
+      max-width: 900px;
+    }
+
+    .paginacao-wrapper a {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 8px 14px;
+      background-color: #1e293b; /* Fundo escuro dos botões */
+      color: #7dd3fc;            /* Texto azul claro */
+      text-decoration: none;
+      border-radius: 8px;        /* Bordas arredondadas */
+      font-size: 14px;
+      font-weight: 500;
+      border: 1px solid transparent;
+      transition: all 0.2s ease-in-out;
+      cursor: pointer;
+    }
+
+    .paginacao-wrapper a:hover {
+      background-color: #334155;
+      color: #ffffff;
+    }
+
+    .paginacao-wrapper a.active {
+      background-color: #2563eb; /* Azul em destaque para o botão ativo */
+      color: #ffffff;
+      border-color: #60a5fa;
+      box-shadow: 0 0 10px rgba(37, 99, 235, 0.4);
+    }
+
+    .paginacao-wrapper a.disabled {
+      opacity: 0.4;
+      pointer-events: none;
+      color: #64748b;
+    }
+  </style>
+
   <!-- TRAVA DE SEGURANÇA SUPABASE -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script>
@@ -71,7 +125,7 @@
 
   <!-- SCRIPT DE PAGINAÇÃO ILIMITADA E GERENCIAMENTO DE ABAS -->
   <script>
-    // Quantidade de mídias por página (Ajuste se quiser exibir mais ou menos por vez)
+    // Quantidade de mídias por página
     const ITENS_POR_PAGINA = 12;
 
     // Estado da aplicação
@@ -80,7 +134,6 @@
 
     // Inicializa quando o documento carrega
     document.addEventListener('DOMContentLoaded', () => {
-      // Lê parâmetros da URL caso o usuário já venha de um link direto (ex: ?aba=fotos&pagina=3)
       const urlParams = new URLSearchParams(window.location.search);
       abaAtual = urlParams.get('aba') || 'videos';
       paginaAtual = parseInt(urlParams.get('pagina')) || 1;
@@ -91,30 +144,26 @@
     // Alterna entre as abas Vídeos e Fotos
     function alternarAba(novaAba) {
       abaAtual = novaAba;
-      paginaAtual = 1; // Reseta para a primeira página ao mudar de aba
-      
-      // Atualiza a URL sem recarregar a página totalmente
+      paginaAtual = 1;
       window.history.pushState({}, '', `?aba=${abaAtual}&pagina=${paginaAtual}`);
-      
       carregarConteudo();
     }
 
     // Ir para uma página específica
-    function irParaPagina(numeroPagina) {
+    function irParaPagina(e, numeroPagina) {
+      if (e) e.preventDefault();
       paginaAtual = numeroPagina;
       window.history.pushState({}, '', `?aba=${abaAtual}&pagina=${paginaAtual}`);
       carregarConteudo();
-      window.scrollTo({ top: 0, behavior: 'smooth' }); // Rola pro topo
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
     // Carrega e renderiza mídias + paginação
     function carregarConteudo() {
-      // Atualiza os botões ativos do menu de abas
       document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
       const abaAtivaBtn = document.getElementById(`tab-${abaAtual}`);
       if (abaAtivaBtn) abaAtivaBtn.classList.add('active');
 
-      // Obtém o array correto de mídias (Vídeos ou Fotos)
       let listaMidias = [];
       if (abaAtual === 'videos') {
         listaMidias = window.linksHentai || [];
@@ -135,21 +184,18 @@
       const totalItens = listaMidias.length;
       const totalPaginas = Math.ceil(totalItens / ITENS_POR_PAGINA);
 
-      // Validação de página atual fora do alcance
       if (paginaAtual > totalPaginas) paginaAtual = totalPaginas;
       if (paginaAtual < 1) paginaAtual = 1;
 
-      // Recorta os itens apenas da página atual
       const inicio = (paginaAtual - 1) * ITENS_POR_PAGINA;
       const fim = inicio + ITENS_POR_PAGINA;
       const itensPagina = listaMidias.slice(inicio, fim);
 
-      // Renderiza as mídias recortadas
+      // Renderiza as mídias
       itensPagina.forEach(item => {
         const elementoMidia = document.createElement('div');
         elementoMidia.className = 'midia-card';
 
-        // Detecta se é um link simples/string ou um objeto
         const url = typeof item === 'string' ? item : (item.link || item.url || '');
         const titulo = item.titulo || item.nome || 'Mídia VIP';
 
@@ -172,33 +218,36 @@
         containerFeed.appendChild(elementoMidia);
       });
 
-      // Renderiza a régua de paginação ilimitada
       renderizarPaginacao(totalPaginas);
     }
 
-    // Cria os botões da paginação de forma dinâmica
+    // Renderiza a régua de botões igual ao Print 2
     function renderizarPaginacao(totalPaginas) {
       const containerPaginacao = document.getElementById('pagination-controls');
       containerPaginacao.innerHTML = '';
 
-      if (totalPaginas <= 1) return; // Se tiver só 1 página ou menos, não exibe botões
+      if (totalPaginas <= 1) return;
 
       let htmlPaginacao = '<div class="paginacao-wrapper">';
 
       // Botão Anterior
       if (paginaAtual > 1) {
-        htmlPaginacao += `<button onclick="irParaPagina(${paginaAtual - 1})" class="btn-pag">« Anterior</button>`;
+        htmlPaginacao += `<a href="#" onclick="irParaPagina(event, ${paginaAtual - 1})">« Anterior</a>`;
+      } else {
+        htmlPaginacao += `<a class="disabled">« Anterior</a>`;
       }
 
-      // Gera TODOS os botões numerados dinamicamente (1, 2, 3... N) sem limite fixo
+      // Gera todos os números sem limite fixo
       for (let i = 1; i <= totalPaginas; i++) {
         const classeAtivo = i === paginaAtual ? 'active' : '';
-        htmlPaginacao += `<button onclick="irParaPagina(${i})" class="btn-pag ${classeAtivo}">${i}</button>`;
+        htmlPaginacao += `<a href="#" class="${classeAtivo}" onclick="irParaPagina(event, ${i})">${i}</a>`;
       }
 
-      // Botão Próximo
+      // Botão Próxima
       if (paginaAtual < totalPaginas) {
-        htmlPaginacao += `<button onclick="irParaPagina(${paginaAtual + 1})" class="btn-pag">Próximo »</button>`;
+        htmlPaginacao += `<a href="#" onclick="irParaPagina(event, ${paginaAtual + 1})">Próxima »</a>`;
+      } else {
+        htmlPaginacao += `<a class="disabled">Próxima »</a>`;
       }
 
       htmlPaginacao += '</div>';
