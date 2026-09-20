@@ -100,7 +100,7 @@
     <div id="pagination-controls" class="pagination-container"></div>
   </main>
 
-  <!-- SCRIPTS DOS LINKS -->
+<!-- SCRIPTS DOS LINKS -->
   <script src="links-amador.js"></script>
   <script src="links-omegle.js"></script>
   <script src="links-funk.js"></script>
@@ -112,18 +112,16 @@
   <script src="app.js"></script>
   <script>
     document.addEventListener('DOMContentLoaded', () => {
-      // Mapeamento das listas de conteúdos
+      // Mapeamento explícito das variáveis declaradas dentro dos seus arquivos .js
       const subcategoriasAmador = {
-        amador: window.linksAmador || [],
-        omegle: window.linksOmegle || [],
-        funk: window.linksFunk || [],
-        tiktok: window.linksTiktok || [],
-        flagras: window.linksFlagras || [],
-        fotos: window.linksFotosAmador || []
+        amador: window.linksAmador || [],       // Vem do links-amador.js (VÍDEOS)
+        omegle: window.linksOmegle || [],       // Vem do links-omegle.js
+        funk: window.linksFunk || [],           // Vem do links-funk.js
+        tiktok: window.linksTiktok || [],       // Vem do links-tiktok.js
+        flagras: window.linksFlagras || [],     // Vem do links-flagras.js
+        fotos: window.linksFotosAmador || []    // Vem do links-fotos-amador.js (FOTOS)
       };
 
       iniciarCategoriaMultiabas('amador', subcategoriasAmador);
     });
   </script>
-</body>
-</html>
