@@ -225,12 +225,13 @@
       width: 100%;
       background: linear-gradient(135deg, #0088cc, #24a1de);
       color: #fff;
-      text-decoration: none;
+      border: none;
       padding: 14px;
       border-radius: 8px;
       font-weight: bold;
       text-align: center;
       font-size: 15px;
+      cursor: pointer;
       transition: transform 0.2s, opacity 0.2s;
     }
 
@@ -271,7 +272,8 @@
       border: 1px solid var(--border-color);
     }
 
-    .modal h3 { margin-bottom: 15px; font-size: 20px; }
+    .modal h3 { margin-bottom: 10px; font-size: 20px; }
+    .modal p.subtitle { font-size: 13px; color: var(--telegram-blue); margin-bottom: 15px; }
     
     .modal input {
       width: 100%;
@@ -314,7 +316,7 @@
     <!-- AVISO DE BOAS VINDAS -->
     <div class="welcome-msg">
       <h2>🔥 Seja bem-vindo ao Acervo Exclusivo</h2>
-      <p>Escolha abaixo a categoria desejada e libere seu acesso imediato. O conteúdo é atualizado semanalmente e fica disponível diretamente na sua conta.</p>
+      <p>Escolha abaixo a categoria desejada e libere seu acesso imediato. Crie sua conta ou faça login para prosseguir com o pagamento e vincular seu acesso.</p>
     </div>
 
     <!-- LISTA DE CATEGORIAS VIP -->
@@ -328,7 +330,6 @@
         </div>
         
         <div class="card-body">
-          <!-- CONTAINER DA PRÉVIA (Substitua a URL pelo seu vídeo/iframe de prévia da Bunny) -->
           <div class="preview-box">
             <iframe src="https://iframe.mediadelivery.net/embed/SEU_VIDEO_ID_AMADOR" loading="lazy" allow="accelerometer; gyroscope; autoplay; encrypted-media;" allowfullscreen="true"></iframe>
           </div>
@@ -343,7 +344,7 @@
             </ul>
           </div>
           
-          <a href="#" id="buy-amador" class="btn-buy" target="_blank">Liberar Acesso Amador • R$ 19,90</a>
+          <button id="buy-amador" class="btn-buy" onclick="iniciarCompra('amador')">Liberar Acesso Amador • R$ 19,90</button>
           <a href="amador.html" id="access-amador" class="btn-access" style="display:none;">Entrar na Galeria Amador</a>
         </div>
       </div>
@@ -356,7 +357,6 @@
         </div>
         
         <div class="card-body">
-          <!-- CONTAINER DA PRÉVIA -->
           <div class="preview-box">
             <iframe src="https://iframe.mediadelivery.net/embed/SEU_VIDEO_ID_LIVES" loading="lazy" allow="accelerometer; gyroscope; autoplay; encrypted-media;" allowfullscreen="true"></iframe>
           </div>
@@ -371,7 +371,7 @@
             </ul>
           </div>
           
-          <a href="#" id="buy-lives" class="btn-buy" target="_blank">Liberar Acesso Lives • R$ 29,90</a>
+          <button id="buy-lives" class="btn-buy" onclick="iniciarCompra('lives')">Liberar Acesso Lives • R$ 29,90</button>
           <a href="lives.html" id="access-lives" class="btn-access" style="display:none;">Entrar na Galeria Lives</a>
         </div>
       </div>
@@ -384,7 +384,6 @@
         </div>
         
         <div class="card-body">
-          <!-- CONTAINER DA PRÉVIA -->
           <div class="preview-box">
             <iframe src="https://iframe.mediadelivery.net/embed/SEU_VIDEO_ID_HENTAI" loading="lazy" allow="accelerometer; gyroscope; autoplay; encrypted-media;" allowfullscreen="true"></iframe>
           </div>
@@ -399,7 +398,7 @@
             </ul>
           </div>
           
-          <a href="#" id="buy-hentai" class="btn-buy" target="_blank">Liberar Acesso Hentai • R$ 14,90</a>
+          <button id="buy-hentai" class="btn-buy" onclick="iniciarCompra('hentai')">Liberar Acesso Hentai • R$ 14,90</button>
           <a href="hentai.html" id="access-hentai" class="btn-access" style="display:none;">Entrar na Galeria Hentai</a>
         </div>
       </div>
@@ -407,13 +406,14 @@
     </div>
   </main>
 
-  <!-- MODAL AUTH (SISTEMA DE SUPABASE MANTIDO) -->
+  <!-- MODAL AUTH -->
   <div class="modal-overlay" id="modalAuth">
     <div class="modal">
       <h3 id="modal-title">Acessar ou Criar Conta</h3>
+      <p class="subtitle" id="modal-subtitle">Crie sua conta antes de pagar para vincular o acesso automático.</p>
       <input type="email" id="auth-email" placeholder="Seu E-mail" />
-      <input type="password" id="auth-pass" placeholder="Sua Senha" />
-      <button class="auth-btn" style="width:100%; margin-top:10px;" onclick="fazerAuth()">Continuar</button>
+      <input type="password" id="auth-pass" placeholder="Sua Senha (mín. 6 caracteres)" />
+      <button class="auth-btn" style="width:100%; margin-top:10px; padding: 12px; border-radius: 6px;" onclick="fazerAuth()">Continuar para Checkout</button>
       <button onclick="fecharModal()" style="background:none; border:none; color:#aaa; margin-top:15px; cursor:pointer;">Cancelar</button>
     </div>
   </div>
@@ -424,6 +424,7 @@
     const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
     let usuarioAtual = null;
+    let categoriaPendente = null;
 
     const CHECKOUTS = {
       amador: "https://link.syncpayments.com.br/MicvMz",
@@ -437,20 +438,56 @@
         usuarioAtual = session.user;
         atualizarHeader();
         await checarPermissoes();
-      } else {
-        atualizarLinksCheckout("");
       }
     };
 
-    function abrirModal() { document.getElementById('modalAuth').style.display = 'flex'; }
-    function fecharModal() { document.getElementById('modalAuth').style.display = 'none'; }
+    function abrirModal(categoria = null) {
+      categoriaPendente = categoria;
+      const subtitle = document.getElementById('modal-subtitle');
+      if (categoria) {
+        subtitle.innerText = "Cadastre-se ou faça login com o e-mail que usará na compra.";
+      } else {
+        subtitle.innerText = "Acesse sua conta para ver seus conteúdos liberados.";
+      }
+      document.getElementById('modalAuth').style.display = 'flex';
+    }
+
+    function fecharModal() {
+      categoriaPendente = null;
+      document.getElementById('modalAuth').style.display = 'none';
+    }
+
+    // TRAVA DE SEGURANÇA NO BOTÃO DE COMPRA
+    function iniciarCompra(categoria) {
+      if (!usuarioAtual) {
+        // Se NÃO estiver logado, obriga a fazer login/cadastro primeiro
+        abrirModal(categoria);
+      } else {
+        // Se JÁ estiver logado, manda direto pro checkout com o e-mail preenchido
+        irParaCheckout(categoria, usuarioAtual.email);
+      }
+    }
+
+    function irParaCheckout(categoria, email) {
+      const urlBase = CHECKOUTS[categoria];
+      if (urlBase) {
+        window.open(`${urlBase}?email=${encodeURIComponent(email)}`, '_blank');
+      }
+    }
 
     async function fazerAuth() {
-      const email = document.getElementById('auth-email').value;
+      const email = document.getElementById('auth-email').value.trim();
       const password = document.getElementById('auth-pass').value;
 
+      if (!email || !password) {
+        alert("Preencha e-mail e senha corretamente.");
+        return;
+      }
+
+      // Tenta fazer Login
       let { data, error } = await _supabase.auth.signInWithPassword({ email, password });
       
+      // Se não encontrou a conta, tenta Criar uma nova automaticamente
       if (error) {
         const create = await _supabase.auth.signUp({ email, password });
         if (create.error) {
@@ -461,9 +498,16 @@
       }
 
       usuarioAtual = data.user;
+      const catAcomprar = categoriaPendente;
+      
       fecharModal();
       atualizarHeader();
       await checarPermissoes();
+
+      // Se o usuário clicou em comprar antes de logar, envia ele direto pro checkout agora
+      if (catAcomprar) {
+        irParaCheckout(catAcomprar, usuarioAtual.email);
+      }
     }
 
     function atualizarHeader() {
@@ -471,19 +515,11 @@
         <span style="margin-right:12px; font-size:13px; color:var(--text-sub);">${usuarioAtual.email}</span>
         <button class="auth-btn" style="background:#2b3642;" onclick="deslogar()">Sair</button>
       `;
-      atualizarLinksCheckout(usuarioAtual.email);
     }
 
     function deslogar() {
       _supabase.auth.signOut();
       location.reload();
-    }
-
-    function atualizarLinksCheckout(email) {
-      for (let cat in CHECKOUTS) {
-        const el = document.getElementById(`buy-${cat}`);
-        if (el) el.href = email ? `${CHECKOUTS[cat]}?email=${encodeURIComponent(email)}` : CHECKOUTS[cat];
-      }
     }
 
     async function checarPermissoes() {
