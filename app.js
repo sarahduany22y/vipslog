@@ -1,22 +1,43 @@
 const ITENS_POR_PAGINA = 20;
 
 let subcategorias = {};
-let abaAtiva = 'amador';
+let abaAtiva = 'videos';
 let paginaAtual = 1;
 
-// Inicializa a galeria com as subcategorias
+// ==========================================
+// 1. SUPORTE A PÁGINAS COM VÁRIAS SUB-ABAS (Ex: Amador)
+// ==========================================
 function iniciarCategoriaMultiabas(catInicial, dadosSubcategorias) {
   subcategorias = dadosSubcategorias || {};
 
   const urlParams = new URLSearchParams(window.location.search);
-  abaAtiva = urlParams.get('aba') || catInicial || 'amador';
+  abaAtiva = urlParams.get('aba') || catInicial || Object.keys(subcategorias)[0] || 'videos';
   paginaAtual = parseInt(urlParams.get('pagina')) || 1;
 
   atualizarBotoesAbas();
   renderizarFeed();
 }
 
-// Troca de subcategoria ao clicar nos botões
+// ==========================================
+// 2. SUPORTE A PÁGINAS TRADICIONAIS (Ex: Hentai, Vazadas, Famosas)
+// ==========================================
+function iniciarCategoria(nomeCategoria, linksVideos = [], linksFotos = []) {
+  subcategorias = {
+    videos: Array.isArray(linksVideos) ? linksVideos : [],
+    fotos: Array.isArray(linksFotos) ? linksFotos : []
+  };
+
+  const urlParams = new URLSearchParams(window.location.search);
+  abaAtiva = urlParams.get('aba') || 'videos';
+  paginaAtual = parseInt(urlParams.get('pagina')) || 1;
+
+  atualizarBotoesAbas();
+  renderizarFeed();
+}
+
+// ==========================================
+// TROCA DE ABAS / SUB-CATEGORIAS
+// ==========================================
 function alternarAba(novaAba) {
   if (abaAtiva === novaAba) return;
   abaAtiva = novaAba;
@@ -24,7 +45,7 @@ function alternarAba(novaAba) {
 
   atualizarBotoesAbas();
 
-  // Atualiza a URL sem dar refresh na página
+  // Atualiza a URL sem recarregar a página
   const url = new URL(window.location);
   url.searchParams.set('aba', abaAtiva);
   url.searchParams.set('pagina', 1);
@@ -33,20 +54,34 @@ function alternarAba(novaAba) {
   renderizarFeed();
 }
 
-// Atualiza o estado visual dos botões no HTML
+// Destinado a páginas antigas que chamavam alternarTipo('videos' ou 'fotos')
+function alternarTipo(tipo) {
+  alternarAba(tipo);
+}
+
+// Atualiza o botão ativo na tela
 function atualizarBotoesAbas() {
   const botoes = document.querySelectorAll('.tab-btn');
-  botoes.forEach(btn => {
-    btn.classList.remove('active');
-  });
+  botoes.forEach(btn => btn.classList.remove('active'));
 
-  const btnAtivo = document.getElementById(`tab-${abaAtiva}`);
+  // Tenta encontrar pelo ID padrão ou classe
+  let btnAtivo = document.getElementById(`tab-${abaAtiva}`) || document.getElementById(`btn-${abaAtiva}`);
+  if (!btnAtivo) {
+    botoes.forEach(btn => {
+      if (btn.getAttribute('onclick')?.includes(`'${abaAtiva}'`)) {
+        btnAtivo = btn;
+      }
+    });
+  }
+
   if (btnAtivo) {
     btnAtivo.classList.add('active');
   }
 }
 
-// Renderiza os vídeos ou fotos da subcategoria atual
+// ==========================================
+// RENDERIZAÇÃO DO FEED DE VÍDEOS E FOTOS
+// ==========================================
 function renderizarFeed() {
   const feedContainer = document.getElementById('feed-container');
   if (!feedContainer) return;
@@ -55,7 +90,7 @@ function renderizarFeed() {
   const listaAtual = Array.isArray(subcategorias[abaAtiva]) ? subcategorias[abaAtiva] : [];
 
   if (listaAtual.length === 0) {
-    feedContainer.innerHTML = `<p style="text-align:center; padding: 30px; color:#7f91a4;">Nenhum conteúdo encontrado nesta categoria.</p>`;
+    feedContainer.innerHTML = `<p style="text-align:center; padding: 40px; color:#7f91a4; grid-column: 1/-1;">Nenhum conteúdo encontrado nesta categoria.</p>`;
     const paginacao = document.getElementById('pagination-controls');
     if (paginacao) paginacao.innerHTML = '';
     return;
@@ -68,14 +103,6 @@ function renderizarFeed() {
   itensDaPagina.forEach((link, idx) => {
     const card = document.createElement('div');
     card.className = 'telegram-card';
-
-    // Trata links com parâmetro autoplay
-    let urlPausada = link;
-    if (urlPausada.includes('autoplay=1')) {
-      urlPausada = urlPausada.replace('autoplay=1', 'autoplay=0');
-    } else if (!urlPausada.includes('autoplay=0')) {
-      urlPausada += urlPausada.includes('?') ? '&autoplay=0' : '?autoplay=0';
-    }
 
     if (abaAtiva === 'fotos') {
       card.innerHTML = `
@@ -91,6 +118,13 @@ function renderizarFeed() {
         </div>
       `;
     } else {
+      let urlPausada = link;
+      if (urlPausada.includes('autoplay=1')) {
+        urlPausada = urlPausada.replace('autoplay=1', 'autoplay=0');
+      } else if (!urlPausada.includes('autoplay=0')) {
+        urlPausada += urlPausada.includes('?') ? '&autoplay=0' : '?autoplay=0';
+      }
+
       card.innerHTML = `
         <div class="video-wrapper">
           <iframe src="${urlPausada}" loading="lazy" allowfullscreen frameborder="0"></iframe>
@@ -111,7 +145,9 @@ function renderizarFeed() {
   renderizarPaginacao(listaAtual.length);
 }
 
-// Gera a paginação do feed
+// ==========================================
+// PAGINAÇÃO
+// ==========================================
 function renderizarPaginacao(totalItens) {
   const paginacaoContainer = document.getElementById('pagination-controls');
   if (!paginacaoContainer) return;
@@ -121,7 +157,6 @@ function renderizarPaginacao(totalItens) {
 
   if (totalPaginas <= 1) return;
 
-  // Botão Anterior
   const btnAnterior = document.createElement('button');
   btnAnterior.className = 'page-btn';
   btnAnterior.innerText = '« Anterior';
@@ -129,7 +164,6 @@ function renderizarPaginacao(totalItens) {
   btnAnterior.onclick = () => mudarPagina(paginaAtual - 1);
   paginacaoContainer.appendChild(btnAnterior);
 
-  // Botões Numéricos
   for (let i = 1; i <= totalPaginas; i++) {
     const btnPage = document.createElement('button');
     btnPage.className = `page-btn ${i === paginaAtual ? 'active' : ''}`;
@@ -138,7 +172,6 @@ function renderizarPaginacao(totalItens) {
     paginacaoContainer.appendChild(btnPage);
   }
 
-  // Botão Próximo
   const btnProximo = document.createElement('button');
   btnProximo.className = 'page-btn';
   btnProximo.innerText = 'Próxima »';
