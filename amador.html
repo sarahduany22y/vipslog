@@ -6,6 +6,40 @@
   <title>Galeria Amador VIP 🔞</title>
   <link rel="stylesheet" href="estilo-telegram.css">
 
+  <style>
+    /* Estilo responsivo para o seletor de múltiplas abas */
+    .tabs-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      justify-content: center;
+      margin: 15px 0;
+    }
+
+    .tab-btn {
+      padding: 10px 16px;
+      border-radius: 8px;
+      background: #17212b;
+      color: #7f91a4;
+      border: 1px solid #242f3d;
+      font-weight: 600;
+      font-size: 14px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .tab-btn:hover {
+      background: #202b36;
+      color: #fff;
+    }
+
+    .tab-btn.active {
+      background: #24a1de;
+      color: #fff;
+      border-color: #24a1de;
+    }
+  </style>
+
   <!-- TRAVA DE SEGURANÇA SUPABASE -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script>
@@ -14,7 +48,6 @@
     const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
     (async function protegerAcesso() {
-      // Oculta a página durante a verificação
       document.documentElement.style.display = 'none';
 
       const { data: { session } } = await _supabase.auth.getSession();
@@ -25,7 +58,6 @@
         return;
       }
 
-      // Verifica se comprou a categoria 'amador' e se a assinatura tá ativa
       const { data: compras } = await _supabase
         .from('compras_usuario')
         .select('id')
@@ -39,7 +71,6 @@
         return;
       }
 
-      // Libera a exibição
       document.documentElement.style.display = 'block';
     })();
   </script>
@@ -52,9 +83,13 @@
       <a href="index.html" class="btn-voltar">← Início</a>
     </div>
 
-    <!-- Seletor de Abas -->
+    <!-- SELETOR DE MÚLTIPLAS ABAS -->
     <div class="tabs-container">
-      <button id="tab-videos" class="tab-btn active" onclick="alternarAba('videos')">📹 Vídeos</button>
+      <button id="tab-amador" class="tab-btn active" onclick="alternarAba('amador')">📹 Amador+Vazados+In6</button>
+      <button id="tab-omegle" class="tab-btn" onclick="alternarAba('omegle')">🎥 Omegle</button>
+      <button id="tab-funk" class="tab-btn" onclick="alternarAba('funk')">🔥 Funk Proibidão</button>
+      <button id="tab-tiktok" class="tab-btn" onclick="alternarAba('tiktok')">🎵 TikTok +18</button>
+      <button id="tab-flagras" class="tab-btn" onclick="alternarAba('flagras')">👀 Flagras Ruas</button>
       <button id="tab-fotos" class="tab-btn" onclick="alternarAba('fotos')">🖼️ Fotos</button>
     </div>
 
@@ -65,15 +100,29 @@
     <div id="pagination-controls" class="pagination-container"></div>
   </main>
 
-  <!-- Scripts dos Links -->
+  <!-- SCRIPTS DOS LINKS -->
   <script src="links-amador.js"></script>
+  <script src="links-omegle.js"></script>
+  <script src="links-funk.js"></script>
+  <script src="links-tiktok.js"></script>
+  <script src="links-flagras.js"></script>
   <script src="links-fotos-amador.js"></script>
 
   <!-- Script Principal -->
   <script src="app.js"></script>
   <script>
     document.addEventListener('DOMContentLoaded', () => {
-      iniciarCategoria('amador', window.linksAmador, window.linksFotosAmador);
+      // Mapeamento das listas de conteúdos
+      const subcategoriasAmador = {
+        amador: window.linksAmador || [],
+        omegle: window.linksOmegle || [],
+        funk: window.linksFunk || [],
+        tiktok: window.linksTiktok || [],
+        flagras: window.linksFlagras || [],
+        fotos: window.linksFotosAmador || []
+      };
+
+      iniciarCategoriaMultiabas('amador', subcategoriasAmador);
     });
   </script>
 </body>
