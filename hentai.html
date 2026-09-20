@@ -65,27 +65,145 @@
     <div id="pagination-controls" class="pagination-container"></div>
   </main>
 
-<!-- SCRIPTS DOS LINKS DE HENTAI -->
-  <!-- Certifique-se de que os nomes dos arquivos abaixo correspondem aos seus scripts de links -->
+  <!-- SCRIPTS DOS LINKS DE HENTAI -->
   <script src="links-hentai.js"></script> 
   <script src="links-fotos-hentai.js"></script>
 
-  <!-- SCRIPT PRINCIPAL DA APLICAÇÃO -->
-  <script src="app.js"></script>
-
+  <!-- SCRIPT DE PAGINAÇÃO ILIMITADA E GERENCIAMENTO DE ABAS -->
   <script>
-    document.addEventListener('DOMContentLoaded', () => {
-      // Mapeia os vídeos e fotos da categoria Hentai
-      const subcategoriasHentai = {
-        videos: window.linksHentai || [],
-        fotos: window.linksFotosHentai || []
-      };
+    // Quantidade de mídias por página (Ajuste se quiser exibir mais ou menos por vez)
+    const ITENS_POR_PAGINA = 12;
 
-      // Tenta usar a função de inicialização do app.js
-      if (typeof iniciarCategoriaMultiabas === 'function') {
-        iniciarCategoriaMultiabas('videos', subcategoriasHentai);
-      } else if (typeof iniciarCategoria === 'function') {
-        iniciarCategoria('hentai', window.linksHentai || [], window.linksFotosHentai || []);
-      }
+    // Estado da aplicação
+    let abaAtual = 'videos';
+    let paginaAtual = 1;
+
+    // Inicializa quando o documento carrega
+    document.addEventListener('DOMContentLoaded', () => {
+      // Lê parâmetros da URL caso o usuário já venha de um link direto (ex: ?aba=fotos&pagina=3)
+      const urlParams = new URLSearchParams(window.location.search);
+      abaAtual = urlParams.get('aba') || 'videos';
+      paginaAtual = parseInt(urlParams.get('pagina')) || 1;
+
+      carregarConteudo();
     });
+
+    // Alterna entre as abas Vídeos e Fotos
+    function alternarAba(novaAba) {
+      abaAtual = novaAba;
+      paginaAtual = 1; // Reseta para a primeira página ao mudar de aba
+      
+      // Atualiza a URL sem recarregar a página totalmente
+      window.history.pushState({}, '', `?aba=${abaAtual}&pagina=${paginaAtual}`);
+      
+      carregarConteudo();
+    }
+
+    // Ir para uma página específica
+    function irParaPagina(numeroPagina) {
+      paginaAtual = numeroPagina;
+      window.history.pushState({}, '', `?aba=${abaAtual}&pagina=${paginaAtual}`);
+      carregarConteudo();
+      window.scrollTo({ top: 0, behavior: 'smooth' }); // Rola pro topo
+    }
+
+    // Carrega e renderiza mídias + paginação
+    function carregarConteudo() {
+      // Atualiza os botões ativos do menu de abas
+      document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+      const abaAtivaBtn = document.getElementById(`tab-${abaAtual}`);
+      if (abaAtivaBtn) abaAtivaBtn.classList.add('active');
+
+      // Obtém o array correto de mídias (Vídeos ou Fotos)
+      let listaMidias = [];
+      if (abaAtual === 'videos') {
+        listaMidias = window.linksHentai || [];
+      } else if (abaAtual === 'fotos') {
+        listaMidias = window.linksFotosHentai || [];
+      }
+
+      const containerFeed = document.getElementById('feed-container');
+      containerFeed.innerHTML = '';
+
+      if (!listaMidias || listaMidias.length === 0) {
+        containerFeed.innerHTML = '<p class="sem-midia">Nenhuma mídia encontrada nesta categoria.</p>';
+        document.getElementById('pagination-controls').innerHTML = '';
+        return;
+      }
+
+      // Cálculo de Paginação Ilimitada
+      const totalItens = listaMidias.length;
+      const totalPaginas = Math.ceil(totalItens / ITENS_POR_PAGINA);
+
+      // Validação de página atual fora do alcance
+      if (paginaAtual > totalPaginas) paginaAtual = totalPaginas;
+      if (paginaAtual < 1) paginaAtual = 1;
+
+      // Recorta os itens apenas da página atual
+      const inicio = (paginaAtual - 1) * ITENS_POR_PAGINA;
+      const fim = inicio + ITENS_POR_PAGINA;
+      const itensPagina = listaMidias.slice(inicio, fim);
+
+      // Renderiza as mídias recortadas
+      itensPagina.forEach(item => {
+        const elementoMidia = document.createElement('div');
+        elementoMidia.className = 'midia-card';
+
+        // Detecta se é um link simples/string ou um objeto
+        const url = typeof item === 'string' ? item : (item.link || item.url || '');
+        const titulo = item.titulo || item.nome || 'Mídia VIP';
+
+        if (abaAtual === 'videos') {
+          elementoMidia.innerHTML = `
+            <div class="video-wrapper">
+              <iframe src="${url}" frameborder="0" allowfullscreen></iframe>
+            </div>
+            <p class="midia-titulo">${titulo}</p>
+          `;
+        } else {
+          elementoMidia.innerHTML = `
+            <div class="foto-wrapper">
+              <img src="${url}" alt="${titulo}" loading="lazy" />
+            </div>
+            <p class="midia-titulo">${titulo}</p>
+          `;
+        }
+
+        containerFeed.appendChild(elementoMidia);
+      });
+
+      // Renderiza a régua de paginação ilimitada
+      renderizarPaginacao(totalPaginas);
+    }
+
+    // Cria os botões da paginação de forma dinâmica
+    function renderizarPaginacao(totalPaginas) {
+      const containerPaginacao = document.getElementById('pagination-controls');
+      containerPaginacao.innerHTML = '';
+
+      if (totalPaginas <= 1) return; // Se tiver só 1 página ou menos, não exibe botões
+
+      let htmlPaginacao = '<div class="paginacao-wrapper">';
+
+      // Botão Anterior
+      if (paginaAtual > 1) {
+        htmlPaginacao += `<button onclick="irParaPagina(${paginaAtual - 1})" class="btn-pag">« Anterior</button>`;
+      }
+
+      // Gera TODOS os botões numerados dinamicamente (1, 2, 3... N) sem limite fixo
+      for (let i = 1; i <= totalPaginas; i++) {
+        const classeAtivo = i === paginaAtual ? 'active' : '';
+        htmlPaginacao += `<button onclick="irParaPagina(${i})" class="btn-pag ${classeAtivo}">${i}</button>`;
+      }
+
+      // Botão Próximo
+      if (paginaAtual < totalPaginas) {
+        htmlPaginacao += `<button onclick="irParaPagina(${paginaAtual + 1})" class="btn-pag">Próximo »</button>`;
+      }
+
+      htmlPaginacao += '</div>';
+      containerPaginacao.innerHTML = htmlPaginacao;
+    }
   </script>
+</body>
+</html>
