@@ -5,6 +5,44 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Galeria Amador VIP 🔞</title>
   <link rel="stylesheet" href="estilo-telegram.css">
+
+  <!-- TRAVA DE SEGURANÇA SUPABASE -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script>
+    const SUPABASE_URL = 'https://xjvkyofktqojuyequuxe.supabase.co';
+    const SUPABASE_ANON_KEY = 'sb_publishable__w-crANhzjiYKJuh2AX39w_Kz1-Rf74';
+    const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    (async function protegerAcesso() {
+      // Oculta a página durante a verificação
+      document.documentElement.style.display = 'none';
+
+      const { data: { session } } = await _supabase.auth.getSession();
+
+      if (!session) {
+        alert("Você precisa estar logado para acessar esta galeria.");
+        window.location.href = 'index.html';
+        return;
+      }
+
+      // Verifica se comprou a categoria 'amador' e se a assinatura tá ativa
+      const { data: compras } = await _supabase
+        .from('compras_usuario')
+        .select('id')
+        .eq('user_id', session.user.id)
+        .eq('categoria_id', 'amador')
+        .gt('data_expiracao', new Date().toISOString());
+
+      if (!compras || compras.length === 0) {
+        alert("Você não possui acesso a esta galeria ou seu plano expirou.");
+        window.location.href = 'index.html';
+        return;
+      }
+
+      // Libera a exibição
+      document.documentElement.style.display = 'block';
+    })();
+  </script>
 </head>
 <body>
 
