@@ -1,13 +1,14 @@
-// Função para buscar e carregar as fotos automaticamente
+// Cria o array global caso o site busque por ele imediatamente
+window.linksFotosAmador = window.linksFotosAmador || [];
+
 async function carregarFotosAutomatico() {
   const STORAGE_ZONE_NAME = 'fotos-vip';
-  const ACCESS_KEY = '933bafdd-56a8-40a5-92ddaa282360-fad2-4831'; // Chave de acesso do menu Acesso
+  const ACCESS_KEY = '933bafdd-56a8-40a5-92ddaa282360-fad2-4831';
   const PULL_ZONE_URL = 'https://midia-vip.b-cdn.net';
   const PASTA = 'fotos ama';
 
   const path = PASTA ? `${STORAGE_ZONE_NAME}/${encodeURIComponent(PASTA)}/` : `${STORAGE_ZONE_NAME}/`;
 
-  // Servidores regionais da Bunny para fallback
   const endpoints = [
     `https://storage.bunnycdn.com/${path}`,
     `https://br.storage.bunnycdn.com/${path}`,
@@ -25,34 +26,33 @@ async function carregarFotosAutomatico() {
 
       if (res.ok) {
         const data = await res.json();
-        
-        // Filtra apenas arquivos (ignora pastas)
         const arquivos = data.filter(item => !item.IsDirectory);
-        
         const pastaFormatada = PASTA ? `${encodeURIComponent(PASTA.trim())}/` : '';
         
-        // Gera o array global com os links atualizados
+        // Atualiza a variável global
         window.linksFotosAmador = arquivos.map(
           f => `${PULL_ZONE_URL}/${pastaFormatada}${encodeURIComponent(f.ObjectName)}`
         );
 
-        console.log(`[Bunny API] ${window.linksFotosAmador.length} fotos carregadas com sucesso!`);
+        console.log(`[Bunny API] ${window.linksFotosAmador.length} fotos carregadas!`);
+
+        // Dispara eventos e atualizações comuns para renderizar a galeria na tela
+        window.dispatchEvent(new Event('fotosCarregadas'));
         
-        // DISPARAR O RENDER DAS FOTOS AQUI:
-        // Se seu site tem uma função que desenha as fotos na tela, chame ela aqui.
-        if (typeof renderizarFotos === 'function') {
-          renderizarFotos();
-        }
-        
+        if (typeof renderizarFotos === 'function') renderizarFotos();
+        if (typeof carregarFotos === 'function') carregarFotos();
+        if (typeof renderGallery === 'function') renderGallery();
+        if (typeof init === 'function') init();
+
         return;
       }
     } catch (e) {
-      // Tenta o próximo endpoint se falhar
+      // Tenta o próximo servidor
     }
   }
 
-  console.error('[Bunny API] Não foi possível carregar as fotos da Bunny Storage.');
+  console.error('[Bunny API] Falha ao carregar as fotos.');
 }
 
-// Executa a busca ao carregar a página
-document.addEventListener('DOMContentLoaded', carregarFotosAutomatico);
+// Inicia o carregamento
+carregarFotosAutomatico();
