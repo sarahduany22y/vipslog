@@ -65,16 +65,27 @@
     <div id="pagination-controls" class="pagination-container"></div>
   </main>
 
-  <!-- Scripts dos Links -->
-  <script src="links-hentai.js"></script>
+<!-- SCRIPTS DOS LINKS DE HENTAI -->
+  <!-- Certifique-se de que os nomes dos arquivos abaixo correspondem aos seus scripts de links -->
+  <script src="links-hentai.js"></script> 
   <script src="links-fotos-hentai.js"></script>
 
-  <!-- Script Principal -->
+  <!-- SCRIPT PRINCIPAL DA APLICAÇÃO -->
   <script src="app.js"></script>
+
   <script>
     document.addEventListener('DOMContentLoaded', () => {
-      iniciarCategoria('hentai', window.linksHentai, window.linksFotosHentai);
+      // Mapeia os vídeos e fotos da categoria Hentai
+      const subcategoriasHentai = {
+        videos: window.linksHentai || [],
+        fotos: window.linksFotosHentai || []
+      };
+
+      // Tenta usar a função de inicialização do app.js
+      if (typeof iniciarCategoriaMultiabas === 'function') {
+        iniciarCategoriaMultiabas('videos', subcategoriasHentai);
+      } else if (typeof iniciarCategoria === 'function') {
+        iniciarCategoria('hentai', window.linksHentai || [], window.linksFotosHentai || []);
+      }
     });
   </script>
-</body>
-</html>
