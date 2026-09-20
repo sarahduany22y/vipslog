@@ -1,22 +1,22 @@
 const ITENS_POR_PAGINA = 20;
 
-let listaVideos = [];
-let listaFotos = [];
-let abaAtiva = 'videos'; // 'videos' ou 'fotos'
+let subcategorias = {};
+let abaAtiva = 'amador';
 let paginaAtual = 1;
 
-function iniciarCategoria(nomeCat, videos, fotos) {
-  listaVideos = Array.isArray(videos) ? videos : [];
-  listaFotos = Array.isArray(fotos) ? fotos : [];
+// Inicializa a galeria com as subcategorias
+function iniciarCategoriaMultiabas(catInicial, dadosSubcategorias) {
+  subcategorias = dadosSubcategorias || {};
 
   const urlParams = new URLSearchParams(window.location.search);
-  abaAtiva = urlParams.get('aba') === 'fotos' ? 'fotos' : 'videos';
+  abaAtiva = urlParams.get('aba') || catInicial || 'amador';
   paginaAtual = parseInt(urlParams.get('pagina')) || 1;
 
   atualizarBotoesAbas();
   renderizarFeed();
 }
 
+// Troca de subcategoria ao clicar nos botões
 function alternarAba(novaAba) {
   if (abaAtiva === novaAba) return;
   abaAtiva = novaAba;
@@ -24,7 +24,7 @@ function alternarAba(novaAba) {
 
   atualizarBotoesAbas();
 
-  // Atualiza URL sem dar F5
+  // Atualiza a URL sem dar refresh na página
   const url = new URL(window.location);
   url.searchParams.set('aba', abaAtiva);
   url.searchParams.set('pagina', 1);
@@ -33,26 +33,31 @@ function alternarAba(novaAba) {
   renderizarFeed();
 }
 
+// Atualiza o estado visual dos botões no HTML
 function atualizarBotoesAbas() {
-  const btnVideos = document.getElementById('tab-videos');
-  const btnFotos = document.getElementById('tab-fotos');
+  const botoes = document.querySelectorAll('.tab-btn');
+  botoes.forEach(btn => {
+    btn.classList.remove('active');
+  });
 
-  if (btnVideos && btnFotos) {
-    btnVideos.classList.toggle('active', abaAtiva === 'videos');
-    btnFotos.classList.toggle('active', abaAtiva === 'fotos');
+  const btnAtivo = document.getElementById(`tab-${abaAtiva}`);
+  if (btnAtivo) {
+    btnAtivo.classList.add('active');
   }
 }
 
+// Renderiza os vídeos ou fotos da subcategoria atual
 function renderizarFeed() {
   const feedContainer = document.getElementById('feed-container');
-  feedContainer.innerHTML = '';
+  if (!feedContainer) return;
 
-  const listaAtual = abaAtiva === 'videos' ? listaVideos : listaFotos;
+  feedContainer.innerHTML = '';
+  const listaAtual = Array.isArray(subcategorias[abaAtiva]) ? subcategorias[abaAtiva] : [];
 
   if (listaAtual.length === 0) {
-    const tipoTexto = abaAtiva === 'videos' ? 'vídeo' : 'foto';
-    feedContainer.innerHTML = `<p style="text-align:center; padding: 30px; color:#7f91a4;">Nenhuma ${tipoTexto} encontrada nesta categoria.</p>`;
-    document.getElementById('pagination-controls').innerHTML = '';
+    feedContainer.innerHTML = `<p style="text-align:center; padding: 30px; color:#7f91a4;">Nenhum conteúdo encontrado nesta categoria.</p>`;
+    const paginacao = document.getElementById('pagination-controls');
+    if (paginacao) paginacao.innerHTML = '';
     return;
   }
 
@@ -64,28 +69,36 @@ function renderizarFeed() {
     const card = document.createElement('div');
     card.className = 'telegram-card';
 
-    if (abaAtiva === 'videos') {
+    // Trata links com parâmetro autoplay
+    let urlPausada = link;
+    if (urlPausada.includes('autoplay=1')) {
+      urlPausada = urlPausada.replace('autoplay=1', 'autoplay=0');
+    } else if (!urlPausada.includes('autoplay=0')) {
+      urlPausada += urlPausada.includes('?') ? '&autoplay=0' : '?autoplay=0';
+    }
+
+    if (abaAtiva === 'fotos') {
       card.innerHTML = `
-        <div class="video-wrapper">
-          <iframe src="${link}" loading="lazy" allowfullscreen></iframe>
+        <div class="photo-wrapper">
+          <img src="${link}" loading="lazy" alt="Foto da Galeria" />
         </div>
         <div class="card-footer">
           <div class="reactions">
-            <span class="reaction-btn">🔥 ${120 + (idx * 5)}</span>
-            <span class="reaction-btn">❤️ ${45 + (idx * 2)}</span>
+            <span class="reaction-btn">🔥 ${90 + (idx * 4)}</span>
+            <span class="reaction-btn">❤️ ${30 + (idx * 2)}</span>
           </div>
           <span class="time">Postado recente</span>
         </div>
       `;
     } else {
       card.innerHTML = `
-        <div class="photo-wrapper">
-          <img src="${link}" loading="lazy" alt="Foto do Canal" />
+        <div class="video-wrapper">
+          <iframe src="${urlPausada}" loading="lazy" allowfullscreen frameborder="0"></iframe>
         </div>
         <div class="card-footer">
           <div class="reactions">
-            <span class="reaction-btn">🔥 ${90 + (idx * 4)}</span>
-            <span class="reaction-btn">❤️ ${30 + (idx * 2)}</span>
+            <span class="reaction-btn">🔥 ${120 + (idx * 5)}</span>
+            <span class="reaction-btn">❤️ ${45 + (idx * 2)}</span>
           </div>
           <span class="time">Postado recente</span>
         </div>
@@ -98,10 +111,12 @@ function renderizarFeed() {
   renderizarPaginacao(listaAtual.length);
 }
 
+// Gera a paginação do feed
 function renderizarPaginacao(totalItens) {
   const paginacaoContainer = document.getElementById('pagination-controls');
-  paginacaoContainer.innerHTML = '';
+  if (!paginacaoContainer) return;
 
+  paginacaoContainer.innerHTML = '';
   const totalPaginas = Math.ceil(totalItens / ITENS_POR_PAGINA);
 
   if (totalPaginas <= 1) return;
