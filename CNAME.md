@@ -1,1 +1,0 @@
-meuvip.primeglobalfinds.com
