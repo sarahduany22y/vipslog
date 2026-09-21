@@ -302,6 +302,72 @@
 </head>
 <body>
 
+  <!-- POP-UP VERIFICAÇÃO DE IDADE (+18) -->
+  <div id="popup-idade" style="
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.96);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 999999;
+    backdrop-filter: blur(8px);
+  ">
+    <div style="
+      background: #17212b;
+      border: 2px solid #e50914;
+      border-radius: 12px;
+      padding: 30px 24px;
+      text-align: center;
+      max-width: 420px;
+      width: 90%;
+      box-shadow: 0 0 25px rgba(229, 9, 20, 0.4);
+      color: #ffffff;
+      font-family: system-ui, -apple-system, sans-serif;
+    ">
+      <h2 style="color: #e50914; margin-top: 0; margin-bottom: 12px; font-size: 22px; font-weight: bold;">
+        🔞 CONTEÚDO ADULTO (+18)
+      </h2>
+      <p style="font-size: 15px; color: #d1d5db; margin-bottom: 8px; line-height: 1.4;">
+        Este site contém material destinado exclusivamente a maiores de idade.
+      </p>
+      <p style="font-size: 16px; color: #ffffff; margin-bottom: 24px; font-weight: 600;">
+        Você tem 18 anos ou mais?
+      </p>
+      <div style="display: flex; gap: 12px; justify-content: center;">
+        <button id="btn-pop-sim" style="
+          background-color: #16a34a;
+          color: #ffffff;
+          border: none;
+          padding: 12px 20px;
+          border-radius: 8px;
+          font-weight: bold;
+          font-size: 14px;
+          cursor: pointer;
+          flex: 1;
+        ">
+          SIM, SOU MAIOR (+18)
+        </button>
+        <button id="btn-pop-nao" style="
+          background-color: #dc2626;
+          color: #ffffff;
+          border: none;
+          padding: 12px 20px;
+          border-radius: 8px;
+          font-weight: bold;
+          font-size: 14px;
+          cursor: pointer;
+          flex: 1;
+        ">
+          NÃO, SAIR
+        </button>
+      </div>
+    </div>
+  </div>
+
   <!-- HEADER ESTILO CANAL TELEGRAM -->
   <header>
     <div class="header-container">
@@ -447,6 +513,29 @@
   <!-- JS EXTERNO DE LINKS (CAM) -->
   <script src="links-cam.js"></script>
 
+  <!-- SCRIPT DO POP-UP +18 -->
+  <script>
+    (function() {
+      const popup = document.getElementById("popup-idade");
+      const btnSim = document.getElementById("btn-pop-sim");
+      const btnNao = document.getElementById("btn-pop-nao");
+
+      if (localStorage.getItem("aviso_18_confirmado") === "true") {
+        popup.style.display = "none";
+      }
+
+      btnSim.addEventListener("click", function () {
+        localStorage.setItem("aviso_18_confirmado", "true");
+        popup.style.display = "none";
+      });
+
+      btnNao.addEventListener("click", function () {
+        window.location.href = "https://www.google.com";
+      });
+    })();
+  </script>
+
+  <!-- SCRIPT SUPABASE E SESSÃO -->
   <script>
     const SUPABASE_URL = 'https://xjvkyofktqojuyequuxe.supabase.co';
     const SUPABASE_ANON_KEY = 'sb_publishable__w-crANhzjiYKJuh2AX39w_Kz1-Rf74';
