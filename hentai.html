@@ -63,7 +63,7 @@
     }
   </style>
 
-  <!-- TRAVA DE SEGURANÇA SUPABASE -->
+  <!-- TRAVA DE SEGURANÇA SUPABASE CORRIGIDA -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script>
     const SUPABASE_URL = 'https://xjvkyofktqojuyequuxe.supabase.co';
@@ -71,6 +71,7 @@
     const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
     (async function protegerAcesso() {
+      // Oculta a página durante a verificação
       document.documentElement.style.display = 'none';
 
       const { data: { session } } = await _supabase.auth.getSession();
@@ -81,19 +82,30 @@
         return;
       }
 
-      const { data: compras } = await _supabase
+      // Busca as compras da categoria 'hentai'
+      const { data: compras, error } = await _supabase
         .from('compras_usuario')
-        .select('id')
+        .select('data_expiracao')
         .eq('user_id', session.user.id)
-        .eq('categoria_id', 'hentai')
-        .gt('data_expiracao', new Date().toISOString());
+        .eq('categoria_id', 'hentai');
 
-      if (!compras || compras.length === 0) {
-        alert("Você não possui acesso a esta galeria ou seu plano expirou.");
+      if (error || !compras || compras.length === 0) {
+        alert("Você não possui acesso a esta galeria.");
         window.location.href = 'index.html';
         return;
       }
 
+      // Validação correta sem erro de fuso horário (UTC)
+      const agora = new Date();
+      const temAcessoValido = compras.some(item => new Date(item.data_expiracao) > agora);
+
+      if (!temAcessoValido) {
+        alert("Seu plano para esta galeria expirou.");
+        window.location.href = 'index.html';
+        return;
+      }
+
+      // Libera a exibição da página
       document.documentElement.style.display = 'block';
     })();
   </script>
