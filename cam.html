@@ -116,21 +116,30 @@
         return;
       }
 
-      // Verifica se comprou a categoria 'cam' e se a assinatura tá ativa
-      const { data: compras } = await _supabase
+      // Busca as compras da categoria no Supabase
+      const { data: compras, error } = await _supabase
         .from('compras_usuario')
-        .select('id')
+        .select('data_expiracao')
         .eq('user_id', session.user.id)
-        .eq('categoria_id', 'cam')
-        .gt('data_expiracao', new Date().toISOString());
+        .eq('categoria_id', 'cam');
 
-      if (!compras || compras.length === 0) {
-        alert("Você não possui acesso a esta galeria ou seu plano expirou.");
+      if (error || !compras || compras.length === 0) {
+        alert("Você não possui acesso a esta galeria.");
         window.location.href = 'index.html';
         return;
       }
 
-      // Libera a exibição
+      // Valida se a assinatura está dentro da validade
+      const agora = new Date();
+      const temAcessoValido = compras.some(item => new Date(item.data_expiracao) > agora);
+
+      if (!temAcessoValido) {
+        alert("Seu plano para esta galeria expirou.");
+        window.location.href = 'index.html';
+        return;
+      }
+
+      // Libera a exibição da página
       document.documentElement.style.display = 'block';
     })();
   </script>
