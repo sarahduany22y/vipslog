@@ -4,10 +4,13 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Galeria Hentai VIP 🎨</title>
+
+  <!-- FAVICON INLINE -->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><circle cx=%2250%22 cy=%2250%22 r=%2250%22 fill=%22%2324a1de%22/><text y=%22.9em%22 x=%2220%22 font-size=%2270%22 fill=%22white%22>🔞</text></svg>">
+
   <link rel="stylesheet" href="estilo-telegram.css">
 
   <style>
-    /* ESTILIZAÇÃO DOS BOTÕES DE PAGINAÇÃO (ESTILO PRINT 2) */
     .pagination-container {
       display: flex;
       justify-content: center;
@@ -30,10 +33,10 @@
       align-items: center;
       justify-content: center;
       padding: 8px 14px;
-      background-color: #1e293b; /* Fundo escuro dos botões */
-      color: #7dd3fc;            /* Texto azul claro */
+      background-color: #1e293b;
+      color: #7dd3fc;
       text-decoration: none;
-      border-radius: 8px;        /* Bordas arredondadas */
+      border-radius: 8px;
       font-size: 14px;
       font-weight: 500;
       border: 1px solid transparent;
@@ -47,7 +50,7 @@
     }
 
     .paginacao-wrapper a.active {
-      background-color: #2563eb; /* Azul em destaque para o botão ativo */
+      background-color: #2563eb;
       color: #ffffff;
       border-color: #60a5fa;
       box-shadow: 0 0 10px rgba(37, 99, 235, 0.4);
@@ -68,7 +71,6 @@
     const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
     (async function protegerAcesso() {
-      // Oculta a página durante a verificação
       document.documentElement.style.display = 'none';
 
       const { data: { session } } = await _supabase.auth.getSession();
@@ -79,7 +81,6 @@
         return;
       }
 
-      // Verifica se comprou a categoria 'hentai' e se a assinatura tá ativa
       const { data: compras } = await _supabase
         .from('compras_usuario')
         .select('id')
@@ -93,7 +94,6 @@
         return;
       }
 
-      // Libera a exibição
       document.documentElement.style.display = 'block';
     })();
   </script>
@@ -106,12 +106,6 @@
       <a href="index.html" class="btn-voltar">← Início</a>
     </div>
 
-    <!-- Seletor de Abas -->
-    <div class="tabs-container">
-      <button id="tab-videos" class="tab-btn active" onclick="alternarAba('videos')">📹 Vídeos</button>
-      <button id="tab-fotos" class="tab-btn" onclick="alternarAba('fotos')">🖼️ Fotos</button>
-    </div>
-
     <!-- Container do Feed -->
     <div id="feed-container" class="telegram-feed"></div>
 
@@ -121,66 +115,37 @@
 
   <!-- SCRIPTS DOS LINKS DE HENTAI -->
   <script src="links-hentai.js"></script> 
-  <script src="links-fotos-hentai.js"></script>
 
-  <!-- SCRIPT DE PAGINAÇÃO ILIMITADA E GERENCIAMENTO DE ABAS -->
+  <!-- SCRIPT DE PAGINAÇÃO -->
   <script>
-    // Quantidade de mídias por página
     const ITENS_POR_PAGINA = 12;
-
-    // Estado da aplicação
-    let abaAtual = 'videos';
     let paginaAtual = 1;
 
-    // Inicializa quando o documento carrega
     document.addEventListener('DOMContentLoaded', () => {
       const urlParams = new URLSearchParams(window.location.search);
-      abaAtual = urlParams.get('aba') || 'videos';
       paginaAtual = parseInt(urlParams.get('pagina')) || 1;
-
       carregarConteudo();
     });
 
-    // Alterna entre as abas Vídeos e Fotos
-    function alternarAba(novaAba) {
-      abaAtual = novaAba;
-      paginaAtual = 1;
-      window.history.pushState({}, '', `?aba=${abaAtual}&pagina=${paginaAtual}`);
-      carregarConteudo();
-    }
-
-    // Ir para uma página específica
     function irParaPagina(e, numeroPagina) {
       if (e) e.preventDefault();
       paginaAtual = numeroPagina;
-      window.history.pushState({}, '', `?aba=${abaAtual}&pagina=${paginaAtual}`);
+      window.history.pushState({}, '', `?pagina=${paginaAtual}`);
       carregarConteudo();
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
-    // Carrega e renderiza mídias + paginação
     function carregarConteudo() {
-      document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-      const abaAtivaBtn = document.getElementById(`tab-${abaAtual}`);
-      if (abaAtivaBtn) abaAtivaBtn.classList.add('active');
-
-      let listaMidias = [];
-      if (abaAtual === 'videos') {
-        listaMidias = window.linksHentai || [];
-      } else if (abaAtual === 'fotos') {
-        listaMidias = window.linksFotosHentai || [];
-      }
-
+      const listaMidias = window.linksHentai || [];
       const containerFeed = document.getElementById('feed-container');
       containerFeed.innerHTML = '';
 
       if (!listaMidias || listaMidias.length === 0) {
-        containerFeed.innerHTML = '<p class="sem-midia">Nenhuma mídia encontrada nesta categoria.</p>';
+        containerFeed.innerHTML = '<p class="sem-midia">Nenhum vídeo encontrado nesta categoria.</p>';
         document.getElementById('pagination-controls').innerHTML = '';
         return;
       }
 
-      // Cálculo de Paginação Ilimitada
       const totalItens = listaMidias.length;
       const totalPaginas = Math.ceil(totalItens / ITENS_POR_PAGINA);
 
@@ -191,7 +156,6 @@
       const fim = inicio + ITENS_POR_PAGINA;
       const itensPagina = listaMidias.slice(inicio, fim);
 
-      // Renderiza as mídias
       itensPagina.forEach(item => {
         const elementoMidia = document.createElement('div');
         elementoMidia.className = 'midia-card';
@@ -199,21 +163,12 @@
         const url = typeof item === 'string' ? item : (item.link || item.url || '');
         const titulo = item.titulo || item.nome || 'Mídia VIP';
 
-        if (abaAtual === 'videos') {
-          elementoMidia.innerHTML = `
-            <div class="video-wrapper">
-              <iframe src="${url}" frameborder="0" allowfullscreen></iframe>
-            </div>
-            <p class="midia-titulo">${titulo}</p>
-          `;
-        } else {
-          elementoMidia.innerHTML = `
-            <div class="foto-wrapper">
-              <img src="${url}" alt="${titulo}" loading="lazy" />
-            </div>
-            <p class="midia-titulo">${titulo}</p>
-          `;
-        }
+        elementoMidia.innerHTML = `
+          <div class="video-wrapper">
+            <iframe src="${url}" frameborder="0" allowfullscreen></iframe>
+          </div>
+          <p class="midia-titulo">${titulo}</p>
+        `;
 
         containerFeed.appendChild(elementoMidia);
       });
@@ -221,7 +176,6 @@
       renderizarPaginacao(totalPaginas);
     }
 
-    // Renderiza a régua de botões igual ao Print 2
     function renderizarPaginacao(totalPaginas) {
       const containerPaginacao = document.getElementById('pagination-controls');
       containerPaginacao.innerHTML = '';
@@ -230,20 +184,17 @@
 
       let htmlPaginacao = '<div class="paginacao-wrapper">';
 
-      // Botão Anterior
       if (paginaAtual > 1) {
         htmlPaginacao += `<a href="#" onclick="irParaPagina(event, ${paginaAtual - 1})">« Anterior</a>`;
       } else {
         htmlPaginacao += `<a class="disabled">« Anterior</a>`;
       }
 
-      // Gera todos os números sem limite fixo
       for (let i = 1; i <= totalPaginas; i++) {
         const classeAtivo = i === paginaAtual ? 'active' : '';
         htmlPaginacao += `<a href="#" class="${classeAtivo}" onclick="irParaPagina(event, ${i})">${i}</a>`;
       }
 
-      // Botão Próxima
       if (paginaAtual < totalPaginas) {
         htmlPaginacao += `<a href="#" onclick="irParaPagina(event, ${paginaAtual + 1})">Próxima »</a>`;
       } else {
