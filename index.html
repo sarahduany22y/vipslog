@@ -4,6 +4,10 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Canal VIP Oficial 🔞 - Conteúdo Exclusivo</title>
+  
+  <!-- FAVICON INLINE PARA CORRIGIR O ERRO 404 -->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><circle cx=%2250%22 cy=%2250%22 r=%2250%22 fill=%22%2324a1de%22/><text y=%22.9em%22 x=%2220%22 font-size=%2270%22 fill=%22white%22>🔞</text></svg>">
+
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
     :root {
@@ -359,11 +363,11 @@
         </div>
       </div>
 
-      <!-- Categoria 2: Lives -->
-      <div class="card" id="card-lives">
+      <!-- Categoria 2: Cam (Spycam) -->
+      <div class="card" id="card-cam">
         <div class="card-header">
           <h3>🔥SPYCAM VIP DARK🔥</h3>
-          <span class="status-badge bloqueado" id="badge-lives">🔒 Bloqueado</span>
+          <span class="status-badge bloqueado" id="badge-cam">🔒 Bloqueado</span>
         </div>
         
         <div class="card-body">
@@ -388,8 +392,8 @@
             </ul>
           </div>
           
-          <button id="buy-lives" class="btn-buy" onclick="iniciarCompra('lives')">Liberar Acesso Lives • R$ 29,90</button>
-          <a href="lives.html" id="access-lives" class="btn-access" style="display:none;">Entrar na Galeria Lives</a>
+          <button id="buy-cam" class="btn-buy" onclick="iniciarCompra('cam')">Liberar Acesso Câmeras • R$ 29,90</button>
+          <a href="cam.html" id="access-cam" class="btn-access" style="display:none;">Entrar na Galeria Câmeras</a>
         </div>
       </div>
 
@@ -436,6 +440,9 @@
     </div>
   </div>
 
+  <!-- JS EXTERNO DE LINKS (CAM) -->
+  <script src="links-cam.js"></script>
+
   <script>
     const SUPABASE_URL = 'https://xjvkyofktqojuyequuxe.supabase.co';
     const SUPABASE_ANON_KEY = 'sb_publishable__w-crANhzjiYKJuh2AX39w_Kz1-Rf74';
@@ -446,7 +453,7 @@
 
     const CHECKOUTS = {
       amador: "https://link.syncpayments.com.br/MicvMz",
-      lives: "https://checkout.syncpay.com.br/SEU_CHECKOUT_LIVES",
+      cam: "https://checkout.syncpay.com.br/SEU_CHECKOUT_CAM",
       hentai: "https://checkout.syncpay.com.br/SEU_CHECKOUT_HENTAI"
     };
 
