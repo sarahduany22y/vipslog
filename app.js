@@ -1,6 +1,6 @@
 // Configuração do Supabase
 const SUPABASE_URL = 'https://xjvkyofktqojuyequuxe.supabase.co';
-const SUPABASE_ANON_KEY = 'YOUR_ANON_KEY_HERE'; // Certifique-se de manter sua chave anon original aqui se necessário
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inhqdmt5b2ZrdHFvanV5ZXF1dXhlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODk2ODY3MjcsImV4cCI6MjEwNTI2MjcyN30.m80E1RrS-KvX7tc4nDJVaOzpCpJiukSO9BLeo7xV04E'; // Certifique-se de manter sua chave anon original aqui se necessário
 
 // Inicializa o cliente do Supabase se a biblioteca estiver carregada
 const _supabase = typeof supabase !== 'undefined' 
