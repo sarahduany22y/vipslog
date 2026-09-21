@@ -1,185 +1,93 @@
-const ITENS_POR_PAGINA = 12;
+// Configuração do Supabase
+const SUPABASE_URL = 'https://xjvkyofktqojuyequuxe.supabase.co';
+const SUPABASE_ANON_KEY = 'YOUR_ANON_KEY_HERE'; // Certifique-se de manter sua chave anon original aqui se necessário
 
-let subcategorias = {};
-let abaAtiva = 'amador';
-let paginaAtual = 1;
+// Inicializa o cliente do Supabase se a biblioteca estiver carregada
+const _supabase = typeof supabase !== 'undefined' 
+  ? supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY) 
+  : null;
 
-// Inicializa a galeria com as subcategorias
-function iniciarCategoriaMultiabas(catInicial, dadosSubcategorias) {
-  subcategorias = dadosSubcategorias || {};
-
-  const urlParams = new URLSearchParams(window.location.search);
-  abaAtiva = urlParams.get('aba') || catInicial || 'amador';
-  paginaAtual = parseInt(urlParams.get('pagina')) || 1;
-
-  atualizarBotoesAbas();
-  renderizarFeed();
-}
-
-// Compatibilidade para chamadas do tipo iniciarCategoria(...)
-function iniciarCategoria(catNome, videos, fotos) {
-  iniciarCategoriaMultiabas('videos', {
-    videos: videos || [],
-    fotos: fotos || []
-  });
-}
-
-// Troca de subcategoria ao clicar nos botões
-function alternarAba(novaAba) {
-  if (abaAtiva === novaAba) return;
-  abaAtiva = novaAba;
-  paginaAtual = 1;
-
-  atualizarBotoesAbas();
-
-  // Atualiza a URL sem dar refresh na página
-  const url = new URL(window.location);
-  url.searchParams.set('aba', abaAtiva);
-  url.searchParams.set('pagina', 1);
-  window.history.pushState({}, '', url);
-
-  renderizarFeed();
-}
-
-// Atualiza o estado visual dos botões no HTML
-function atualizarBotoesAbas() {
-  const botoes = document.querySelectorAll('.tab-btn');
-  botoes.forEach(btn => {
-    btn.classList.remove('active');
-  });
-
-  const btnAtivo = document.getElementById(`tab-${abaAtiva}`);
-  if (btnAtivo) {
-    btnAtivo.classList.add('active');
-  }
-}
-
-// Renderiza os vídeos ou fotos da subcategoria atual
-function renderizarFeed() {
-  const feedContainer = document.getElementById('feed-container');
-  if (!feedContainer) return;
-
-  feedContainer.innerHTML = '';
-  const listaAtual = Array.isArray(subcategorias[abaAtiva]) ? subcategorias[abaAtiva] : [];
-
-  if (listaAtual.length === 0) {
-    feedContainer.innerHTML = `<p style="text-align:center; padding: 30px; color:#7f91a4;">Nenhum conteúdo encontrado nesta categoria.</p>`;
-    const paginacao = document.getElementById('pagination-controls');
-    if (paginacao) paginacao.innerHTML = '';
-    return;
+/**
+ * Função para verificar se o usuário atual tem acesso a uma categoria específica
+ * @param {string|number} categoriaId - ID ou nome da categoria a ser verificada
+ * @returns {Promise<boolean>}
+ */
+async function verificarAcessoCategoria(categoriaId) {
+  if (!_supabase) {
+    console.error('Supabase não inicializado.');
+    return false;
   }
 
-  const inicio = (paginaAtual - 1) * ITENS_POR_PAGINA;
-  const fim = inicio + ITENS_POR_PAGINA;
-  const itensDaPagina = listaAtual.slice(inicio, fim);
+  try {
+    // 1. Obtém o usuário logado
+    const { data: { user }, error: userError } = await _supabase.auth.getUser();
 
-  itensDaPagina.forEach((item, idx) => {
-    const card = document.createElement('div');
-    card.className = 'telegram-card';
-
-    const urlOriginal = typeof item === 'string' ? item : (item.link || item.url || '');
-
-    if (abaAtiva === 'fotos') {
-      card.innerHTML = `
-        <div class="photo-wrapper">
-          <img src="${urlOriginal}" loading="lazy" alt="Foto da Galeria" />
-        </div>
-        <div class="card-footer">
-          <div class="reactions">
-            <span class="reaction-btn">🔥 ${90 + (idx * 4)}</span>
-            <span class="reaction-btn">❤️ ${30 + (idx * 2)}</span>
-          </div>
-          <span class="time">Postado recente</span>
-        </div>
-      `;
-    } else {
-      // TRATAMENTO RIGOROSO DE AUTOPLAY PARA IFRAMES (MEDIA DELIVERY / BUNNY CDN)
-      let urlFormatada = urlOriginal;
-      
-      // Remove parâmetros antigos de autoplay se existirem
-      urlFormatada = urlFormatada.replace(/([?&])autoplay=[^&]*/g, '');
-      urlFormatada = urlFormatada.replace(/([?&])preload=[^&]*/g, '');
-
-      // Força a inserção dos parâmetros de reprodução pausada
-      const divisor = urlFormatada.includes('?') ? '&' : '?';
-      urlFormatada += `${divisor}autoplay=false&preload=false`;
-
-      card.innerHTML = `
-        <div class="video-wrapper">
-          <iframe src="${urlFormatada}" loading="lazy" allowfullscreen frameborder="0"></iframe>
-        </div>
-        <div class="card-footer">
-          <div class="reactions">
-            <span class="reaction-btn">🔥 ${120 + (idx * 5)}</span>
-            <span class="reaction-btn">❤️ ${45 + (idx * 2)}</span>
-          </div>
-          <span class="time">Postado recente</span>
-        </div>
-      `;
+    if (userError || !user) {
+      console.log('Usuário não autenticado.');
+      return false;
     }
 
-    feedContainer.appendChild(card);
-  });
+    // 2. Consulta as compras pelo user_id OU pelo e-mail
+    // Isso garante a liberação mesmo quando o webhook registra a compra pelo e-mail do cliente
+    const { data: compras, error: comprasError } = await _supabase
+      .from('compras_usuario')
+      .select('*')
+      .or(`user_id.eq.${user.id},email.eq.${user.email}`);
 
-  renderizarPaginacao(listaAtual.length);
+    if (comprasError) {
+      console.error('Erro ao consultar compras no banco:', comprasError.message);
+      return false;
+    }
+
+    if (!compras || compras.length === 0) {
+      console.log('Nenhuma compra encontrada para este usuário.');
+      return false;
+    }
+
+    // 3. Verifica se a categoria comprada bate com a categoria atual ou se é acesso total ('todas')
+    const temAcesso = compras.some(item => {
+      const catVal = String(item.categoria_id || item.categoria || '').toLowerCase();
+      const targetVal = String(categoriaId).toLowerCase();
+      
+      return catVal === targetVal || catVal === 'todas' || catVal === 'all';
+    });
+
+    return temAcesso;
+
+  } catch (err) {
+    console.error('Erro inesperado na verificação de acesso:', err);
+    return false;
+  }
 }
 
-// Gera a paginação sem limites e mantendo o visual
-function renderizarPaginacao(totalItens) {
-  const paginacaoContainer = document.getElementById('pagination-controls');
-  if (!paginacaoContainer) return;
+/**
+ * Atualiza os elementos da interface de acordo com o status de acesso do usuário
+ * @param {string|number} categoriaId 
+ */
+async function aplicarBloqueioOuLiberacao(categoriaId) {
+  const liberado = await verificarAcessoCategoria(categoriaId);
 
-  paginacaoContainer.innerHTML = '';
-  const totalPaginas = Math.ceil(totalItens / ITENS_POR_PAGINA);
+  const containerBloqueado = document.getElementById('conteudo-bloqueado');
+  const containerLiberado = document.getElementById('conteudo-liberado');
+  const btnComprar = document.getElementById('btn-comprar');
 
-  if (totalPaginas <= 1) return;
-
-  const wrapper = document.createElement('div');
-  wrapper.className = 'paginacao-wrapper';
-
-  // Botão Anterior
-  const btnAnterior = document.createElement('a');
-  btnAnterior.href = '#';
-  btnAnterior.innerText = '« Anterior';
-  if (paginaAtual === 1) {
-    btnAnterior.className = 'disabled';
+  if (liberado) {
+    if (containerBloqueado) containerBloqueado.style.display = 'none';
+    if (containerLiberado) containerLiberado.style.display = 'block';
+    if (btnComprar) btnComprar.style.display = 'none';
+    console.log(`[Acesso Liberado] Categoria: ${categoriaId}`);
   } else {
-    btnAnterior.onclick = (e) => { e.preventDefault(); mudarPagina(paginaAtual - 1); };
+    if (containerBloqueado) containerBloqueado.style.display = 'block';
+    if (containerLiberado) containerLiberado.style.display = 'none';
+    if (btnComprar) btnComprar.style.display = 'inline-block';
+    console.log(`[Acesso Bloqueado] Categoria: ${categoriaId}`);
   }
-  wrapper.appendChild(btnAnterior);
-
-  // Botões Numéricos Ilimitados
-  for (let i = 1; i <= totalPaginas; i++) {
-    const btnPage = document.createElement('a');
-    btnPage.href = '#';
-    btnPage.className = i === paginaAtual ? 'active' : '';
-    btnPage.innerText = i;
-    btnPage.onclick = (e) => { e.preventDefault(); mudarPagina(i); };
-    wrapper.appendChild(btnPage);
-  }
-
-  // Botão Próxima
-  const btnProximo = document.createElement('a');
-  btnProximo.href = '#';
-  btnProximo.innerText = 'Próxima »';
-  if (paginaAtual === totalPaginas) {
-    btnProximo.className = 'disabled';
-  } else {
-    btnProximo.onclick = (e) => { e.preventDefault(); mudarPagina(paginaAtual + 1); };
-  }
-  wrapper.appendChild(btnProximo);
-
-  paginacaoContainer.appendChild(wrapper);
 }
 
-function mudarPagina(novaPagina) {
-  paginaAtual = novaPagina;
-
-  const url = new URL(window.location);
-  url.searchParams.set('aba', abaAtiva);
-  url.searchParams.set('pagina', novaPagina);
-  window.history.pushState({}, '', url);
-
-  renderizarFeed();
-  window.scrollTo({ top: 0, behavior: 'smooth' });
-}
+// Executa a checagem automaticamente quando a página carrega
+document.addEventListener('DOMContentLoaded', () => {
+  const params = new URLSearchParams(window.location.search);
+  const categoriaAtual = params.get('cat') || window.categoriaId || '1';
+  
+  aplicarBloqueioOuLiberacao(categoriaAtual);
+});
