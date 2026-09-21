@@ -1,1 +1,4 @@
-
+window.linksFlagras = [
+  "https://...",
+  "https://..."
+];
