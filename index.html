@@ -166,25 +166,28 @@
 
     .card-body { padding: 20px; }
 
-    /* ÁREA DE PRÉVIA EM VÍDEO */
+    /* ÁREA DE PRÉVIA EM GRID (ESTILO TELEGRAM - 2 LADO A LADO) */
     .preview-box {
       width: 100%;
-      background: #000;
-      border-radius: 10px;
-      overflow: hidden;
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 6px;
       margin-bottom: 18px;
+      background: #000;
+      border-radius: 12px;
+      overflow: hidden;
+      padding: 4px;
       border: 1px solid var(--border-color);
-      aspect-ratio: 16/9;
-      display: flex;
-      justify-content: center;
-      align-items: center;
     }
 
     .preview-box iframe, 
     .preview-box video {
       width: 100%;
-      height: 100%;
+      aspect-ratio: 9/16;
       border: none;
+      border-radius: 8px;
+      background: #000;
+      object-fit: cover;
     }
 
     /* LISTA DE BENEFÍCIOS DO VIP */
@@ -331,7 +334,8 @@
         
         <div class="card-body">
           <div class="preview-box">
-            <iframe src="https://player.mediadelivery.net/play/756775/d18113bf-1faa-4ac2-ac48-6f61a68bd762" loading="lazy" allow="accelerometer; gyroscope; autoplay; encrypted-media;" allowfullscreen="true"></iframe>
+            <iframe src="https://player.mediadelivery.net/play/756775/d18113bf-1faa-4ac2-ac48-6f61a68bd762?autoplay=false&preload=false" loading="lazy" allow="gyroscope; encrypted-media;" allowfullscreen="true"></iframe>
+            <iframe src="https://player.mediadelivery.net/play/756775/d4eb8689-f422-40a4-bd4b-d866dff9b25b?autoplay=false&preload=false" loading="lazy" allow="gyroscope; encrypted-media;" allowfullscreen="true"></iframe>
           </div>
 
           <div class="vip-description">
@@ -364,7 +368,8 @@
         
         <div class="card-body">
           <div class="preview-box">
-            <iframe src="https://player.mediadelivery.net/play/756775/0e10ec0b-c077-4f2c-ad18-efa0d1033fb5" loading="lazy" allow="accelerometer; gyroscope; autoplay; encrypted-media;" allowfullscreen="true"></iframe>
+            <iframe src="https://player.mediadelivery.net/play/756775/0e10ec0b-c077-4f2c-ad18-efa0d1033fb5?autoplay=false&preload=false" loading="lazy" allow="gyroscope; encrypted-media;" allowfullscreen="true"></iframe>
+            <iframe src="https://player.mediadelivery.net/play/756775/c3a254f4-71ae-4208-9f23-3ed67f425969?autoplay=false&preload=false" loading="lazy" allow="gyroscope; encrypted-media;" allowfullscreen="true"></iframe>
           </div>
 
           <div class="vip-description">
@@ -397,7 +402,8 @@
         
         <div class="card-body">
           <div class="preview-box">
-            <iframe src="https://player.mediadelivery.net/play/756775/e78ccd2b-ce35-411e-9d57-cafbfc203900" loading="lazy" allow="accelerometer; gyroscope; autoplay; encrypted-media;" allowfullscreen="true"></iframe>
+            <iframe src="https://player.mediadelivery.net/play/756775/e78ccd2b-ce35-411e-9d57-cafbfc203900?autoplay=false&preload=false" loading="lazy" allow="gyroscope; encrypted-media;" allowfullscreen="true"></iframe>
+            <iframe src="https://player.mediadelivery.net/play/756775/5a75114e-38de-4834-8390-b7a30994398c?autoplay=false&preload=false" loading="lazy" allow="gyroscope; encrypted-media;" allowfullscreen="true"></iframe>
           </div>
 
           <div class="vip-description">
@@ -484,7 +490,6 @@
       }
     }
 
-    // FUNÇÃO CORRIGIDA PARA LOGIN/CADASTRO INSTANTÂNEO
     async function fazerAuth() {
       const email = document.getElementById('auth-email').value.trim();
       const password = document.getElementById('auth-pass').value;
@@ -494,10 +499,8 @@
         return;
       }
 
-      // 1. Tenta realizar Login direto
       let { data, error } = await _supabase.auth.signInWithPassword({ email, password });
       
-      // 2. Se não encontrou o usuário, cria o Cadastro automaticamente
       if (error) {
         const create = await _supabase.auth.signUp({ email, password });
         
@@ -506,7 +509,6 @@
           return;
         }
 
-        // Se o Supabase precisar fazer auto-login pós-cadastro
         if (!create.data.session) {
           const relogin = await _supabase.auth.signInWithPassword({ email, password });
           data = relogin.data;
@@ -515,7 +517,6 @@
         }
       }
 
-      // 3. Captura o usuário e a sessão ativa
       const session = data?.session || (await _supabase.auth.getSession()).data.session;
       
       if (session) {
@@ -526,7 +527,6 @@
         atualizarHeader();
         await checarPermissoes();
 
-        // Direciona na hora pro checkout com o e-mail preenchido
         if (catAcomprar) {
           irParaCheckout(catAcomprar, usuarioAtual.email);
         }
