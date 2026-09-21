@@ -72,7 +72,7 @@
         return;
       }
 
-      // Validação correta sem erro de fuso horário (UTC)
+      // Validação sem erro de fuso horário (UTC)
       const agora = new Date();
       const temAcessoValido = compras.some(item => new Date(item.data_expiracao) > agora);
 
@@ -122,9 +122,9 @@
   <!-- SCRIPT PRINCIPAL DA APLICAÇÃO -->
   <script src="app.js"></script>
 
+  <!-- SCRIPT DE NAVEGAÇÃO E PAGINAÇÃO (SEM TRAVAMENTOS) -->
   <script>
     document.addEventListener('DOMContentLoaded', () => {
-      // Mapeamento dos links
       const subcategoriasAmador = {
         amador: window.linksAmador || [],
         omegle: window.linksOmegle || [],
@@ -134,26 +134,78 @@
         fotos: window.linksFotosAmador || []
       };
 
-      // Tenta usar a função do app.js
-      if (typeof iniciarCategoriaMultiabas === 'function') {
-        iniciarCategoriaMultiabas('amador', subcategoriasAmador);
-      } else {
-        // Fallback: se a função não existir no app.js, renderiza os vídeos amadores diretamente no container
-        console.warn("A função iniciarCategoriaMultiabas não foi encontrada no app.js. Carregando vídeos diretamente...");
-        
-        const container = document.getElementById('feed-container');
-        const lista = subcategoriasAmador.amador;
+      let abaAtual = 'amador';
+      let paginaAtual = 1;
+      const ITENS_POR_PAGINA = 15; // Define o limite exato de 15 vídeos por página
 
-        if (container && lista.length > 0) {
-          container.innerHTML = lista.map(url => `
-            <div class="card-video" style="margin-bottom: 20px;">
-              <iframe src="${url}" width="100%" height="450" frameborder="0" allowfullscreen></iframe>
-            </div>
-          `).join('');
-        } else if (container) {
-          container.innerHTML = '<p style="text-align:center; color:#fff;">Nenhum vídeo encontrado no links-amador.js.</p>';
+      window.alternarAba = function(subcat) {
+        abaAtual = subcat;
+        paginaAtual = 1;
+        
+        // Atualiza estilo dos botões
+        document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+        const btnAtivo = document.getElementById(`tab-${subcat}`);
+        if (btnAtivo) btnAtivo.classList.add('active');
+
+        renderizarFeed();
+      };
+
+      function renderizarFeed() {
+        const container = document.getElementById('feed-container');
+        const paginationControls = document.getElementById('pagination-controls');
+        const lista = subcategoriasAmador[abaAtual] || [];
+
+        if (!container) return;
+
+        if (lista.length === 0) {
+          container.innerHTML = '<p style="text-align:center; color:#fff; padding: 20px;">Nenhum conteúdo nesta aba.</p>';
+          if (paginationControls) paginationControls.innerHTML = '';
+          return;
         }
+
+        // Calcula exatamente os 15 itens da página atual
+        const totalPaginas = Math.ceil(lista.length / ITENS_POR_PAGINA);
+        const inicio = (paginaAtual - 1) * ITENS_POR_PAGINA;
+        const fim = inicio + ITENS_POR_PAGINA;
+        const itensPagina = lista.slice(inicio, fim);
+
+        // Renderiza apenas os 15 vídeos com suporte a lazy loading para poupar memória
+        container.innerHTML = itensPagina.map(url => `
+          <div class="card-video" style="margin-bottom: 20px;">
+            <iframe src="${url}" width="100%" height="450" frameborder="0" allowfullscreen loading="lazy"></iframe>
+          </div>
+        `).join('');
+
+        // Renderiza os botões de navegação das páginas
+        if (paginationControls && totalPaginas > 1) {
+          let btnHTML = `<div style="display:flex; justify-content:center; align-items:center; gap:10px; margin: 20px 0;">`;
+          
+          if (paginaAtual > 1) {
+            btnHTML += `<button class="tab-btn" onclick="mudarPagina(${paginaAtual - 1})">← Anterior</button>`;
+          }
+          
+          btnHTML += `<span style="color:#fff; font-weight:bold;">Página ${paginaAtual} de ${totalPaginas}</span>`;
+
+          if (paginaAtual < totalPaginas) {
+            btnHTML += `<button class="tab-btn" onclick="mudarPagina(${paginaAtual + 1})">Próxima →</button>`;
+          }
+          
+          btnHTML += `</div>`;
+          paginationControls.innerHTML = btnHTML;
+        } else if (paginationControls) {
+          paginationControls.innerHTML = '';
+        }
+
+        window.scrollTo({ top: 0, behavior: 'smooth' });
       }
+
+      window.mudarPagina = function(novaPagina) {
+        paginaAtual = novaPagina;
+        renderizarFeed();
+      };
+
+      // Inicializa a exibição da página
+      renderizarFeed();
     });
   </script>
 </body>
