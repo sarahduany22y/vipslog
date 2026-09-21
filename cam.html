@@ -11,6 +11,39 @@
   <link rel="stylesheet" href="estilo-telegram.css">
 
   <style>
+    /* ESTILIZAÇÃO DOS BOTÕES DE CATEGORIA/FILTRO */
+    .categorias-container {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      margin: 15px 0 25px 0;
+      flex-wrap: wrap;
+    }
+
+    .btn-subcategoria {
+      padding: 10px 20px;
+      background-color: #1e293b;
+      color: #94a3b8;
+      border: 1px solid #334155;
+      border-radius: 20px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease-in-out;
+    }
+
+    .btn-subcategoria:hover {
+      background-color: #334155;
+      color: #ffffff;
+    }
+
+    .btn-subcategoria.active {
+      background-color: #2563eb;
+      color: #ffffff;
+      border-color: #60a5fa;
+      box-shadow: 0 0 12px rgba(37, 99, 235, 0.5);
+    }
+
     /* ESTILIZAÇÃO DOS BOTÕES DE PAGINAÇÃO */
     .pagination-container {
       display: flex;
@@ -110,6 +143,12 @@
       <a href="index.html" class="btn-voltar">← Início</a>
     </div>
 
+    <!-- BOTÕES DE SUB-CATEGORIA -->
+    <div class="categorias-container">
+      <button id="btn-spycam" class="btn-subcategoria active" onclick="alterarSubcategoria('spycam')">Spycam 🔥</button>
+      <button id="btn-flagras" class="btn-subcategoria" onclick="alterarSubcategoria('flagras')">👀 Flagras Ruas</button>
+    </div>
+
     <!-- Container do Feed -->
     <div id="feed-container" class="telegram-feed"></div>
 
@@ -117,19 +156,33 @@
     <div id="pagination-controls" class="pagination-container"></div>
   </main>
 
-  <!-- SCRIPT DOS LINKS DE CAM -->
+  <!-- SCRIPTS DOS LINKS -->
   <script src="links-cam.js"></script> 
+  <script src="links-flagras.js"></script> 
 
-  <!-- SCRIPT DE PAGINAÇÃO -->
+  <!-- SCRIPT DE PAGINAÇÃO E FILTRO -->
   <script>
     const ITENS_POR_PAGINA = 12;
     let paginaAtual = 1;
+    let subcategoriaAtual = 'spycam';
 
     document.addEventListener('DOMContentLoaded', () => {
       const urlParams = new URLSearchParams(window.location.search);
       paginaAtual = parseInt(urlParams.get('pagina')) || 1;
       carregarConteudo();
     });
+
+    function alterarSubcategoria(novaSubcategoria) {
+      subcategoriaAtual = novaSubcategoria;
+      paginaAtual = 1;
+
+      // Atualiza o estado visual dos botões
+      document.getElementById('btn-spycam').classList.toggle('active', novaSubcategoria === 'spycam');
+      document.getElementById('btn-flagras').classList.toggle('active', novaSubcategoria === 'flagras');
+
+      window.history.pushState({}, '', `?pagina=${paginaAtual}`);
+      carregarConteudo();
+    }
 
     function irParaPagina(e, numeroPagina) {
       if (e) e.preventDefault();
@@ -140,7 +193,11 @@
     }
 
     function carregarConteudo() {
-      const listaMidias = window.linksCam || [];
+      // Seleciona a lista correspondente
+      const listaMidias = subcategoriaAtual === 'spycam' 
+        ? (window.linksCam || []) 
+        : (window.linksFlagras || []);
+
       const containerFeed = document.getElementById('feed-container');
       containerFeed.innerHTML = '';
 
