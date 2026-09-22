@@ -38,6 +38,32 @@
       color: #fff;
       border-color: #24a1de;
     }
+
+    /* ESTILO PARA IMAGENS SE ADAPTAREM PERFEITAMENTE SEM ROLAGEM */
+    .media-card {
+      margin-bottom: 20px;
+      width: 100%;
+      display: flex;
+      justify-content: center;
+    }
+
+    .media-card img {
+      width: 100%;
+      max-width: 600px;
+      height: auto;
+      max-height: 85vh;
+      object-fit: contain;
+      border-radius: 12px;
+      display: block;
+      margin: 0 auto;
+    }
+
+    .media-card iframe {
+      width: 100%;
+      height: 450px;
+      border: none;
+      border-radius: 12px;
+    }
   </style>
 
   <!-- TRAVA DE SEGURANÇA SUPABASE CORRIGIDA -->
@@ -122,7 +148,7 @@
   <!-- SCRIPT PRINCIPAL DA APLICAÇÃO -->
   <script src="app.js"></script>
 
-  <!-- SCRIPT DE NAVEGAÇÃO E PAGINAÇÃO (SEM TRAVAMENTOS) -->
+  <!-- SCRIPT DE NAVEGAÇÃO E PAGINAÇÃO -->
   <script>
     document.addEventListener('DOMContentLoaded', () => {
       const subcategoriasAmador = {
@@ -136,13 +162,12 @@
 
       let abaAtual = 'amador';
       let paginaAtual = 1;
-      const ITENS_POR_PAGINA = 15; // Define o limite exato de 15 vídeos por página
+      const ITENS_POR_PAGINA = 15;
 
       window.alternarAba = function(subcat) {
         abaAtual = subcat;
         paginaAtual = 1;
         
-        // Atualiza estilo dos botões
         document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
         const btnAtivo = document.getElementById(`tab-${subcat}`);
         if (btnAtivo) btnAtivo.classList.add('active');
@@ -163,20 +188,28 @@
           return;
         }
 
-        // Calcula exatamente os 15 itens da página atual
         const totalPaginas = Math.ceil(lista.length / ITENS_POR_PAGINA);
         const inicio = (paginaAtual - 1) * ITENS_POR_PAGINA;
         const fim = inicio + ITENS_POR_PAGINA;
         const itensPagina = lista.slice(inicio, fim);
 
-        // Renderiza apenas os 15 vídeos com suporte a lazy loading para poupar memória
-        container.innerHTML = itensPagina.map(url => `
-          <div class="card-video" style="margin-bottom: 20px;">
-            <iframe src="${url}" width="100%" height="450" frameborder="0" allowfullscreen loading="lazy"></iframe>
-          </div>
-        `).join('');
+        // Renderização inteligente: usa <img> para a aba de Fotos e <iframe> para vídeos
+        container.innerHTML = itensPagina.map(url => {
+          if (abaAtual === 'fotos' || url.match(/\.(jpeg|jpg|gif|png|webp)($|\?)/i)) {
+            return `
+              <div class="media-card">
+                <img src="${url}" loading="lazy" alt="Foto Galeria" />
+              </div>
+            `;
+          } else {
+            return `
+              <div class="media-card">
+                <iframe src="${url}" allowfullscreen loading="lazy"></iframe>
+              </div>
+            `;
+          }
+        }).join('');
 
-        // Renderiza os botões de navegação das páginas
         if (paginationControls && totalPaginas > 1) {
           let btnHTML = `<div style="display:flex; justify-content:center; align-items:center; gap:10px; margin: 20px 0;">`;
           
@@ -204,7 +237,6 @@
         renderizarFeed();
       };
 
-      // Inicializa a exibição da página
       renderizarFeed();
     });
   </script>
