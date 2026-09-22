@@ -56,7 +56,7 @@
       margin: 0 auto;
     }
 
-    /* PLACEHOLDER COM THUMBNAIL DE FUNDO */
+    /* CONTAINER DO VIDEO/PLACEHOLDER */
     .video-placeholder {
       width: 100%;
       height: 450px;
@@ -67,28 +67,37 @@
       justify-content: center;
       cursor: pointer;
       border: 1px solid #242f3d;
-      background-size: cover;
-      background-position: center;
+      background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
       position: relative;
       overflow: hidden;
     }
 
-    /* Camada escura por cima da thumb para destacar o botão */
-    .video-placeholder::before {
-      content: "";
+    /* IMAGEM DA THUMB COM REGRAS DE SEGURANÇA E FALLBACK */
+    .thumb-bg {
       position: absolute;
-      top: 0; left: 0; right: 0; bottom: 0;
-      background: rgba(0, 0, 0, 0.4);
-      transition: background 0.3s;
+      top: 0; left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      z-index: 1;
+      opacity: 0.8;
+      transition: opacity 0.3s;
     }
 
-    .video-placeholder:hover::before {
-      background: rgba(0, 0, 0, 0.2);
+    .video-placeholder:hover .thumb-bg {
+      opacity: 1;
+    }
+
+    .overlay-dark {
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0, 0, 0, 0.35);
+      z-index: 2;
     }
 
     .play-btn-icon {
       position: relative;
-      z-index: 2;
+      z-index: 3;
       width: 65px;
       height: 65px;
       background: #24a1de;
@@ -117,7 +126,7 @@
 
     .play-txt {
       position: relative;
-      z-index: 2;
+      z-index: 3;
       color: #fff;
       margin-top: 12px;
       font-size: 14px;
@@ -220,12 +229,24 @@
       const ITENS_POR_PAGINA = 15;
       let containerAtivo = null;
 
-      // Função auxiliar para gerar a URL da Thumbnail da Bunny.net
       function obterThumbUrl(urlVideo) {
         if (urlVideo.includes('iframe.mediadelivery.net/embed/')) {
-          return urlVideo.replace('/embed/', '/thumbnail.jpg?thumbnail=true');
+          return urlVideo.replace('/embed/', '/thumbnail.jpg');
         }
         return '';
+      }
+
+      function gerarCardHTML(url) {
+        const thumbUrl = obterThumbUrl(url);
+        const imgTag = thumbUrl ? `<img src="${thumbUrl}" class="thumb-bg" onerror="this.style.display='none'" alt="Capa">` : '';
+        return `
+          <div class="video-placeholder" onclick="carregarVideoUnico(this.parentElement, '${url}')">
+            ${imgTag}
+            <div class="overlay-dark"></div>
+            <div class="play-btn-icon"></div>
+            <span class="play-txt">Clique para assistir</span>
+          </div>
+        `;
       }
 
       window.alternarAba = function(subcat) {
@@ -242,13 +263,7 @@
       window.carregarVideoUnico = function(el, url) {
         if (containerAtivo && containerAtivo !== el) {
           const oldUrl = containerAtivo.getAttribute('data-url');
-          const oldThumb = obterThumbUrl(oldUrl);
-          containerAtivo.innerHTML = `
-            <div class="video-placeholder" style="background-image: url('${oldThumb}');" onclick="carregarVideoUnico(this.parentElement, '${oldUrl}')">
-              <div class="play-btn-icon"></div>
-              <span class="play-txt">Clique para assistir</span>
-            </div>
-          `;
+          containerAtivo.innerHTML = gerarCardHTML(oldUrl);
         }
 
         const separator = url.includes('?') ? '&' : '?';
@@ -283,13 +298,9 @@
               </div>
             `;
           } else {
-            const thumbUrl = obterThumbUrl(url);
             return `
               <div class="media-card" data-url="${url}">
-                <div class="video-placeholder" style="background-image: url('${thumbUrl}');" onclick="carregarVideoUnico(this.parentElement, '${url}')">
-                  <div class="play-btn-icon"></div>
-                  <span class="play-txt">Clique para assistir</span>
-                </div>
+                ${gerarCardHTML(url)}
               </div>
             `;
           }
