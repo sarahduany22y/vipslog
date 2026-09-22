@@ -84,42 +84,6 @@ async function aplicarBloqueioOuLiberacao(categoriaId) {
   }
 }
 
-/* ==========================================
-   CONTROLE INTELIGENTE DE VÍDEOS (BUNNY CDN)
-   ========================================== */
-
-// 1. Escuta os eventos de play/pause vindos do player da Bunny
-window.addEventListener('message', function(event) {
-  if (!event.origin.includes('mediadelivery.net')) return;
-
-  try {
-    const data = typeof event.data === 'string' ? JSON.parse(event.data) : event.data;
-
-    // Quando o usuário der PLAY em um vídeo, pausa todos os outros ativos
-    if (data.event === 'play' || data.event === 'playing') {
-      const allIframes = document.querySelectorAll('iframe');
-
-      allIframes.forEach(iframe => {
-        if (iframe.contentWindow !== event.source) {
-          iframe.contentWindow.postMessage(JSON.stringify({ method: 'pause' }), '*');
-        }
-      });
-    }
-  } catch (e) {
-    // Ignora mensagens que não sejam no formato JSON
-  }
-});
-
-// 2. Pausa os vídeos se o usuário trocar de aba ou minimizar o navegador
-document.addEventListener('visibilitychange', function() {
-  if (document.hidden) {
-    const allIframes = document.querySelectorAll('iframe');
-    allIframes.forEach(iframe => {
-      iframe.contentWindow.postMessage(JSON.stringify({ method: 'pause' }), '*');
-    });
-  }
-});
-
 // Executa a checagem automaticamente quando a página carrega
 document.addEventListener('DOMContentLoaded', () => {
   const params = new URLSearchParams(window.location.search);
