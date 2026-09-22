@@ -155,12 +155,15 @@
       box-shadow: 0 6px 16px rgba(0,0,0,0.4);
     }
 
+    /* CABEÇALHO DO CARD AJUSTADO PARA CORRIGIR BUGS EM TELAS MENORES */
     .card-header {
       background: var(--card-header);
       padding: 15px 20px;
       display: flex;
       justify-content: space-between;
       align-items: center;
+      flex-wrap: wrap;
+      gap: 10px;
       border-bottom: 1px solid var(--border-color);
     }
 
@@ -169,6 +172,14 @@
       display: flex;
       align-items: center;
       gap: 8px;
+      margin: 0;
+    }
+
+    .card-badges {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
     }
 
     .plan-badge {
@@ -178,7 +189,7 @@
       border-radius: 12px;
       font-size: 11px;
       font-weight: bold;
-      margin-right: 5px;
+      white-space: nowrap;
     }
 
     .status-badge {
@@ -186,6 +197,8 @@
       border-radius: 15px;
       font-size: 12px;
       font-weight: bold;
+      white-space: nowrap;
+      display: inline-block;
     }
 
     .bloqueado { background: #2b3642; color: var(--text-sub); }
@@ -320,6 +333,8 @@
     @media (max-width: 600px) {
       .header-container { flex-direction: row; }
       .channel-details h1 { font-size: 15px; }
+      .card-header { padding: 12px 15px; }
+      .card-header h3 { font-size: 16px; }
     }
   </style>
 </head>
@@ -422,7 +437,7 @@
       <div class="card" id="card-amador">
         <div class="card-header">
           <h3>⭐Amador Premium⭐</h3>
-          <div>
+          <div class="card-badges">
             <span class="plan-badge">PLANO 1 ANO</span>
             <span class="status-badge bloqueado" id="badge-amador">🔒 Bloqueado</span>
           </div>
@@ -461,7 +476,7 @@
       <div class="card" id="card-cam">
         <div class="card-header">
           <h3>🔥SPYCAM VIP DARK🔥</h3>
-          <div>
+          <div class="card-badges">
             <span class="plan-badge">PLANO 1 ANO</span>
             <span class="status-badge bloqueado" id="badge-cam">🔒 Bloqueado</span>
           </div>
@@ -501,7 +516,7 @@
       <div class="card" id="card-hentai">
         <div class="card-header">
           <h3>✨Hentai Vip✨</h3>
-          <div>
+          <div class="card-badges">
             <span class="plan-badge">PLANO 1 ANO</span>
             <span class="status-badge bloqueado" id="badge-hentai">🔒 Bloqueado</span>
           </div>
@@ -699,7 +714,10 @@
           const btnBuy = document.getElementById(`buy-${cat}`);
           const btnAccess = document.getElementById(`access-${cat}`);
 
-          if (badge) { badge.innerText = "🔓 Liberado"; badge.className = "status-badge liberado"; }
+          if (badge) { 
+            badge.innerHTML = "🔓 Liberado"; 
+            badge.className = "status-badge liberado"; 
+          }
           if (btnBuy) btnBuy.style.display = "none";
           if (btnAccess) btnAccess.style.display = "block";
         });
