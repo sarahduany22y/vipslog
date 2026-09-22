@@ -275,44 +275,5 @@
       containerPaginacao.innerHTML = htmlPaginacao;
     }
   </script>
-
-  <!-- CONTROLE AUTOMÁTICO DE PAUSA ENTRE VÍDEOS -->
-  <script>
-    (function() {
-      let iframeAtivo = null;
-
-      window.addEventListener('blur', function() {
-        setTimeout(() => {
-          const iframeClicado = document.activeElement;
-          if (iframeClicado && iframeClicado.tagName === 'IFRAME') {
-            if (iframeAtivo && iframeAtivo !== iframeClicado) {
-              try {
-                const src = iframeAtivo.src;
-                iframeAtivo.src = '';
-                iframeAtivo.src = src;
-              } catch (e) {}
-            }
-            iframeAtivo = iframeClicado;
-          }
-        }, 100);
-      });
-
-      window.addEventListener('message', function(event) {
-        if (event.data) {
-          const dataStr = typeof event.data === 'string' ? event.data : JSON.stringify(event.data);
-          if (dataStr.includes('play') || dataStr.includes('playing')) {
-            const iframes = document.querySelectorAll('iframe');
-            iframes.forEach(iframe => {
-              if (iframe.contentWindow !== event.source && iframe === iframeAtivo) {
-                const src = iframe.src;
-                iframe.src = '';
-                iframe.src = src;
-              }
-            });
-          }
-        }
-      });
-    })();
-  </script>
 </body>
 </html>
