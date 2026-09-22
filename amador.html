@@ -7,7 +7,6 @@
   <link rel="stylesheet" href="estilo-telegram.css">
 
   <style>
-    /* Estilo responsivo para o seletor de múltiplas abas */
     .tabs-container {
       display: flex;
       flex-wrap: wrap;
@@ -39,7 +38,6 @@
       border-color: #24a1de;
     }
 
-    /* ESTILO PARA IMAGENS E VÍDEOS COM PLACEHOLDER */
     .media-card {
       margin-bottom: 20px;
       width: 100%;
@@ -58,10 +56,10 @@
       margin: 0 auto;
     }
 
+    /* PLACEHOLDER COM THUMBNAIL DE FUNDO */
     .video-placeholder {
       width: 100%;
       height: 450px;
-      background: #17212b;
       border-radius: 12px;
       display: flex;
       flex-direction: column;
@@ -69,14 +67,28 @@
       justify-content: center;
       cursor: pointer;
       border: 1px solid #242f3d;
+      background-size: cover;
+      background-position: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Camada escura por cima da thumb para destacar o botão */
+    .video-placeholder::before {
+      content: "";
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0, 0, 0, 0.4);
       transition: background 0.3s;
     }
 
-    .video-placeholder:hover {
-      background: #202b36;
+    .video-placeholder:hover::before {
+      background: rgba(0, 0, 0, 0.2);
     }
 
     .play-btn-icon {
+      position: relative;
+      z-index: 2;
       width: 65px;
       height: 65px;
       background: #24a1de;
@@ -84,7 +96,12 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      box-shadow: 0 0 15px rgba(36, 161, 222, 0.4);
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.6);
+      transition: transform 0.2s;
+    }
+
+    .video-placeholder:hover .play-btn-icon {
+      transform: scale(1.1);
     }
 
     .play-btn-icon::after {
@@ -96,6 +113,16 @@
       border-bottom: 10px solid transparent;
       border-left: 18px solid #fff;
       margin-left: 4px;
+    }
+
+    .play-txt {
+      position: relative;
+      z-index: 2;
+      color: #fff;
+      margin-top: 12px;
+      font-size: 14px;
+      font-weight: 600;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.8);
     }
 
     .media-card iframe {
@@ -157,7 +184,6 @@
       <a href="index.html" class="btn-voltar">← Início</a>
     </div>
 
-    <!-- SELETOR DE MÚLTIPLAS ABAS -->
     <div class="tabs-container">
       <button id="tab-amador" class="tab-btn active" onclick="alternarAba('amador')">📹 Amador - vazados - incesto</button>
       <button id="tab-omegle" class="tab-btn" onclick="alternarAba('omegle')">🎥 OmegleDark</button>
@@ -166,25 +192,18 @@
       <button id="tab-fotos" class="tab-btn" onclick="alternarAba('fotos')">🖼️ Fotos + vazadas</button>
     </div>
 
-    <!-- Container do Feed -->
     <div id="feed-container" class="telegram-feed"></div>
-
-    <!-- Controles de Paginação -->
     <div id="pagination-controls" class="pagination-container"></div>
   </main>
 
-  <!-- SCRIPTS DOS LINKS -->
   <script src="links-amador.js"></script>
   <script src="links-omegle.js"></script>
   <script src="links-funk.js"></script>
   <script src="links-tiktok.js"></script>
   <script src="links-flagras.js"></script>
   <script src="links-fotos-amador.js"></script>
-
-  <!-- SCRIPT PRINCIPAL DA APLICAÇÃO -->
   <script src="app.js"></script>
 
-  <!-- SCRIPT DE NAVEGAÇÃO E CARREGAMENTO SOB DEMANDA -->
   <script>
     document.addEventListener('DOMContentLoaded', () => {
       const subcategoriasAmador = {
@@ -201,6 +220,14 @@
       const ITENS_POR_PAGINA = 15;
       let containerAtivo = null;
 
+      // Função auxiliar para gerar a URL da Thumbnail da Bunny.net
+      function obterThumbUrl(urlVideo) {
+        if (urlVideo.includes('iframe.mediadelivery.net/embed/')) {
+          return urlVideo.replace('/embed/', '/thumbnail.jpg?thumbnail=true');
+        }
+        return '';
+      }
+
       window.alternarAba = function(subcat) {
         abaAtual = subcat;
         paginaAtual = 1;
@@ -213,18 +240,17 @@
       };
 
       window.carregarVideoUnico = function(el, url) {
-        // Se já existir outro vídeo rodando, restaura ele para placeholder (desliga o player anterior)
         if (containerAtivo && containerAtivo !== el) {
           const oldUrl = containerAtivo.getAttribute('data-url');
+          const oldThumb = obterThumbUrl(oldUrl);
           containerAtivo.innerHTML = `
-            <div class="video-placeholder" onclick="carregarVideoUnico(this.parentElement, '${oldUrl}')">
+            <div class="video-placeholder" style="background-image: url('${oldThumb}');" onclick="carregarVideoUnico(this.parentElement, '${oldUrl}')">
               <div class="play-btn-icon"></div>
-              <span style="color:#fff; margin-top:12px; font-size:14px; font-weight:600;">Clique para assistir</span>
+              <span class="play-txt">Clique para assistir</span>
             </div>
           `;
         }
 
-        // Carrega o iframe apenas no card clicado com autoplay
         const separator = url.includes('?') ? '&' : '?';
         el.innerHTML = `<iframe src="${url}${separator}autoplay=true" allow="autoplay" allowfullscreen></iframe>`;
         containerAtivo = el;
@@ -257,11 +283,12 @@
               </div>
             `;
           } else {
+            const thumbUrl = obterThumbUrl(url);
             return `
               <div class="media-card" data-url="${url}">
-                <div class="video-placeholder" onclick="carregarVideoUnico(this.parentElement, '${url}')">
+                <div class="video-placeholder" style="background-image: url('${thumbUrl}');" onclick="carregarVideoUnico(this.parentElement, '${url}')">
                   <div class="play-btn-icon"></div>
-                  <span style="color:#fff; margin-top:12px; font-size:14px; font-weight:600;">Clique para assistir</span>
+                  <span class="play-txt">Clique para assistir</span>
                 </div>
               </div>
             `;
