@@ -7,7 +7,6 @@
   <link rel="stylesheet" href="estilo-telegram.css">
 
   <style>
-    /* Estilo responsivo para o seletor de múltiplas abas */
     .tabs-container {
       display: flex;
       flex-wrap: wrap;
@@ -39,30 +38,85 @@
       border-color: #24a1de;
     }
 
-    /* ESTILO PARA IMAGENS SE ADAPTAREM PERFEITAMENTE SEM ROLAGEM */
-    .media-card {
-      margin-bottom: 20px;
-      width: 100%;
-      display: flex;
-      justify-content: center;
-    }
-
-    .media-card img {
-      width: 100%;
-      max-width: 600px;
-      height: auto;
-      max-height: 85vh;
-      object-fit: contain;
-      border-radius: 12px;
-      display: block;
+    /* GRID EM ESTILO XVIDEOS / PORNHUB (3 COLUNAS NO PC, 2 NO CELULAR) */
+    .video-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 20px;
+      padding: 10px;
+      max-width: 1200px;
       margin: 0 auto;
     }
 
-    .media-card iframe {
+    /* CARD DE VÍDEO SEPARADO E COM BORDAS DEFINIDAS */
+    .media-card {
+      background: #17212b;
+      border: 1px solid #242f3d;
+      border-radius: 10px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+      transition: transform 0.2s, border-color 0.2s;
+    }
+
+    .media-card:hover {
+      transform: translateY(-3px);
+      border-color: #24a1de;
+    }
+
+    /* CONTAINER DO PLAYER/THUMBNAIL */
+    .video-wrapper {
+      position: relative;
       width: 100%;
-      height: 450px;
+      aspect-ratio: 16 / 9;
+      background: #000;
+      cursor: pointer;
+    }
+
+    .video-wrapper img.thumb {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    /* BOTÃO DE PLAY POR CIMA DA PRÉVIA */
+    .play-btn-overlay {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 50px;
+      height: 50px;
+      background: rgba(36, 161, 222, 0.85);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      font-size: 20px;
+      box-shadow: 0 0 15px rgba(0,0,0,0.5);
+      transition: scale 0.2s;
+    }
+
+    .video-wrapper:hover .play-btn-overlay {
+      scale: 1.1;
+      background: #24a1de;
+    }
+
+    .video-wrapper iframe {
+      width: 100%;
+      height: 100%;
       border: none;
-      border-radius: 12px;
+    }
+
+    /* AJUSTE PARA FOTOS */
+    .media-card img.foto-galeria {
+      width: 100%;
+      height: 250px;
+      object-fit: cover;
+      display: block;
     }
   </style>
 
@@ -74,7 +128,6 @@
     const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
     (async function protegerAcesso() {
-      // Oculta a página durante a verificação
       document.documentElement.style.display = 'none';
 
       const { data: { session } } = await _supabase.auth.getSession();
@@ -85,7 +138,6 @@
         return;
       }
 
-      // Busca as compras da categoria 'amador'
       const { data: compras, error } = await _supabase
         .from('compras_usuario')
         .select('data_expiracao')
@@ -98,7 +150,6 @@
         return;
       }
 
-      // Validação sem erro de fuso horário (UTC)
       const agora = new Date();
       const temAcessoValido = compras.some(item => new Date(item.data_expiracao) > agora);
 
@@ -108,7 +159,6 @@
         return;
       }
 
-      // Libera a exibição da página
       document.documentElement.style.display = 'block';
     })();
   </script>
@@ -130,8 +180,8 @@
       <button id="tab-fotos" class="tab-btn" onclick="alternarAba('fotos')">🖼️ Fotos + vazadas</button>
     </div>
 
-    <!-- Container do Feed -->
-    <div id="feed-container" class="telegram-feed"></div>
+    <!-- Container do Feed em Grid -->
+    <div id="feed-container" class="video-grid"></div>
 
     <!-- Controles de Paginação -->
     <div id="pagination-controls" class="pagination-container"></div>
@@ -162,7 +212,7 @@
 
       let abaAtual = 'amador';
       let paginaAtual = 1;
-      const ITENS_POR_PAGINA = 15;
+      const ITENS_POR_PAGINA = 10; // Mantido em 10 itens por página como solicitado
 
       window.alternarAba = function(subcat) {
         abaAtual = subcat;
@@ -175,6 +225,30 @@
         renderizarFeed();
       };
 
+      // Gera a imagem de prévia (thumbnail) diretamente do link Iframe do Bunny Stream
+      function obterThumbnailBunny(urlIframe) {
+        if (urlIframe.includes('iframe.mediadelivery.net')) {
+          // Extrai LIBRARY_ID e VIDEO_ID da URL do embed do Bunny
+          const partes = urlIframe.split('/');
+          const libraryId = partes[4];
+          const videoId = partes[5]?.split('?')[0];
+          if (libraryId && videoId) {
+            return `https://vz-${libraryId}.b-cdn.net/${videoId}/thumbnail.jpg`;
+          }
+        }
+        return null;
+      }
+
+      // Troca a foto de prévia pelo Player quando o usuário clica
+      window.iniciarPlayer = function(wrapper, url) {
+        // Pausa qualquer outro vídeo que já esteja rodando na tela
+        document.querySelectorAll('.video-wrapper iframe').forEach(iframe => {
+          iframe.src = iframe.src;
+        });
+
+        wrapper.innerHTML = `<iframe src="${url}?autoplay=true" allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture" allowfullscreen></iframe>`;
+      };
+
       function renderizarFeed() {
         const container = document.getElementById('feed-container');
         const paginationControls = document.getElementById('pagination-controls');
@@ -183,7 +257,7 @@
         if (!container) return;
 
         if (lista.length === 0) {
-          container.innerHTML = '<p style="text-align:center; color:#fff; padding: 20px;">Nenhum conteúdo nesta aba.</p>';
+          container.innerHTML = '<p style="text-align:center; color:#fff; padding: 20px; grid-column: 1/-1;">Nenhum conteúdo nesta aba.</p>';
           if (paginationControls) paginationControls.innerHTML = '';
           return;
         }
@@ -193,20 +267,34 @@
         const fim = inicio + ITENS_POR_PAGINA;
         const itensPagina = lista.slice(inicio, fim);
 
-        // Renderização inteligente: usa <img> para a aba de Fotos e <iframe> para vídeos
         container.innerHTML = itensPagina.map(url => {
           if (abaAtual === 'fotos' || url.match(/\.(jpeg|jpg|gif|png|webp)($|\?)/i)) {
             return `
               <div class="media-card">
-                <img src="${url}" loading="lazy" alt="Foto Galeria" />
+                <img src="${url}" class="foto-galeria" loading="lazy" alt="Foto Galeria" />
               </div>
             `;
           } else {
-            return `
-              <div class="media-card">
-                <iframe src="${url}" allowfullscreen loading="lazy"></iframe>
-              </div>
-            `;
+            const thumbUrl = obterThumbnailBunny(url);
+            
+            if (thumbUrl) {
+              return `
+                <div class="media-card">
+                  <div class="video-wrapper" onclick="iniciarPlayer(this, '${url}')">
+                    <img src="${thumbUrl}" class="thumb" loading="lazy" alt="Prévia do vídeo" />
+                    <div class="play-btn-overlay">▶</div>
+                  </div>
+                </div>
+              `;
+            } else {
+              return `
+                <div class="media-card">
+                  <div class="video-wrapper">
+                    <iframe src="${url}" allowfullscreen loading="lazy"></iframe>
+                  </div>
+                </div>
+              `;
+            }
           }
         }).join('');
 
