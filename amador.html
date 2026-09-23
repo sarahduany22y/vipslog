@@ -7,7 +7,6 @@
   <link rel="stylesheet" href="estilo-telegram.css">
 
   <style>
-    /* BOTOES DAS ABAS */
     .tabs-container {
       display: flex;
       flex-wrap: wrap;
@@ -39,10 +38,10 @@
       border-color: #24a1de;
     }
 
-    /* GRID RESPONSIVO ESTILO PORNHUB/XVIDEOS */
+    /* GRELHA RESPONSIVA: 2 COLUNAS NO PC, 1 COLUNA NO CELULAR */
     .video-grid {
       display: grid;
-      grid-template-columns: repeat(2, 1fr); /* Padrão Desktop: 2 Colunas */
+      grid-template-columns: repeat(2, 1fr);
       gap: 15px;
       padding: 10px;
       max-width: 1000px;
@@ -52,18 +51,18 @@
 
     @media (min-width: 900px) {
       .video-grid {
-        grid-template-columns: repeat(3, 1fr); /* Notebook/PC grande: 3 Colunas */
+        grid-template-columns: repeat(2, 1fr);
       }
     }
 
     @media (max-width: 600px) {
       .video-grid {
-        grid-template-columns: 1fr; /* Celular: Exatamente 1 Coluna */
+        grid-template-columns: 1fr;
         padding: 5px;
       }
     }
 
-    /* CARDS INDIVIDUAIS DOS VÍDEOS */
+    /* CARTÃO DE VÍDEO */
     .media-card {
       background: #17212b;
       border: 1px solid #242f3d;
@@ -72,46 +71,36 @@
       display: flex;
       flex-direction: column;
       box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-      transition: transform 0.2s, border-color 0.2s;
     }
 
-    .media-card:hover {
-      border-color: #24a1de;
-    }
-
-    /* CONTAINER DO VÍDEO/CAPA (PROPORÇÃO 16:9) */
     .video-wrapper {
       position: relative;
       width: 100%;
       aspect-ratio: 16 / 9;
-      background: #000;
-      cursor: pointer;
-    }
-
-    .video-wrapper img.thumb {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      display: block;
-    }
-
-    /* ÍCONE DE PLAY NO CENTRO DA CAPA */
-    .play-btn-overlay {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      width: 48px;
-      height: 48px;
-      background: rgba(36, 161, 222, 0.9);
-      border-radius: 50%;
+      background: #0e1621;
       display: flex;
       align-items: center;
       justify-content: center;
+    }
+
+    .play-card-btn {
+      background: #24a1de;
       color: #fff;
-      font-size: 18px;
-      pointer-events: none;
-      box-shadow: 0 0 12px rgba(0,0,0,0.6);
+      border: none;
+      padding: 12px 24px;
+      font-size: 15px;
+      font-weight: bold;
+      border-radius: 6px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: background 0.2s, transform 0.2s;
+    }
+
+    .play-card-btn:hover {
+      background: #1d82b4;
+      transform: scale(1.03);
     }
 
     .video-wrapper iframe {
@@ -120,7 +109,6 @@
       border: none;
     }
 
-    /* ESTILO PARA ABA DE FOTOS */
     .media-card img.foto-galeria {
       width: 100%;
       height: 240px;
@@ -189,14 +177,14 @@
       <button id="tab-fotos" class="tab-btn" onclick="alternarAba('fotos')">🖼️ Fotos + vazadas</button>
     </div>
 
-    <!-- Container em Grade/Grid -->
+    <!-- Container do Feed em Grelha -->
     <div id="feed-container" class="video-grid"></div>
 
     <!-- Controles de Paginação -->
     <div id="pagination-controls" class="pagination-container"></div>
   </main>
 
-  <!-- SCRIPTS DOS LINKS DE MÍDIA -->
+  <!-- SCRIPTS DOS LINKS -->
   <script src="links-amador.js"></script>
   <script src="links-omegle.js"></script>
   <script src="links-funk.js"></script>
@@ -207,7 +195,7 @@
   <!-- SCRIPT PRINCIPAL DA APLICAÇÃO -->
   <script src="app.js"></script>
 
-  <!-- SCRIPT DE NAVEGAÇÃO, THUMBNAILS E PAGINAÇÃO -->
+  <!-- SCRIPT DE NAVEGAÇÃO E CARREGAMENTO DE VÍDEOS -->
   <script>
     document.addEventListener('DOMContentLoaded', () => {
       const subcategoriasAmador = {
@@ -221,7 +209,7 @@
 
       let abaAtual = 'amador';
       let paginaAtual = 1;
-      const ITENS_POR_PAGINA = 10; // Mantido 10 itens por página
+      const ITENS_POR_PAGINA = 10;
 
       window.alternarAba = function(subcat) {
         abaAtual = subcat;
@@ -234,27 +222,21 @@
         renderizarFeed();
       };
 
-      // EXTRAI A THUMBNAIL PADRÃO DO BUNNY STREAM
-      function obterThumbnailBunny(urlIframe) {
-        if (typeof urlIframe === 'string' && urlIframe.includes('iframe.mediadelivery.net')) {
-          const partes = urlIframe.split('/');
-          const libraryId = partes[4];
-          const videoId = partes[5] ? partes[5].split('?')[0] : null;
-          if (libraryId && videoId) {
-            return `https://vz-${libraryId}.b-cdn.net/${videoId}/thumbnail.jpg`;
-          }
-        }
-        return null;
-      }
-
-      // INICIA O PLAYER AO CLICAR E PAUSA OS DEMAIS
-      window.iniciarPlayer = function(wrapper, url) {
+      // REGRA: Carrega o Iframe apenas ao clicar e remove qualquer outro Iframe ativo para evitar múltiplos áudios
+      window.carregarIframe = function(wrapper, url) {
         document.querySelectorAll('.video-wrapper iframe').forEach(iframe => {
-          iframe.src = iframe.src;
+          const containerPai = iframe.parentElement;
+          const urlOriginal = iframe.getAttribute('data-url');
+          if (containerPai && urlOriginal) {
+            containerPai.innerHTML = `
+              <button class="play-card-btn" onclick="carregarIframe(this.parentElement, '${urlOriginal}')">
+                ▶ Assustar / Reproduzir Vídeo
+              </button>[cite: 5]`;
+          }
         });
 
         const urlComAutoplay = url.includes('?') ? `${url}&autoplay=true` : `${url}?autoplay=true`;
-        wrapper.innerHTML = `<iframe src="${urlComAutoplay}" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`;
+        wrapper.innerHTML = `<iframe src="${urlComAutoplay}" data-url="${url}" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`;
       };
 
       function renderizarFeed() {
@@ -275,7 +257,7 @@
         const fim = inicio + ITENS_POR_PAGINA;
         const itensPagina = lista.slice(inicio, fim);
 
-        container.innerHTML = itensPagina.map(url => {
+        container.innerHTML = itensPagina.map((url, index) => {
           if (abaAtual === 'fotos' || (typeof url === 'string' && url.match(/\.(jpeg|jpg|gif|png|webp)($|\?)/i))) {
             return `
               <div class="media-card">
@@ -283,26 +265,15 @@
               </div>
             `;
           } else {
-            const thumbUrl = obterThumbnailBunny(url);
-            
-            if (thumbUrl) {
-              return `
-                <div class="media-card">
-                  <div class="video-wrapper" onclick="iniciarPlayer(this, '${url}')">
-                    <img src="${thumbUrl}" class="thumb" loading="lazy" onerror="this.onerror=null; this.parentElement.innerHTML='<iframe src=\\'${url}\\' allowfullscreen loading=\\'lazy\\'></iframe>';" />
-                    <div class="play-btn-overlay">▶</div>
-                  </div>
+            return `
+              <div class="media-card">
+                <div class="video-wrapper">
+                  <button class="play-card-btn" onclick="carregarIframe(this.parentElement, '${url}')">
+                    ▶ Reproduzir Vídeo #${inicio + index + 1}
+                  </button>
                 </div>
-              `;
-            } else {
-              return `
-                <div class="media-card">
-                  <div class="video-wrapper">
-                    <iframe src="${url}" allowfullscreen loading="lazy"></iframe>
-                  </div>
-                </div>
-              `;
-            }
+              </div>
+            `;
           }
         }).join('');
 
