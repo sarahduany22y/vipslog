@@ -1,11 +1,11 @@
 // Configuração do Supabase
 const SUPABASE_URL = 'https://xjvkyofktqojuyequuxe.supabase.co';
-const SUPABASE_ANON_KEY = 'sb_publishable__w-crANhzjiYKJuh2AX39w_Kz1-Rf74'; // Certifique-se de manter sua chave anon original aqui se necessário
+const SUPABASE_ANON_KEY = 'sb_publishable__w-crANhzjiYKJuh2AX39w_Kz1-Rf74'; // Certifique-se de manter sua chave anon original aqui se necessário[cite: 5]
 
 // Inicializa o cliente do Supabase se a biblioteca estiver carregada
 const _supabase = typeof supabase !== 'undefined' 
   ? supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY) 
-  : null;
+  : null;[cite: 5]
 
 /**
  * Função para verificar se o usuário atual tem acesso a uma categoria específica
