@@ -1,5 +1,5 @@
 // Configuração global
-const ITENS_POR_PAGINA = 12; // Altere para a quantidade de mídias que deseja exibir por página
+const ITENS_POR_PAGINA = 12; // Altere para a quantidade de mídias que deseja exibir por página[cite: 6]
 
 // Função principal que roda ao carregar a página
 document.addEventListener("DOMContentLoaded", () => {
@@ -9,7 +9,7 @@ document.addEventListener("DOMContentLoaded", () => {
 function inicializarPagina() {
     // 1. Obtém os parâmetros da URL (ex: ?aba=videos&pagina=5)
     const urlParams = new URLSearchParams(window.location.search);
-    const abaAtual = urlParams.get('aba') || 'videos'; // Categoria padrão é 'videos'
+    const abaAtual = urlParams.get('aba') || 'videos'; // Categoria padrão é 'videos'[cite: 6]
     const paginaAtual = parseInt(urlParams.get('pagina')) || 1;
 
     // 2. Seleciona a lista de dados correspondente à aba/categoria selecionada
@@ -18,8 +18,9 @@ function inicializarPagina() {
         listaMidias = window.linksHentai;
     } else if (abaAtual === 'fotos' && window.fotosHentai) {
         listaMidias = window.fotosHentai;
+    } else if (abaAtual === 'amador' && window.linksAmador) {
+        listaMidias = window.linksAmador;
     }
-    // Adicione outras categorias/abas aqui conforme necessário
 
     // 3. Renderiza os itens e a paginação se houver dados
     if (listaMidias && listaMidias.length > 0) {
@@ -48,15 +49,26 @@ function renderizarConteudo(listaMidias, paginaAtual) {
     // Gera o HTML dos itens
     let html = '';
     itensPaginaAtual.forEach(item => {
-        // Exemplo genérico de card/mídia (ajuste conforme seu HTML/layout original)
-        html += `
-            <div class="card-midia">
-                <a href="${item.link || item.url || '#'}" target="_blank">
-                    <img src="${item.thumb || item.imagem || ''}" alt="${item.titulo || 'Mídia'}" />
-                    <h3>${item.titulo || 'Sem título'}</h3>
-                </a>
-            </div>
-        `;
+        const url = typeof item === 'string' ? item : (item.link || item.url || '#');
+        const thumb = typeof item === 'object' ? (item.thumb || item.imagem || '') : '';
+        const titulo = typeof item === 'object' ? (item.titulo || 'Mídia') : 'Mídia';
+
+        if (url.includes('iframe.mediadelivery.net')) {
+            html += `
+                <div class="card-midia">
+                    <iframe src="${url}" loading="lazy" frameborder="0" allowfullscreen></iframe>
+                </div>
+            `;
+        } else {
+            html += `
+                <div class="card-midia">
+                    <a href="${url}" target="_blank">
+                        ${thumb ? `<img src="${thumb}" alt="${titulo}" />` : ''}
+                        <h3>${titulo}</h3>
+                    </a>
+                </div>
+            `;
+        }
     });
 
     containerConteudo.innerHTML = html;
