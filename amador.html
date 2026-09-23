@@ -7,6 +7,7 @@
   <link rel="stylesheet" href="estilo-telegram.css">
 
   <style>
+    /* BOTOES DAS ABAS */
     .tabs-container {
       display: flex;
       flex-wrap: wrap;
@@ -38,7 +39,7 @@
       border-color: #24a1de;
     }
 
-    /* GRELHA RESPONSIVA: 2 COLUNAS NO PC, 1 COLUNA NO CELULAR */
+    /* GRID RESPONSIVO: 2 COLUNAS NO DESKTOP, 1 COLUNA NO CELULAR */
     .video-grid {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
@@ -62,7 +63,7 @@
       }
     }
 
-    /* CARTÃO DE VÍDEO */
+    /* CARD INDIVIDUAL */
     .media-card {
       background: #17212b;
       border: 1px solid #242f3d;
@@ -77,30 +78,7 @@
       position: relative;
       width: 100%;
       aspect-ratio: 16 / 9;
-      background: #0e1621;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .play-card-btn {
-      background: #24a1de;
-      color: #fff;
-      border: none;
-      padding: 12px 24px;
-      font-size: 15px;
-      font-weight: bold;
-      border-radius: 6px;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      transition: background 0.2s, transform 0.2s;
-    }
-
-    .play-card-btn:hover {
-      background: #1d82b4;
-      transform: scale(1.03);
+      background: #000;
     }
 
     .video-wrapper iframe {
@@ -109,6 +87,7 @@
       border: none;
     }
 
+    /* FOTOS DA GALERIA */
     .media-card img.foto-galeria {
       width: 100%;
       height: 240px;
@@ -117,48 +96,8 @@
     }
   </style>
 
-  <!-- TRAVA DE SEGURANÇA SUPABASE -->
+  <!-- CARREGA A BIBLIOTECA DO SUPABASE -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script>
-    const SUPABASE_URL = 'https://xjvkyofktqojuyequuxe.supabase.co';
-    const SUPABASE_ANON_KEY = 'sb_publishable__w-crANhzjiYKJuh2AX39w_Kz1-Rf74';
-    const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-
-    (async function protegerAcesso() {
-      document.documentElement.style.display = 'none';
-
-      const { data: { session } } = await _supabase.auth.getSession();
-
-      if (!session) {
-        alert("Você precisa estar logado para acessar esta galeria.");
-        window.location.href = 'index.html';
-        return;
-      }
-
-      const { data: compras, error } = await _supabase
-        .from('compras_usuario')
-        .select('data_expiracao')
-        .eq('user_id', session.user.id)
-        .eq('categoria_id', 'amador');
-
-      if (error || !compras || compras.length === 0) {
-        alert("Você não possui acesso a esta galeria.");
-        window.location.href = 'index.html';
-        return;
-      }
-
-      const agora = new Date();
-      const temAcessoValido = compras.some(item => new Date(item.data_expiracao) > agora);
-
-      if (!temAcessoValido) {
-        alert("Seu plano para esta galeria expirou.");
-        window.location.href = 'index.html';
-        return;
-      }
-
-      document.documentElement.style.display = 'block';
-    })();
-  </script>
 </head>
 <body>
 
@@ -168,7 +107,7 @@
       <a href="index.html" class="btn-voltar">← Início</a>
     </div>
 
-    <!-- SELETOR DE MÚLTIPLAS ABAS -->
+    <!-- ABAS NAVEGÁVEIS -->
     <div class="tabs-container">
       <button id="tab-amador" class="tab-btn active" onclick="alternarAba('amador')">📹 Amador - vazados - incesto</button>
       <button id="tab-omegle" class="tab-btn" onclick="alternarAba('omegle')">🎥 OmegleDark</button>
@@ -177,14 +116,14 @@
       <button id="tab-fotos" class="tab-btn" onclick="alternarAba('fotos')">🖼️ Fotos + vazadas</button>
     </div>
 
-    <!-- Container do Feed em Grelha -->
+    <!-- FEED DOS VÍDEOS EM GRELHA -->
     <div id="feed-container" class="video-grid"></div>
 
-    <!-- Controles de Paginação -->
+    <!-- CONTROLES DE PAGINAÇÃO -->
     <div id="pagination-controls" class="pagination-container"></div>
   </main>
 
-  <!-- SCRIPTS DOS LINKS -->
+  <!-- ARQUIVOS DE MÍDIA E SCRIPT PRINCIPAL -->
   <script src="links-amador.js"></script>
   <script src="links-omegle.js"></script>
   <script src="links-funk.js"></script>
@@ -192,12 +131,47 @@
   <script src="links-flagras.js"></script>
   <script src="links-fotos-amador.js"></script>
 
-  <!-- SCRIPT PRINCIPAL DA APLICAÇÃO -->
+  <!-- CARREGA O SEU APP.JS (MANTÉM TODA A LÓGICA DO SUPABASE INTCTA) -->
   <script src="app.js"></script>
 
-  <!-- SCRIPT DE NAVEGAÇÃO E CARREGAMENTO DE VÍDEOS -->
+  <!-- NAVEGAÇÃO E EXIBIÇÃO OTIMIZADA DOS VÍDEOS -->
   <script>
     document.addEventListener('DOMContentLoaded', () => {
+
+      // PROTEÇÃO DE ACESSO USANDO O SUPABASE JÁ INICIALIZADO NO APP.JS
+      (async function checarPermissao() {
+        if (typeof _supabase === 'undefined' || !_supabase) return;
+
+        const { data: { session } } = await _supabase.auth.getSession();
+
+        if (!session) {
+          alert("Você precisa estar logado para acessar esta galeria.");
+          window.location.href = 'index.html';
+          return;
+        }
+
+        const { data: compras, error } = await _supabase
+          .from('compras_usuario')
+          .select('data_expiracao')
+          .eq('user_id', session.user.id)
+          .eq('categoria_id', 'amador');
+
+        if (error || !compras || compras.length === 0) {
+          alert("Você não possui acesso a esta galeria.");
+          window.location.href = 'index.html';
+          return;
+        }
+
+        const agora = new Date();
+        const temAcessoValido = compras.some(item => new Date(item.data_expiracao) > agora);
+
+        if (!temAcessoValido) {
+          alert("Seu plano para esta galeria expirou.");
+          window.location.href = 'index.html';
+          return;
+        }
+      })();
+
       const subcategoriasAmador = {
         amador: window.linksAmador || [],
         omegle: window.linksOmegle || [],
@@ -222,23 +196,6 @@
         renderizarFeed();
       };
 
-      // REGRA: Carrega o Iframe apenas ao clicar e remove qualquer outro Iframe ativo para evitar múltiplos áudios
-      window.carregarIframe = function(wrapper, url) {
-        document.querySelectorAll('.video-wrapper iframe').forEach(iframe => {
-          const containerPai = iframe.parentElement;
-          const urlOriginal = iframe.getAttribute('data-url');
-          if (containerPai && urlOriginal) {
-            containerPai.innerHTML = `
-              <button class="play-card-btn" onclick="carregarIframe(this.parentElement, '${urlOriginal}')">
-                ▶ Assustar / Reproduzir Vídeo
-              </button>[cite: 5]`;
-          }
-        });
-
-        const urlComAutoplay = url.includes('?') ? `${url}&autoplay=true` : `${url}?autoplay=true`;
-        wrapper.innerHTML = `<iframe src="${urlComAutoplay}" data-url="${url}" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`;
-      };
-
       function renderizarFeed() {
         const container = document.getElementById('feed-container');
         const paginationControls = document.getElementById('pagination-controls');
@@ -257,7 +214,7 @@
         const fim = inicio + ITENS_POR_PAGINA;
         const itensPagina = lista.slice(inicio, fim);
 
-        container.innerHTML = itensPagina.map((url, index) => {
+        container.innerHTML = itensPagina.map(url => {
           if (abaAtual === 'fotos' || (typeof url === 'string' && url.match(/\.(jpeg|jpg|gif|png|webp)($|\?)/i))) {
             return `
               <div class="media-card">
@@ -265,12 +222,13 @@
               </div>
             `;
           } else {
+            // Remove o autoplay padrão para carregar o player nativo com capa do Bunny sem dar play sozinho
+            const urlSemAutoplay = url.replace('&autoplay=true', '').replace('?autoplay=true', '');
+            
             return `
               <div class="media-card">
                 <div class="video-wrapper">
-                  <button class="play-card-btn" onclick="carregarIframe(this.parentElement, '${url}')">
-                    ▶ Reproduzir Vídeo #${inicio + index + 1}
-                  </button>
+                  <iframe src="${urlSemAutoplay}" loading="lazy" allow="accelerometer; gyroscope; encrypted-media; picture-in-picture" allowfullscreen></iframe>
                 </div>
               </div>
             `;
@@ -279,17 +237,13 @@
 
         if (paginationControls && totalPaginas > 1) {
           let btnHTML = `<div style="display:flex; justify-content:center; align-items:center; gap:10px; margin: 20px 0;">`;
-          
           if (paginaAtual > 1) {
             btnHTML += `<button class="tab-btn" onclick="mudarPagina(${paginaAtual - 1})">← Anterior</button>`;
           }
-          
           btnHTML += `<span style="color:#fff; font-weight:bold;">Página ${paginaAtual} de ${totalPaginas}</span>`;
-
           if (paginaAtual < totalPaginas) {
             btnHTML += `<button class="tab-btn" onclick="mudarPagina(${paginaAtual + 1})">Próxima →</button>`;
           }
-          
           btnHTML += `</div>`;
           paginationControls.innerHTML = btnHTML;
         } else if (paginationControls) {
