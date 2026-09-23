@@ -1421,5 +1421,4 @@ window.linksAmador = [
   "https://iframe.mediadelivery.net/embed/756775/d960396c-bce3-4143-8a29-348121170816",
   "https://iframe.mediadelivery.net/embed/756775/7cf073ed-3315-4e30-a7da-e1e954ac228e",
   "https://iframe.mediadelivery.net/embed/756775/fd187604-ab4f-4e62-a399-2cc207087cfb",
-  "https://iframe.mediadelivery.net/embed/756775/153524e4-8f6b-466c-af65-a36ea0c07ae6"
-];
+  "https://iframe.mediadelivery.net/embed/756775/153524e4-8f6b-466c-af65-a36ea0c07ae6"];
