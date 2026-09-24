@@ -39,7 +39,7 @@
       border-color: #24a1de;
     }
 
-    /* GRID RESPONSIVO: 2 COLUNAS NO DESKTOP, 1 COLUNA NO CELULAR */
+    /* GRID RESPONSIVO */
     .video-grid {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
@@ -116,14 +116,21 @@
       <button id="tab-fotos" class="tab-btn" onclick="alternarAba('fotos')">🖼️ Fotos + vazadas</button>
     </div>
 
-    <!-- FEED DOS VÍDEOS EM GRELHA -->
-    <div id="feed-container" class="video-grid"></div>
+    <!-- CONTAINER DE CONTEÚDO LIBERADO -->
+    <div id="conteudo-liberado">
+      <div id="feed-container" class="video-grid"></div>
+      <div id="pagination-controls" class="pagination-container"></div>
+    </div>
 
-    <!-- CONTROLES DE PAGINAÇÃO -->
-    <div id="pagination-controls" class="pagination-container"></div>
+    <!-- MENSAGEM CASO O USUÁRIO NÃO TENHA ACESSO -->
+    <div id="conteudo-bloqueado" style="display: none; text-align: center; color: #fff; padding: 40px 20px;">
+      <h3>🔒 Conteúdo Exclusivo VIP</h3>
+      <p style="margin: 10px 0 20px; color: #7f91a4;">Você precisa adquirir o acesso para visualizar esta galeria.</p>
+      <a href="index.html" id="btn-comprar" class="tab-btn active" style="text-decoration: none; display: inline-block;">Adquirir Acesso</a>
+    </div>
   </main>
 
-  <!-- ARQUIVOS DE MÍDIA E SCRIPT PRINCIPAL -->
+  <!-- ARQUIVOS DE MÍDIA -->
   <script src="links-amador.js"></script>
   <script src="links-omegle.js"></script>
   <script src="links-funk.js"></script>
@@ -131,46 +138,17 @@
   <script src="links-flagras.js"></script>
   <script src="links-fotos-amador.js"></script>
 
-  <!-- CARREGA O SEU APP.JS (MANTÉM TODA A LÓGICA DO SUPABASE INTCTA) -->
+  <!-- DEFINE A CATEGORIA CORRETA ANTES DO APP.JS -->
+  <script>
+    window.categoriaId = 'amador';
+  </script>
+
+  <!-- CARREGA O APP.JS COM SUPABASE -->
   <script src="app.js"></script>
 
-  <!-- NAVEGAÇÃO E EXIBIÇÃO OTIMIZADA DOS VÍDEOS -->
+  <!-- NAVEGAÇÃO E EXIBIÇÃO DOS VÍDEOS -->
   <script>
     document.addEventListener('DOMContentLoaded', () => {
-
-      // PROTEÇÃO DE ACESSO USANDO O SUPABASE JÁ INICIALIZADO NO APP.JS
-      (async function checarPermissao() {
-        if (typeof _supabase === 'undefined' || !_supabase) return;
-
-        const { data: { session } } = await _supabase.auth.getSession();
-
-        if (!session) {
-          alert("Você precisa estar logado para acessar esta galeria.");
-          window.location.href = 'index.html';
-          return;
-        }
-
-        const { data: compras, error } = await _supabase
-          .from('compras_usuario')
-          .select('data_expiracao')
-          .eq('user_id', session.user.id)
-          .eq('categoria_id', 'amador');
-
-        if (error || !compras || compras.length === 0) {
-          alert("Você não possui acesso a esta galeria.");
-          window.location.href = 'index.html';
-          return;
-        }
-
-        const agora = new Date();
-        const temAcessoValido = compras.some(item => new Date(item.data_expiracao) > agora);
-
-        if (!temAcessoValido) {
-          alert("Seu plano para esta galeria expirou.");
-          window.location.href = 'index.html';
-          return;
-        }
-      })();
 
       const subcategoriasAmador = {
         amador: window.linksAmador || [],
@@ -222,13 +200,10 @@
               </div>
             `;
           } else {
-            // Remove o autoplay padrão para carregar o player nativo com capa do Bunny sem dar play sozinho
-            const urlSemAutoplay = url.replace('&autoplay=true', '').replace('?autoplay=true', '');
-            
             return `
               <div class="media-card">
                 <div class="video-wrapper">
-                  <iframe src="${urlSemAutoplay}" loading="lazy" allow="accelerometer; gyroscope; encrypted-media; picture-in-picture" allowfullscreen></iframe>
+                  <iframe src="${url}" loading="lazy" allow="accelerometer; gyroscope; encrypted-media; picture-in-picture" allowfullscreen></iframe>
                 </div>
               </div>
             `;
