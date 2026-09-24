@@ -1,172 +1,99 @@
-/* ========================================================= */
-/* ESTILO GLOBAL E DADOS TELEGRAM VIP                        */
-/* ========================================================= */
-
-:root {
-  --bg-dark: #0e1621;
-  --card-bg: #17212b;
-  --card-header: #202b36;
-  --telegram-blue: #24a1de;
-  --telegram-hover: #1c8adb;
-  --green-btn: #22c55e;
-  --text-main: #f5f5f5;
-  --text-sub: #7f91a4;
-  --border-color: #242f3d;
-}
-
+/* Reset básico */
 * {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
 }
 
-html, body {
-  overflow-x: hidden;
-  touch-action: manipulation;
+body {
+  background-color: #0e1621;
+  color: #ffffff;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  display: flex;
+  justify-content: center;
+  min-height: 100vh;
+  padding: 20px 10px;
 }
 
-body {
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-  background-color: var(--bg-dark);
-  color: var(--text-main);
-  padding-bottom: 60px;
+/* Container Principal */
+.telegram-feed {
+  width: 100%;
+  max-width: 650px;
   display: flex;
   flex-direction: column;
-  min-height: 100vh;
+  gap: 16px;
 }
 
-/* HEADER FIXO ESTILO CANAL TELEGRAM */
-header {
-  background: var(--card-bg);
-  border-bottom: 1px solid var(--border-color);
-  padding: 12px 16px;
-  position: sticky;
-  top: 0;
-  z-index: 90;
-}
-
-.header-container {
-  max-width: 900px;
-  margin: 0 auto;
+/* Cabeçalho */
+.header-page {
   display: flex;
   justify-content: space-between;
   align-items: center;
-}
-
-.channel-info {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.channel-avatar {
-  width: 42px;
-  height: 42px;
-  border-radius: 50%;
-  background: linear-gradient(135deg, #0088cc, #24a1de);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 18px;
-  font-weight: bold;
-}
-
-.channel-details h1 {
-  font-size: 16px;
-  display: flex;
-  align-items: center;
-  gap: 5px;
-}
-
-.verified-badge {
-  color: var(--telegram-blue);
-  font-size: 15px;
-}
-
-.channel-stats {
-  font-size: 11px;
-  color: var(--text-sub);
-}
-
-.auth-btn {
-  background: var(--telegram-blue);
-  color: #fff;
-  border: none;
-  padding: 8px 14px;
-  border-radius: 20px;
-  font-weight: 600;
-  font-size: 13px;
-  cursor: pointer;
-  transition: background 0.2s;
-}
-
-.auth-btn:hover {
-  background: var(--telegram-hover);
-}
-
-/* LAYOUT PRINCIPAL */
-.main-container {
-  max-width: 900px;
-  margin: 18px auto;
-  padding: 0 12px;
-  flex: 1;
-}
-
-/* MENSAGEM DE BOAS-VINDAS ESTILO TELEGRAM */
-.welcome-msg {
-  background: var(--card-bg);
-  border: 1px solid var(--border-color);
-  border-radius: 12px;
-  padding: 16px;
-  margin-bottom: 18px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-}
-
-.welcome-msg h2 {
-  font-size: 18px;
-  margin-bottom: 8px;
-  color: var(--telegram-blue);
-}
-
-.welcome-msg p {
-  font-size: 13px;
-  color: #ccc;
-  line-height: 1.4;
-}
-
-/* SEÇÃO DE DEMONSTRAÇÃO COM IFRAME OTIMIZADO */
-.demo-section {
-  background: var(--card-bg);
-  border: 1px solid var(--border-color);
-  border-radius: 12px;
-  padding: 14px;
-  margin-bottom: 24px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-  text-align: center;
-}
-
-.demo-title {
-  font-size: 15px;
-  font-weight: bold;
-  color: #fff;
   margin-bottom: 10px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 6px;
+  width: 100%;
 }
 
-.demo-video-wrapper {
+.header-page h2 {
+  font-size: 1.2rem;
+  color: #64b5ef;
+}
+
+.btn-voltar {
+  color: #fff;
+  text-decoration: none;
+  background: #242f3d;
+  padding: 8px 14px;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  font-weight: bold;
+  border: 1px solid #2b3a4c;
+}
+
+/* Seletor de Abas (Vídeos / Fotos) */
+.tabs-container {
+  display: flex;
+  gap: 10px;
+  background-color: #17212b;
+  padding: 6px;
+  border-radius: 10px;
+  border: 1px solid #242f3d;
+}
+
+.tab-btn {
+  flex: 1;
+  padding: 10px;
+  border: none;
+  background: transparent;
+  color: #7f91a4;
+  font-weight: bold;
+  font-size: 0.95rem;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.tab-btn.active {
+  background-color: #2b5278;
+  color: #ffffff;
+}
+
+/* Cards de Vídeo/Foto no estilo Telegram */
+.telegram-card {
+  background-color: #182533;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  border: 1px solid #242f3d;
+}
+
+.video-wrapper {
   position: relative;
   width: 100%;
-  padding-top: 56.25%; /* Proporção 16:9 responsiva */
-  border-radius: 8px;
-  overflow: hidden;
-  background: #000;
-  border: 1px solid var(--border-color);
+  padding-top: 56.25%;
+  background-color: #000;
 }
 
-.demo-video-wrapper iframe {
+.video-wrapper iframe {
   position: absolute;
   top: 0;
   left: 0;
@@ -175,248 +102,138 @@ header {
   border: none;
 }
 
-/* GRID DAS CATEGORIAS VIP */
-.grid {
+/* Imagem no estilo Telegram */
+.photo-wrapper {
+  width: 100%;
+  background-color: #000;
   display: flex;
-  flex-direction: column;
-  gap: 28px;
+  justify-content: center;
+  align-items: center;
 }
 
-.card {
-  background: var(--card-bg);
-  border: 1px solid var(--border-color);
-  border-radius: 14px;
-  overflow: hidden;
-  box-shadow: 0 6px 16px rgba(0,0,0,0.4);
+.photo-wrapper img {
+  width: 100%;
+  height: auto;
+  max-height: 500px;
+  object-fit: contain;
+  display: block;
 }
 
-.card-header {
-  background: var(--card-header);
-  padding: 14px 16px;
+/* Rodapé do Card */
+.card-footer {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  flex-wrap: wrap;
-  gap: 8px;
-  border-bottom: 1px solid var(--border-color);
+  padding: 10px 14px;
+  background-color: #17212b;
+  font-size: 0.85rem;
+  color: #7f91a4;
 }
 
-.card-header h3 {
-  font-size: 17px;
+.reactions {
   display: flex;
-  align-items: center;
-  gap: 6px;
-  margin: 0;
-}
-
-.card-badges {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  flex-wrap: wrap;
-}
-
-.plan-badge {
-  background: #e50914;
-  color: #fff;
-  padding: 4px 8px;
-  border-radius: 10px;
-  font-size: 11px;
-  font-weight: bold;
-  white-space: nowrap;
-}
-
-.status-badge {
-  padding: 4px 10px;
-  border-radius: 12px;
-  font-size: 11px;
-  font-weight: bold;
-  white-space: nowrap;
-  display: inline-block;
-}
-
-.bloqueado { background: #2b3642; color: var(--text-sub); }
-.liberado { background: var(--green-btn); color: #fff; }
-
-.card-body { padding: 16px; }
-
-/* PREVIEW BOX DAS CATEGORIAS */
-.preview-box {
-  width: 100%;
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
   gap: 12px;
-  margin-bottom: 20px;
-  padding: 8px;
-  background: #000;
-  border-radius: 10px;
-  border: 1px solid var(--border-color);
 }
 
-.video-item {
-  background: #111;
-  border-radius: 8px;
-  overflow: hidden;
-  border: 1px solid #283442;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.5);
+.reaction-btn {
+  background: #242f3d;
+  padding: 4px 10px;
+  border-radius: 14px;
+  color: #64b5ef;
+  font-size: 0.8rem;
+  font-weight: 600;
 }
 
-.preview-box iframe {
-  width: 100%;
-  aspect-ratio: 9/16;
-  border: none;
-  display: block;
-  background: #000;
+.time {
+  font-size: 0.75rem;
+  color: #6c7883;
 }
 
-/* REGRA DE CORREÇÃO DE IMAGENS CORTADAS */
-.preview-box img,
-.card-body img,
-.media-card img,
-.card-midia img,
-.midia-card img,
-.foto-galeria {
-  width: 100% !important;
-  height: auto !important;
-  max-height: 85vh !important;
-  object-fit: contain !important;
-  background-color: #0d141e;
-  display: block;
-}
-
-.vip-description {
-  margin-bottom: 18px;
-}
-
-.vip-description p {
-  font-size: 13px;
-  color: #ddd;
-  margin-bottom: 10px;
-}
-
-.benefits-list {
-  list-style: none;
+/* Paginação */
+.pagination-container {
   display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.benefits-list li {
-  font-size: 12px;
-  color: #aaa;
-  display: flex;
-  align-items: flex-start;
-  gap: 6px;
-  line-height: 1.4;
-}
-
-.benefits-list li::before {
-  content: "✓";
-  color: var(--telegram-blue);
-  font-weight: bold;
-}
-
-.btn-buy {
-  display: block;
-  width: 100%;
-  background: linear-gradient(135deg, #0088cc, #24a1de);
-  color: #fff;
-  border: none;
-  padding: 14px;
-  border-radius: 8px;
-  font-weight: bold;
-  text-align: center;
-  font-size: 14px;
-  cursor: pointer;
-  transition: transform 0.2s, opacity 0.2s;
-}
-
-.btn-buy:hover { opacity: 0.95; transform: translateY(-1px); }
-
-.btn-access {
-  display: block;
-  width: 100%;
-  background: var(--green-btn);
-  color: #fff;
-  text-decoration: none;
-  padding: 14px;
-  border-radius: 8px;
-  font-weight: bold;
-  text-align: center;
-  font-size: 14px;
-}
-
-/* MODAL DE LOGIN/CADASTRO */
-.modal-overlay {
-  display: none;
-  position: fixed;
-  top: 0; left: 0;
-  width: 100%; height: 100%;
-  background: rgba(0,0,0,0.85);
   justify-content: center;
   align-items: center;
-  z-index: 1000;
+  gap: 8px;
+  margin-top: 20px;
+  padding: 15px 0;
+  flex-wrap: wrap;
 }
 
-.modal {
-  background: var(--card-bg);
-  padding: 24px;
-  border-radius: 12px;
-  width: 90%;
-  max-width: 400px;
-  text-align: center;
-  border: 1px solid var(--border-color);
+.page-btn {
+  background-color: #242f3d;
+  color: #64b5ef;
+  border: 1px solid #2b3a4c;
+  padding: 8px 14px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: all 0.2s;
 }
 
-.modal h3 { margin-bottom: 10px; font-size: 18px; }
-.modal p.subtitle { font-size: 12px; color: var(--telegram-blue); margin-bottom: 14px; }
+.page-btn:hover:not(:disabled) {
+  background-color: #2b3a4c;
+  color: #ffffff;
+}
 
-.modal input {
+.page-btn.active {
+  background-color: #2b5278;
+  color: #ffffff;
+  border-color: #64b5ef;
+}
+
+.page-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+/* ESTILIZAÇÃO DOS BOTÕES DE PAGINAÇÃO */
+.pagination-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 30px 0;
   width: 100%;
-  padding: 12px;
-  margin: 6px 0;
-  border-radius: 6px;
-  border: 1px solid var(--border-color);
-  background: #0e1621;
-  color: #fff;
 }
 
-.modal input:focus { outline: 1px solid var(--telegram-blue); }
-
-/* ESTILO DO RODAPÉ SUPORTE TELEGRAM */
-footer#rodape-suporte {
-  display: none;
-  text-align: center;
-  padding: 25px 15px;
-  margin-top: 30px;
-  border-top: 1px solid var(--border-color);
-  background: var(--card-bg);
+.paginacao-wrapper {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  max-width: 900px;
 }
 
-.btn-suporte-telegram {
+.paginacao-wrapper a {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  background-color: var(--telegram-blue);
-  color: #ffffff !important;
-  padding: 12px 24px;
-  border-radius: 25px;
-  font-weight: 600;
-  font-size: 15px;
+  padding: 8px 14px;
+  background-color: #1e293b; /* Fundo escuro dos botões */
+  color: #7dd3fc;            /* Texto azul claro */
   text-decoration: none;
-  transition: background-color 0.2s ease, transform 0.1s ease;
-  box-shadow: 0 4px 12px rgba(36, 161, 222, 0.3);
+  border-radius: 8px;        /* Bordas arredondadas */
+  font-size: 14px;
+  font-weight: 500;
+  border: 1px solid transparent;
+  transition: all 0.2s ease-in-out;
+  cursor: pointer;
 }
 
-.btn-suporte-telegram:hover {
-  background-color: var(--telegram-hover);
-  transform: translateY(-2px);
+.paginacao-wrapper a:hover {
+  background-color: #334155;
+  color: #ffffff;
 }
 
-@media (max-width: 600px) {
-  .preview-box {
-    gap: 10px;
-    padding: 6px;
-  }
-  .card-header h3 { font-size: 15px; }
+.paginacao-wrapper a.active {
+  background-color: #2563eb; /* Azul em destaque para o botão ativo */
+  color: #ffffff;
+  border-color: #60a5fa;
+  box-shadow: 0 0 10px rgba(37, 99, 235, 0.4);
+}
+
+.paginacao-wrapper a.disabled {
+  opacity: 0.4;
+  pointer-events: none;
+  color: #64748b;
 }
