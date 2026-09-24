@@ -87,11 +87,13 @@
       border: none;
     }
 
-    /* FOTOS DA GALERIA */
+    /* FOTOS DA GALERIA VIP */
     .media-card img.foto-galeria {
       width: 100%;
-      height: 240px;
-      object-fit: cover;
+      height: auto;
+      max-height: 500px;
+      object-fit: contain;
+      background: #000;
       display: block;
     }
   </style>
@@ -146,7 +148,7 @@
   <!-- CARREGA O APP.JS COM SUPABASE -->
   <script src="app.js"></script>
 
-  <!-- NAVEGAÇÃO E EXIBIÇÃO DOS VÍDEOS -->
+  <!-- NAVEGAÇÃO E EXIBIÇÃO DOS VÍDEOS/FOTOS -->
   <script>
     document.addEventListener('DOMContentLoaded', () => {
 
@@ -174,7 +176,6 @@
         renderizarFeed();
       };
 
-      // Limpa qualquer parâmetro de autoplay presente na URL do Bunny
       function removerAutoplay(url) {
         if (typeof url !== 'string') return url;
         let urlLimpa = url.replace(/([?&])autoplay=true/g, '');
@@ -209,7 +210,7 @@
           if (abaAtual === 'fotos' || (typeof url === 'string' && url.match(/\.(jpeg|jpg|gif|png|webp)($|\?)/i))) {
             return `
               <div class="media-card">
-                <img src="${url}" class="foto-galeria" loading="lazy" alt="Foto Galeria" />
+                <img src="${url}" class="foto-galeria" loading="lazy" alt="Conteúdo VIP" />
               </div>
             `;
           } else {
