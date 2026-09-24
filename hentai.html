@@ -11,6 +11,85 @@
   <link rel="stylesheet" href="estilo-telegram.css">
 
   <style>
+    /* BOTOES E NAVEGACAO DE PAGINAS */
+    .tab-btn {
+      padding: 10px 16px;
+      border-radius: 8px;
+      background: #17212b;
+      color: #7f91a4;
+      border: 1px solid #242f3d;
+      font-weight: 600;
+      font-size: 14px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .tab-btn:hover {
+      background: #202b36;
+      color: #fff;
+    }
+
+    .tab-btn.active {
+      background: #24a1de;
+      color: #fff;
+      border-color: #24a1de;
+    }
+
+    /* GRID RESPONSIVO */
+    .video-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 15px;
+      padding: 10px;
+      max-width: 1000px;
+      margin: 0 auto;
+      box-sizing: border-box;
+    }
+
+    @media (min-width: 900px) {
+      .video-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (max-width: 600px) {
+      .video-grid {
+        grid-template-columns: 1fr;
+        padding: 5px;
+      }
+    }
+
+    /* CARD INDIVIDUAL */
+    .media-card {
+      background: #17212b;
+      border: 1px solid #242f3d;
+      border-radius: 10px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    }
+
+    .video-wrapper {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      background: #000;
+    }
+
+    .video-wrapper iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+
+    .media-card img.foto-galeria {
+      width: 100%;
+      height: 240px;
+      object-fit: cover;
+      display: block;
+    }
+
     .pagination-container {
       display: flex;
       justify-content: center;
@@ -18,97 +97,10 @@
       margin: 30px 0;
       width: 100%;
     }
-
-    .paginacao-wrapper {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      align-items: center;
-      gap: 8px;
-      max-width: 900px;
-    }
-
-    .paginacao-wrapper a {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      padding: 8px 14px;
-      background-color: #1e293b;
-      color: #7dd3fc;
-      text-decoration: none;
-      border-radius: 8px;
-      font-size: 14px;
-      font-weight: 500;
-      border: 1px solid transparent;
-      transition: all 0.2s ease-in-out;
-      cursor: pointer;
-    }
-
-    .paginacao-wrapper a:hover {
-      background-color: #334155;
-      color: #ffffff;
-    }
-
-    .paginacao-wrapper a.active {
-      background-color: #2563eb;
-      color: #ffffff;
-      border-color: #60a5fa;
-      box-shadow: 0 0 10px rgba(37, 99, 235, 0.4);
-    }
-
-    .paginacao-wrapper a.disabled {
-      opacity: 0.4;
-      pointer-events: none;
-      color: #64748b;
-    }
   </style>
 
-  <!-- TRAVA DE SEGURANÇA SUPABASE CORRIGIDA -->
+  <!-- CARREGA A BIBLIOTECA DO SUPABASE -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script>
-    const SUPABASE_URL = 'https://xjvkyofktqojuyequuxe.supabase.co';
-    const SUPABASE_ANON_KEY = 'sb_publishable__w-crANhzjiYKJuh2AX39w_Kz1-Rf74';
-    const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-
-    (async function protegerAcesso() {
-      // Oculta a página durante a verificação
-      document.documentElement.style.display = 'none';
-
-      const { data: { session } } = await _supabase.auth.getSession();
-
-      if (!session) {
-        alert("Você precisa estar logado para acessar esta galeria.");
-        window.location.href = 'index.html';
-        return;
-      }
-
-      // Busca as compras da categoria 'hentai'
-      const { data: compras, error } = await _supabase
-        .from('compras_usuario')
-        .select('data_expiracao')
-        .eq('user_id', session.user.id)
-        .eq('categoria_id', 'hentai');
-
-      if (error || !compras || compras.length === 0) {
-        alert("Você não possui acesso a esta galeria.");
-        window.location.href = 'index.html';
-        return;
-      }
-
-      // Validação correta sem erro de fuso horário (UTC)
-      const agora = new Date();
-      const temAcessoValido = compras.some(item => new Date(item.data_expiracao) > agora);
-
-      if (!temAcessoValido) {
-        alert("Seu plano para esta galeria expirou.");
-        window.location.href = 'index.html';
-        return;
-      }
-
-      // Libera a exibição da página
-      document.documentElement.style.display = 'block';
-    })();
-  </script>
 </head>
 <body>
 
@@ -118,104 +110,114 @@
       <a href="index.html" class="btn-voltar">← Início</a>
     </div>
 
-    <!-- Container do Feed -->
-    <div id="feed-container" class="telegram-feed"></div>
+    <!-- CONTAINER DE CONTEÚDO LIBERADO -->
+    <div id="conteudo-liberado">
+      <div id="feed-container" class="video-grid"></div>
+      <div id="pagination-controls" class="pagination-container"></div>
+    </div>
 
-    <!-- Controles de Paginação -->
-    <div id="pagination-controls" class="pagination-container"></div>
+    <!-- MENSAGEM CASO O USUÁRIO NÃO TENHA ACESSO -->
+    <div id="conteudo-bloqueado" style="display: none; text-align: center; color: #fff; padding: 40px 20px;">
+      <h3>🔒 Conteúdo Exclusivo VIP</h3>
+      <p style="margin: 10px 0 20px; color: #7f91a4;">Você precisa adquirir o acesso para visualizar esta galeria.</p>
+      <a href="index.html" id="btn-comprar" class="tab-btn active" style="text-decoration: none; display: inline-block;">Adquirir Acesso</a>
+    </div>
   </main>
 
   <!-- SCRIPTS DOS LINKS DE HENTAI -->
-  <script src="links-hentai.js"></script> 
+  <script src="links-hentai.js"></script>
 
-  <!-- SCRIPT DE PAGINAÇÃO -->
+  <!-- DEFINE A CATEGORIA CORRETA ANTES DO APP.JS -->
   <script>
-    const ITENS_POR_PAGINA = 12;
-    let paginaAtual = 1;
+    window.categoriaId = 'hentai';
+  </script>
 
+  <!-- CARREGA O APP.JS COM SUPABASE -->
+  <script src="app.js"></script>
+
+  <!-- NAVEGAÇÃO E EXIBIÇÃO DOS VÍDEOS -->
+  <script>
     document.addEventListener('DOMContentLoaded', () => {
-      const urlParams = new URLSearchParams(window.location.search);
-      paginaAtual = parseInt(urlParams.get('pagina')) || 1;
-      carregarConteudo();
+      let paginaAtual = 1;
+      const ITENS_POR_PAGINA = 10;
+
+      // Desativa a reprodução automática e força o autoplay=false
+      function removerAutoplay(url) {
+        if (typeof url !== 'string') return url;
+        let urlLimpa = url.replace(/([?&])autoplay=true/g, '');
+        urlLimpa = urlLimpa.replace(/([?&])autoplay=1/g, '');
+        if (urlLimpa.includes('?')) {
+          urlLimpa += '&autoplay=false';
+        } else {
+          urlLimpa += '?autoplay=false';
+        }
+        return urlLimpa;
+      }
+
+      function renderizarFeed() {
+        const container = document.getElementById('feed-container');
+        const paginationControls = document.getElementById('pagination-controls');
+        const lista = window.linksHentai || [];
+
+        if (!container) return;
+
+        if (lista.length === 0) {
+          container.innerHTML = '<p style="text-align:center; color:#fff; padding: 20px; grid-column: 1/-1;">Nenhum conteúdo encontrado nesta categoria.</p>';
+          if (paginationControls) paginationControls.innerHTML = '';
+          return;
+        }
+
+        const totalPaginas = Math.ceil(lista.length / ITENS_POR_PAGINA);
+        const inicio = (paginaAtual - 1) * ITENS_POR_PAGINA;
+        const fim = inicio + ITENS_POR_PAGINA;
+        const itensPagina = lista.slice(inicio, fim);
+
+        container.innerHTML = itensPagina.map(item => {
+          const url = typeof item === 'string' ? item : (item.link || item.url || '');
+          
+          if (typeof url === 'string' && url.match(/\.(jpeg|jpg|gif|png|webp)($|\?)/i)) {
+            return `
+              <div class="media-card">
+                <img src="${url}" class="foto-galeria" loading="lazy" alt="Hentai Galeria" />
+              </div>
+            `;
+          } else {
+            const urlSemPlay = removerAutoplay(url);
+            return `
+              <div class="media-card">
+                <div class="video-wrapper">
+                  <iframe src="${urlSemPlay}" loading="lazy" allow="accelerometer; gyroscope; encrypted-media; picture-in-picture" allowfullscreen></iframe>
+                </div>
+              </div>
+            `;
+          }
+        }).join('');
+
+        if (paginationControls && totalPaginas > 1) {
+          let btnHTML = `<div style="display:flex; justify-content:center; align-items:center; gap:10px; margin: 20px 0;">`;
+          if (paginaAtual > 1) {
+            btnHTML += `<button class="tab-btn" onclick="mudarPagina(${paginaAtual - 1})">← Anterior</button>`;
+          }
+          btnHTML += `<span style="color:#fff; font-weight:bold;">Página ${paginaAtual} de ${totalPaginas}</span>`;
+          if (paginaAtual < totalPaginas) {
+            btnHTML += `<button class="tab-btn" onclick="mudarPagina(${paginaAtual + 1})">Próxima →</button>`;
+          }
+          btnHTML += `</div>`;
+          paginationControls.innerHTML = btnHTML;
+        } else if (paginationControls) {
+          paginationControls.innerHTML = '';
+        }
+
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+
+      window.mudarPagina = function(novaPagina) {
+        paginaAtual = novaPagina;
+        renderizarFeed();
+      };
+
+      renderizarFeed();
     });
-
-    function irParaPagina(e, numeroPagina) {
-      if (e) e.preventDefault();
-      paginaAtual = numeroPagina;
-      window.history.pushState({}, '', `?pagina=${paginaAtual}`);
-      carregarConteudo();
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
-
-    function carregarConteudo() {
-      const listaMidias = window.linksHentai || [];
-      const containerFeed = document.getElementById('feed-container');
-      containerFeed.innerHTML = '';
-
-      if (!listaMidias || listaMidias.length === 0) {
-        containerFeed.innerHTML = '<p class="sem-midia">Nenhum vídeo encontrado nesta categoria.</p>';
-        document.getElementById('pagination-controls').innerHTML = '';
-        return;
-      }
-
-      const totalItens = listaMidias.length;
-      const totalPaginas = Math.ceil(totalItens / ITENS_POR_PAGINA);
-
-      if (paginaAtual > totalPaginas) paginaAtual = totalPaginas;
-      if (paginaAtual < 1) paginaAtual = 1;
-
-      const inicio = (paginaAtual - 1) * ITENS_POR_PAGINA;
-      const fim = inicio + ITENS_POR_PAGINA;
-      const itensPagina = listaMidias.slice(inicio, fim);
-
-      itensPagina.forEach(item => {
-        const elementoMidia = document.createElement('div');
-        elementoMidia.className = 'midia-card';
-
-        const url = typeof item === 'string' ? item : (item.link || item.url || '');
-        const titulo = item.titulo || item.nome || 'Mídia VIP';
-
-        elementoMidia.innerHTML = `
-          <div class="video-wrapper">
-            <iframe src="${url}" frameborder="0" allowfullscreen></iframe>
-          </div>
-          <p class="midia-titulo">${titulo}</p>
-        `;
-
-        containerFeed.appendChild(elementoMidia);
-      });
-
-      renderizarPaginacao(totalPaginas);
-    }
-
-    function renderizarPaginacao(totalPaginas) {
-      const containerPaginacao = document.getElementById('pagination-controls');
-      containerPaginacao.innerHTML = '';
-
-      if (totalPaginas <= 1) return;
-
-      let htmlPaginacao = '<div class="paginacao-wrapper">';
-
-      if (paginaAtual > 1) {
-        htmlPaginacao += `<a href="#" onclick="irParaPagina(event, ${paginaAtual - 1})">« Anterior</a>`;
-      } else {
-        htmlPaginacao += `<a class="disabled">« Anterior</a>`;
-      }
-
-      for (let i = 1; i <= totalPaginas; i++) {
-        const classeAtivo = i === paginaAtual ? 'active' : '';
-        htmlPaginacao += `<a href="#" class="${classeAtivo}" onclick="irParaPagina(event, ${i})">${i}</a>`;
-      }
-
-      if (paginaAtual < totalPaginas) {
-        htmlPaginacao += `<a href="#" onclick="irParaPagina(event, ${paginaAtual + 1})">Próxima »</a>`;
-      } else {
-        htmlPaginacao += `<a class="disabled">Próxima »</a>`;
-      }
-
-      htmlPaginacao += '</div>';
-      containerPaginacao.innerHTML = htmlPaginacao;
-    }
   </script>
 </body>
 </html>
