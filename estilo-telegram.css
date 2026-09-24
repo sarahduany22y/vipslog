@@ -102,36 +102,26 @@ body {
   border: none;
 }
 
-.photo-wrapper {
-  width: 100%;
-  aspect-ratio: 9 / 16; /* Força o proporção padrão vertical 9:16 */
-  background-color: #000;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  overflow: hidden;
-  border-radius: 12px;
-  margin-bottom: 16px;
-}
+/* ========================================================= */
+/* CORREÇÃO DA GALERIA DE FOTOS (SEM ALTERAR OS VÍDEOS)       */
+/* ========================================================= */
 
 .photo-wrapper {
   width: 100%;
-  height: auto !important;           /* Permite que o container acompanhe a altura real da imagem */
+  height: auto !important;
   background-color: #0d141e;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  overflow: hidden;
+  display: block !important;       /* Garante fluxo normal do bloco */
+  overflow: visible !important;    /* Impede o corte das bordas superior e inferior */
   border-radius: 10px;
   margin-bottom: 0;
 }
 
 .photo-wrapper img {
   width: 100% !important;
-  height: auto !important;           /* Mantém a proporção original de altura sem cortar */
-  max-height: 85vh !important;       /* Limita para não estourar a tela do celular */
-  object-fit: contain !important;    /* Exibe a imagem 100% inteira */
-  display: block;
+  height: auto !important;         /* Mantém a altura proporcional real sem achatar ou cortar */
+  max-width: 100% !important;
+  object-fit: contain !important;  /* Renderiza a imagem completa na tela */
+  display: block !important;
 }
 
 .reactions {
