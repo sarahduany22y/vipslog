@@ -256,7 +256,7 @@
       width: 100%;
       display: grid;
       grid-template-columns: repeat(2, 1fr);
-      gap: 12px; /* Aumentado para não ficarem grudados */
+      gap: 12px;
       margin-bottom: 20px;
       padding: 8px;
       background: #000;
@@ -379,6 +379,49 @@
 
     .modal input:focus { outline: 1px solid var(--telegram-blue); }
 
+    /* ESTILO MODAL DE FOTO TELA CHEIA */
+    .photo-wrapper img {
+      cursor: pointer;
+      transition: opacity 0.2s;
+    }
+
+    .photo-wrapper img:hover {
+      opacity: 0.9;
+    }
+
+    .modal-foto-fullscreen {
+      display: none;
+      position: fixed;
+      z-index: 999999;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background-color: rgba(0, 0, 0, 0.92);
+      backdrop-filter: blur(5px);
+      justify-content: center;
+      align-items: center;
+      cursor: pointer;
+    }
+
+    .modal-foto-fullscreen img {
+      max-width: 95%;
+      max-height: 95%;
+      object-fit: contain;
+      border-radius: 8px;
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.8);
+    }
+
+    .modal-foto-fechar {
+      position: absolute;
+      top: 15px;
+      right: 20px;
+      color: #ffffff;
+      font-size: 30px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
     @media (max-width: 600px) {
       .preview-box {
         gap: 10px;
@@ -486,7 +529,6 @@
         <span>🎬</span> VEJA COMO É O NOSSO SITE POR DENTRO
       </div>
       <div class="demo-video-wrapper">
-        <!-- COLOQUE O LINK DO SEU IFRAME ABAIXO NO SRC -->
         <iframe src="https://player.mediadelivery.net/embed/756775/24206add-f024-4795-b71f-c102bcd541ea?autoplay=false&preload=false" loading="lazy" allow="autoplay; encrypted-media" allowfullscreen="true"></iframe>
       </div>
     </div>
@@ -633,8 +675,30 @@
     </div>
   </div>
 
+  <!-- CONTAINER MODAL TELA CHEIA (FOTOS) -->
+  <div id="modalFotoFullscreen" class="modal-foto-fullscreen" onclick="fecharFotoFullscreen()">
+    <span class="modal-foto-fechar">&times;</span>
+    <img id="imgFullscreenSrc" src="" alt="Foto expandida">
+  </div>
+
   <!-- JS EXTERNO DE LINKS (CAM) -->
   <script src="links-cam.js"></script>
+
+  <!-- SCRIPT DE TELA CHEIA PARA FOTOS -->
+  <script>
+    document.addEventListener('click', function (e) {
+      if (e.target && e.target.matches('.photo-wrapper img')) {
+        const modal = document.getElementById('modalFotoFullscreen');
+        const imgModal = document.getElementById('imgFullscreenSrc');
+        imgModal.src = e.target.src;
+        modal.style.display = 'flex';
+      }
+    });
+
+    function fecharFotoFullscreen() {
+      document.getElementById('modalFotoFullscreen').style.display = 'none';
+    }
+  </script>
 
   <!-- SCRIPT DO POP-UP +18 -->
   <script>
