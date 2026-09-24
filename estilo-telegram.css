@@ -102,26 +102,32 @@ body {
   border: none;
 }
 
-/* ========================================================= */
-/* CORREÇÃO DA GALERIA DE FOTOS (SEM ALTERAR OS VÍDEOS)       */
-/* ========================================================= */
-
+/* Imagem no estilo Telegram */
 .photo-wrapper {
   width: 100%;
-  height: auto !important;
-  background-color: #0d141e;
-  display: block !important;       /* Garante fluxo normal do bloco */
-  overflow: visible !important;    /* Impede o corte das bordas superior e inferior */
-  border-radius: 10px;
-  margin-bottom: 0;
+  background-color: #000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .photo-wrapper img {
-  width: 100% !important;
-  height: auto !important;         /* Mantém a altura proporcional real sem achatar ou cortar */
-  max-width: 100% !important;
-  object-fit: contain !important;  /* Renderiza a imagem completa na tela */
-  display: block !important;
+  width: 100%;
+  height: auto;
+  max-height: 500px;
+  object-fit: contain;
+  display: block;
+}
+
+/* Rodapé do Card */
+.card-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 14px;
+  background-color: #17212b;
+  font-size: 0.85rem;
+  color: #7f91a4;
 }
 
 .reactions {
@@ -230,32 +236,4 @@ body {
   opacity: 0.4;
   pointer-events: none;
   color: #64748b;
-}
-
-/* ========================================================= */
-/* CORREÇÃO DEFINITIVA PARA FOTOS (SEM MEXER NOS VÍDEOS)     */
-/* ========================================================= */
-
-/* 1. Garante que o card de fotos expanda a altura livremente */
-.telegram-card, 
-.photo-wrapper, 
-div[class*="photo"], 
-div[class*="foto"] {
-  height: auto !important;
-  max-height: none !important;
-  min-height: 0 !important;
-  overflow: visible !important;
-}
-
-/* 2. Força a imagem a mostrar do topo à base sem nenhum corte */
-.telegram-card img,
-.photo-wrapper img,
-div[class*="photo"] img,
-div[class*="foto"] img {
-  width: 100% !important;
-  height: auto !important;
-  max-height: none !important;
-  min-height: 0 !important;
-  object-fit: contain !important;
-  display: block !important;
 }
