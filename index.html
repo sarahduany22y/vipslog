@@ -251,7 +251,7 @@
 
     .card-body { padding: 16px; }
 
-    /* ESTILO QUADRADOS SEPARADOS E ESPAÇADOS (ESTILO PLATAFORMA) */
+    /* ESTILO QUADRADOS SEPARADOS E ESPAÇADOS */
     .preview-box {
       width: 100%;
       display: grid;
@@ -724,8 +724,9 @@
 
   <!-- SCRIPT SUPABASE E SESSÃO -->
   <script>
+    // IMPORTANTE: Insira sua chave anon pública do Supabase abaixo (ela inicia com "eyJ...")
     const SUPABASE_URL = 'https://xjvkyofktqojuyequuxe.supabase.co';
-    const SUPABASE_ANON_KEY = 'sb_publishable__w-crANhzjiYKJuh2AX39w_Kz1-Rf74';
+    const SUPABASE_ANON_KEY = 'sb_publishable__w-crANhzjiYKJuh2AX39w_Kz1-Rf74'; 
     const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
     let usuarioAtual = null;
@@ -786,13 +787,15 @@
         return;
       }
 
+      // Tenta realizar o login
       let { data, error } = await _supabase.auth.signInWithPassword({ email, password });
       
+      // Se falhar o login, tenta criar uma nova conta
       if (error) {
         const create = await _supabase.auth.signUp({ email, password });
         
         if (create.error) {
-          alert("Erro no cadastro: " + create.error.message);
+          alert("Erro na autenticação: " + create.error.message);
           return;
         }
 
@@ -818,7 +821,7 @@
           irParaCheckout(catAcomprar, usuarioAtual.email);
         }
       } else {
-        alert("Não foi possível autenticar. Tente novamente.");
+        alert("Não foi possível autenticar. Verifique se seu e-mail requer confirmação.");
       }
     }
 
@@ -837,13 +840,13 @@
     async function checarPermissoes() {
       if (!usuarioAtual) return;
 
-      const { data: compras } = await _supabase
+      const { data: compras, error } = await _supabase
         .from('compras_usuario')
         .select('categoria_id')
         .eq('user_id', usuarioAtual.id)
         .gt('data_expiracao', new Date().toISOString());
 
-      if (compras) {
+      if (compras && !error) {
         compras.forEach(item => {
           const cat = item.categoria_id;
           
