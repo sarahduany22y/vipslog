@@ -1,192 +1,150 @@
-/* Reset básico */
+/* ESTILOS GERAIS */
 * {
-  box-sizing: border-box;
   margin: 0;
   padding: 0;
+  box-sizing: border-box;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
 }
 
 body {
   background-color: #0e1621;
   color: #ffffff;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  display: flex;
-  justify-content: center;
-  min-height: 100vh;
-  padding: 20px 10px;
-}
-
-/* Container Principal */
-.telegram-feed {
-  width: 100%;
-  max-width: 650px;
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  min-height: 100vh;
 }
 
-/* Cabeçalho */
+.telegram-feed {
+  width: 100%;
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 15px;
+  flex: 1;
+}
+
 .header-page {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 10px;
-  width: 100%;
+  margin-bottom: 20px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #242f3d;
 }
 
 .header-page h2 {
-  font-size: 1.2rem;
-  color: #64b5ef;
-}
-
-.btn-voltar {
-  color: #fff;
-  text-decoration: none;
-  background: #242f3d;
-  padding: 8px 14px;
-  border-radius: 8px;
-  font-size: 0.85rem;
-  font-weight: bold;
-  border: 1px solid #2b3a4c;
-}
-
-/* Seletor de Abas (Vídeos / Fotos) */
-.tabs-container {
-  display: flex;
-  gap: 10px;
-  background-color: #17212b;
-  padding: 6px;
-  border-radius: 10px;
-  border: 1px solid #242f3d;
-}
-
-.tab-btn {
-  flex: 1;
-  padding: 10px;
-  border: none;
-  background: transparent;
-  color: #7f91a4;
-  font-weight: bold;
-  font-size: 0.95rem;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: all 0.2s;
-}
-
-.tab-btn.active {
-  background-color: #2b5278;
+  font-size: 20px;
   color: #ffffff;
 }
 
-/* Cards de Vídeo/Foto no estilo Telegram */
-.telegram-card {
-  background-color: #182533;
-  border-radius: 12px;
-  overflow: hidden;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+.btn-voltar {
+  background-color: #17212b;
+  color: #64b5ef;
+  text-decoration: none;
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-size: 14px;
   border: 1px solid #242f3d;
+  transition: all 0.2s ease;
+}
+
+.btn-voltar:hover {
+  background-color: #202b36;
+  color: #ffffff;
+}
+
+/* BOTOES E ABAS DE CATEGORIA */
+.categorias-container {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  margin: 15px 0 25px 0;
+  flex-wrap: wrap;
+}
+
+.btn-subcategoria {
+  padding: 10px 20px;
+  background-color: #17212b;
+  color: #7f91a4;
+  border: 1px solid #242f3d;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+}
+
+.btn-subcategoria:hover {
+  background-color: #202b36;
+  color: #ffffff;
+}
+
+.btn-subcategoria.active {
+  background-color: #24a1de;
+  color: #ffffff;
+  border-color: #24a1de;
+}
+
+/* GRID RESPONSIVO */
+.video-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 15px;
+  padding: 10px;
+  max-width: 1000px;
+  margin: 0 auto;
+  box-sizing: border-box;
+}
+
+@media (min-width: 900px) {
+  .video-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 600px) {
+  .video-grid {
+    grid-template-columns: 1fr;
+    padding: 5px;
+  }
+}
+
+/* CARD INDIVIDUAL */
+.media-card, .card-midia, .midia-card {
+  background: #17212b;
+  border: 1px solid #242f3d;
+  border-radius: 10px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
 }
 
 .video-wrapper {
   position: relative;
   width: 100%;
-  padding-top: 56.25%;
-  background-color: #000;
+  aspect-ratio: 16 / 9;
+  background: #000;
 }
 
 .video-wrapper iframe {
-  position: absolute;
-  top: 0;
-  left: 0;
   width: 100%;
   height: 100%;
   border: none;
 }
 
-/* Imagem no estilo Telegram */
-.photo-wrapper {
-  width: 100%;
-  background-color: #000;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.photo-wrapper img {
-  width: 100%;
-  height: auto;
-  max-height: 500px;
-  object-fit: contain;
+/* CORREÇÃO DAS IMAGENS: EXIBE COMPLETA SEM CORTAR */
+.media-card img,
+.card-midia img,
+.midia-card img,
+.media-card img.foto-galeria {
+  width: 100% !important;
+  height: auto !important;
+  max-height: 85vh !important;
+  object-fit: contain !important;
+  background-color: #0d141e;
   display: block;
 }
 
-/* Rodapé do Card */
-.card-footer {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 10px 14px;
-  background-color: #17212b;
-  font-size: 0.85rem;
-  color: #7f91a4;
-}
-
-.reactions {
-  display: flex;
-  gap: 12px;
-}
-
-.reaction-btn {
-  background: #242f3d;
-  padding: 4px 10px;
-  border-radius: 14px;
-  color: #64b5ef;
-  font-size: 0.8rem;
-  font-weight: 600;
-}
-
-.time {
-  font-size: 0.75rem;
-  color: #6c7883;
-}
-
-/* Paginação */
-.pagination-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 8px;
-  margin-top: 20px;
-  padding: 15px 0;
-  flex-wrap: wrap;
-}
-
-.page-btn {
-  background-color: #242f3d;
-  color: #64b5ef;
-  border: 1px solid #2b3a4c;
-  padding: 8px 14px;
-  border-radius: 8px;
-  cursor: pointer;
-  font-weight: bold;
-  transition: all 0.2s;
-}
-
-.page-btn:hover:not(:disabled) {
-  background-color: #2b3a4c;
-  color: #ffffff;
-}
-
-.page-btn.active {
-  background-color: #2b5278;
-  color: #ffffff;
-  border-color: #64b5ef;
-}
-
-.page-btn:disabled {
-  opacity: 0.4;
-  cursor: not-allowed;
-}
-/* ESTILIZAÇÃO DOS BOTÕES DE PAGINAÇÃO */
 .pagination-container {
   display: flex;
   justify-content: center;
@@ -195,45 +153,32 @@ body {
   width: 100%;
 }
 
-.paginacao-wrapper {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  align-items: center;
-  gap: 8px;
-  max-width: 900px;
+/* ESTILO DO RODAPÉ E BOTÃO SUPORTE TELEGRAM */
+footer#rodape-suporte {
+  display: none;
+  text-align: center;
+  padding: 25px 15px;
+  margin-top: 30px;
+  border-top: 1px solid #242f3d;
+  background: #17212b;
 }
 
-.paginacao-wrapper a {
+.btn-suporte-telegram {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: 8px 14px;
-  background-color: #1e293b; /* Fundo escuro dos botões */
-  color: #7dd3fc;            /* Texto azul claro */
+  background-color: #24a1de;
+  color: #ffffff !important;
+  padding: 12px 24px;
+  border-radius: 25px;
+  font-weight: 600;
+  font-size: 15px;
   text-decoration: none;
-  border-radius: 8px;        /* Bordas arredondadas */
-  font-size: 14px;
-  font-weight: 500;
-  border: 1px solid transparent;
-  transition: all 0.2s ease-in-out;
-  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.1s ease;
+  box-shadow: 0 4px 12px rgba(36, 161, 222, 0.3);
 }
 
-.paginacao-wrapper a:hover {
-  background-color: #334155;
-  color: #ffffff;
-}
-
-.paginacao-wrapper a.active {
-  background-color: #2563eb; /* Azul em destaque para o botão ativo */
-  color: #ffffff;
-  border-color: #60a5fa;
-  box-shadow: 0 0 10px rgba(37, 99, 235, 0.4);
-}
-
-.paginacao-wrapper a.disabled {
-  opacity: 0.4;
-  pointer-events: none;
-  color: #64748b;
+.btn-suporte-telegram:hover {
+  background-color: #1d87bd;
+  transform: translateY(-2px);
 }
