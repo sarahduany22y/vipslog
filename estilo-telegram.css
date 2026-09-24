@@ -237,3 +237,51 @@ body {
   pointer-events: none;
   color: #64748b;
 }
+/* ========================================================= */
+/* MODAL TELA CHEIA PARA FOTOS                               */
+/* ========================================================= */
+
+.photo-wrapper img {
+  cursor: pointer; /* Transforma o ponteiro no ícone de clique */
+  transition: opacity 0.2s;
+}
+
+.photo-wrapper img:hover {
+  opacity: 0.9;
+}
+
+/* Fundo escuro do Modal */
+.modal-foto-fullscreen {
+  display: none;
+  position: fixed;
+  z-index: 999999;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.92);
+  backdrop-filter: blur(5px);
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+}
+
+/* Imagem expandida */
+.modal-foto-fullscreen img {
+  max-width: 95%;
+  max-height: 95%;
+  object-fit: contain;
+  border-radius: 8px;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.8);
+}
+
+/* Botão de Fechar */
+.modal-foto-fechar {
+  position: absolute;
+  top: 15px;
+  right: 20px;
+  color: #ffffff;
+  font-size: 30px;
+  font-weight: bold;
+  cursor: pointer;
+}
