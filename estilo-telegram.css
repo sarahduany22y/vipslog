@@ -102,20 +102,22 @@ body {
   border: none;
 }
 
-/* Imagem no estilo Telegram */
 .photo-wrapper {
   width: 100%;
+  aspect-ratio: 9 / 16; /* Força o proporção padrão vertical 9:16 */
   background-color: #000;
   display: flex;
   justify-content: center;
   align-items: center;
+  overflow: hidden;
+  border-radius: 12px;
+  margin-bottom: 16px;
 }
 
 .photo-wrapper img {
   width: 100%;
-  height: auto;
-  max-height: 500px;
-  object-fit: contain;
+  height: 100%;
+  object-fit: contain !important; /* Mostra a foto inteira sem cortar nada */
   display: block;
 }
 
