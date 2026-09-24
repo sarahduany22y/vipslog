@@ -105,22 +105,18 @@ body {
 /* Imagem no estilo Telegram */
 .photo-wrapper {
   width: 100%;
-  height: auto !important; /* Força o container a esticar na altura total da imagem */
   background-color: #000;
   display: flex;
   justify-content: center;
   align-items: center;
-  overflow: visible !important; /* Evita que o container esconda partes da foto */
-  margin-bottom: 12px;
 }
 
 .photo-wrapper img {
-  width: 100% !important;
-  height: auto !important; /* Mantém a proporção original de altura */
-  max-height: none !important; /* Remove qualquer limitação que esmague/corte a foto */
-  object-fit: contain !important;
+  width: 100%;
+  height: auto;
+  max-height: 500px;
+  object-fit: contain;
   display: block;
-  border-radius: 8px; /* Mantém as bordas arredondadas elegantes */
 }
 
 /* Rodapé do Card */
