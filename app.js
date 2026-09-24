@@ -1,6 +1,6 @@
 // Configuração do Supabase
 const SUPABASE_URL = 'https://xjvkyofktqojuyequuxe.supabase.co';
-const SUPABASE_ANON_KEY = 'sb_publishable__w-crANhzjiYKJuh2AX39w_Kz1-Rf74';
+const SUPABASE_ANON_KEY = 'sb_publishable__w-crANhzjiYKJuh2AX39w_Kz1-Rf74'; // Certifique-se de manter sua chave anon original aqui se necessário
 
 // Inicializa o cliente do Supabase se a biblioteca estiver carregada
 const _supabase = typeof supabase !== 'undefined' 
@@ -84,33 +84,10 @@ async function aplicarBloqueioOuLiberacao(categoriaId) {
   }
 }
 
-/**
- * Atualiza a visibilidade do botão de suporte de acordo com o estado do login
- */
-async function gerenciarExibicaoSuporte() {
-  if (!_supabase) return;
-  const { data: { session } } = await _supabase.auth.getSession();
-  const rodapeSuporte = document.getElementById('rodape-suporte');
-  if (rodapeSuporte) {
-    rodapeSuporte.style.display = session ? 'block' : 'none';
-  }
-}
-
 // Executa a checagem automaticamente quando a página carrega
 document.addEventListener('DOMContentLoaded', () => {
   const params = new URLSearchParams(window.location.search);
   const categoriaAtual = params.get('cat') || window.categoriaId || '1';
   
   aplicarBloqueioOuLiberacao(categoriaAtual);
-  gerenciarExibicaoSuporte();
 });
-
-// Ouve mudanças de login/logout em tempo real
-if (_supabase) {
-  _supabase.auth.onAuthStateChange((event, session) => {
-    const rodapeSuporte = document.getElementById('rodape-suporte');
-    if (rodapeSuporte) {
-      rodapeSuporte.style.display = session ? 'block' : 'none';
-    }
-  });
-}
