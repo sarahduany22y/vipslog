@@ -112,9 +112,9 @@ body {
 }
 
 .photo-wrapper img {
-  width: 100%;
-  height: auto;
-  max-height: 500px;
+  max-width: 100%;   /* Em vez de width: 100%, use max-width */
+  height: auto;      /* Mantém a proporção original */
+  max-height: 500px; /* Limita a altura sem esticar ou cortar */
   object-fit: contain;
   display: block;
 }
