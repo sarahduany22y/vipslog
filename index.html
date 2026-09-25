@@ -3,36 +3,33 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
-  <title>Canal VIP Oficial 🔞 - Conteúdo Exclusivo</title>
+  <title>Canal VIP Oficial 🔞 - Galeria Privada Exclusiva</title>
 
-  <!-- ========================================================= -->
-  <!-- GOOGLE ANALYTICS                                          -->
-  <!-- ========================================================= -->
+  <!-- GOOGLE ANALYTICS -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-Q7KTN7GPTN"></script>
   <script>
     window.dataLayer = window.dataLayer || [];
     function gtag(){dataLayer.push(arguments);}
     gtag('js', new Date());
-
     gtag('config', 'G-Q7KTN7GPTN');
   </script>
-  <!-- ========================================================= -->
 
-  <!-- FAVICON INLINE PARA CORRIGIR O ERRO 404 -->
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><circle cx=%2250%22 cy=%2250%22 r=%2250%22 fill=%22%2324a1de%22/><text y=%22.9em%22 x=%2220%22 font-size=%2270%22 fill=%22white%22>🔞</text></svg>">
+  <!-- FAVICON INLINE -->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><circle cx=%2250%22 cy=%2250%22 r=%2250%22 fill=%22%2322c55e%22/><text y=%22.9em%22 x=%2220%22 font-size=%2270%22 fill=%22white%22>🔞</text></svg>">
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  
   <style>
     :root {
-      --bg-dark: #0e1621;
-      --card-bg: #17212b;
-      --card-header: #202b36;
+      --bg-dark: #0b0e14;
+      --card-bg: #131a24;
+      --card-header: #1a2332;
+      --green-pix: #22c55e;
+      --green-pix-hover: #16a34a;
       --telegram-blue: #24a1de;
-      --telegram-hover: #1c8adb;
-      --green-btn: #22c55e;
-      --text-main: #f5f5f5;
-      --text-sub: #7f91a4;
-      --border-color: #242f3d;
+      --text-main: #f9fafb;
+      --text-sub: #9ca3af;
+      --border-color: rgba(255, 255, 255, 0.08);
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -49,9 +46,11 @@
       padding-bottom: 60px;
     }
 
-    /* HEADER FIXO ESTILO CANAL TELEGRAM */
+    /* HEADER FIXO DE NAVEGAÇÃO */
     header {
-      background: var(--card-bg);
+      background: rgba(19, 26, 36, 0.9);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
       border-bottom: 1px solid var(--border-color);
       padding: 12px 16px;
       position: sticky;
@@ -70,108 +69,128 @@
     .channel-info {
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 12px;
     }
 
     .channel-avatar {
-      width: 42px;
-      height: 42px;
+      width: 44px;
+      height: 44px;
       border-radius: 50%;
-      background: linear-gradient(135deg, #0088cc, #24a1de);
+      background: linear-gradient(135deg, #22c55e, #10b981);
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 18px;
-      font-weight: bold;
+      font-size: 16px;
+      font-weight: 800;
+      color: #fff;
+      box-shadow: 0 0 12px rgba(34, 197, 94, 0.3);
     }
 
     .channel-details h1 {
       font-size: 16px;
+      font-weight: 700;
       display: flex;
       align-items: center;
-      gap: 5px;
+      gap: 6px;
     }
 
     .verified-badge {
-      color: var(--telegram-blue);
+      color: var(--green-pix);
       font-size: 15px;
     }
 
     .channel-stats {
-      font-size: 11px;
+      font-size: 12px;
       color: var(--text-sub);
     }
 
     .auth-btn {
-      background: var(--telegram-blue);
+      background: rgba(255, 255, 255, 0.08);
       color: #fff;
-      border: none;
-      padding: 8px 14px;
+      border: 1px solid var(--border-color);
+      padding: 8px 16px;
       border-radius: 20px;
       font-weight: 600;
       font-size: 13px;
       cursor: pointer;
-      transition: background 0.2s;
+      transition: all 0.2s;
     }
 
-    .auth-btn:hover { background: var(--telegram-hover); }
+    .auth-btn:hover { 
+      background: rgba(255, 255, 255, 0.15);
+    }
 
-    /* LAYOUT PRINCIPAL */
+    /* CONTAINER PRINCIPAL */
     .main-container {
       max-width: 900px;
-      margin: 18px auto;
-      padding: 0 12px;
+      margin: 20px auto;
+      padding: 0 14px;
     }
 
-    /* MENSAGEM DE BOAS-VINDAS ESTILO TELEGRAM */
-    .welcome-msg {
-      background: var(--card-bg);
-      border: 1px solid var(--border-color);
-      border-radius: 12px;
-      padding: 16px;
-      margin-bottom: 18px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    /* BANNER DE VENDAS (HERO SECTION) */
+    .hero-banner {
+      background: linear-gradient(180deg, rgba(34, 197, 94, 0.1) 0%, rgba(19, 26, 36, 0.6) 100%);
+      border: 1px solid rgba(34, 197, 94, 0.25);
+      border-radius: 16px;
+      padding: 24px 20px;
+      margin-bottom: 24px;
+      text-align: center;
     }
 
-    .welcome-msg h2 {
-      font-size: 18px;
-      margin-bottom: 8px;
-      color: var(--telegram-blue);
+    .badge-promo {
+      display: inline-block;
+      background: rgba(34, 197, 94, 0.15);
+      color: #22c55e;
+      border: 1px solid rgba(34, 197, 94, 0.3);
+      font-size: 11px;
+      font-weight: 800;
+      padding: 4px 14px;
+      border-radius: 50px;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      margin-bottom: 12px;
     }
 
-    .welcome-msg p {
-      font-size: 13px;
-      color: #ccc;
-      line-height: 1.4;
+    .hero-banner h2 {
+      font-size: 22px;
+      font-weight: 800;
+      color: #ffffff;
+      margin-bottom: 10px;
+      line-height: 1.3;
     }
 
-    /* SEÇÃO DE DEMONSTRAÇÃO COM IFRAME OTIMIZADO */
+    .hero-banner p {
+      font-size: 14px;
+      color: #d1d5db;
+      line-height: 1.5;
+    }
+
+    /* SEÇÃO DEMO (VÍDEO DE APRESENTAÇÃO) */
     .demo-section {
       background: var(--card-bg);
       border: 1px solid var(--border-color);
-      border-radius: 12px;
-      padding: 14px;
-      margin-bottom: 24px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+      border-radius: 16px;
+      padding: 18px;
+      margin-bottom: 28px;
       text-align: center;
     }
 
     .demo-title {
       font-size: 15px;
-      font-weight: bold;
+      font-weight: 700;
       color: #fff;
-      margin-bottom: 10px;
+      margin-bottom: 14px;
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 6px;
+      gap: 8px;
     }
 
     .demo-video-wrapper {
       position: relative;
       width: 100%;
-      padding-top: 56.25%; /* Proporção 16:9 responsiva */
-      border-radius: 8px;
+      padding-top: 56.25%;
+      border-radius: 12px;
       overflow: hidden;
       background: #000;
       border: 1px solid var(--border-color);
@@ -179,10 +198,8 @@
 
     .demo-video-wrapper iframe {
       position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
       border: none;
     }
 
@@ -190,86 +207,84 @@
     .grid {
       display: flex;
       flex-direction: column;
-      gap: 28px;
+      gap: 32px;
     }
 
     .card {
       background: var(--card-bg);
       border: 1px solid var(--border-color);
-      border-radius: 14px;
+      border-radius: 18px;
       overflow: hidden;
-      box-shadow: 0 6px 16px rgba(0,0,0,0.4);
+      box-shadow: 0 10px 25px rgba(0,0,0,0.4);
     }
 
     .card-header {
       background: var(--card-header);
-      padding: 14px 16px;
+      padding: 16px 20px;
       display: flex;
       justify-content: space-between;
       align-items: center;
       flex-wrap: wrap;
-      gap: 8px;
+      gap: 10px;
       border-bottom: 1px solid var(--border-color);
     }
 
     .card-header h3 {
-      font-size: 17px;
+      font-size: 18px;
+      font-weight: 700;
       display: flex;
       align-items: center;
-      gap: 6px;
+      gap: 8px;
       margin: 0;
     }
 
     .card-badges {
       display: flex;
       align-items: center;
-      gap: 6px;
-      flex-wrap: wrap;
+      gap: 8px;
     }
 
     .plan-badge {
-      background: #e50914;
-      color: #fff;
-      padding: 4px 8px;
-      border-radius: 10px;
+      background: rgba(229, 9, 20, 0.2);
+      color: #ef4444;
+      border: 1px solid rgba(239, 68, 68, 0.3);
+      padding: 4px 10px;
+      border-radius: 8px;
       font-size: 11px;
-      font-weight: bold;
-      white-space: nowrap;
+      font-weight: 700;
     }
 
     .status-badge {
-      padding: 4px 10px;
-      border-radius: 12px;
+      padding: 4px 12px;
+      border-radius: 8px;
       font-size: 11px;
-      font-weight: bold;
-      white-space: nowrap;
+      font-weight: 700;
       display: inline-block;
     }
 
-    .bloqueado { background: #2b3642; color: var(--text-sub); }
-    .liberado { background: var(--green-btn); color: #fff; }
+    .bloqueado { background: rgba(255,255,255,0.08); color: var(--text-sub); }
+    .liberado { background: var(--green-pix); color: #fff; }
 
-    .card-body { padding: 16px; }
+    .card-body { padding: 20px; }
 
-    /* ESTILO QUADRADOS SEPARADOS E ESPAÇADOS */
+    /* PREVIEW MÍDIAS */
     .preview-box {
       width: 100%;
       display: grid;
       grid-template-columns: repeat(2, 1fr);
       gap: 12px;
       margin-bottom: 20px;
-      padding: 8px;
-      background: #000;
-      border-radius: 10px;
+      padding: 10px;
+      background: #080b10;
+      border-radius: 14px;
       border: 1px solid var(--border-color);
     }
 
     .video-item {
       background: #111;
-      border-radius: 8px;
+      border-radius: 10px;
       overflow: hidden;
-      border: 1px solid #283442;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.5);
+      border: 1px solid rgba(255,255,255,0.05);
     }
 
     .preview-box iframe {
@@ -280,75 +295,153 @@
       background: #000;
     }
 
+    /* BENEFÍCIOS */
     .vip-description {
-      margin-bottom: 18px;
+      margin-bottom: 20px;
     }
 
     .vip-description p {
-      font-size: 13px;
-      color: #ddd;
-      margin-bottom: 10px;
+      font-size: 14px;
+      color: #e5e7eb;
+      font-weight: 600;
+      margin-bottom: 12px;
     }
 
     .benefits-list {
       list-style: none;
       display: flex;
       flex-direction: column;
-      gap: 8px;
+      gap: 10px;
     }
 
     .benefits-list li {
-      font-size: 12px;
-      color: #aaa;
+      font-size: 13px;
+      color: #9ca3af;
       display: flex;
       align-items: flex-start;
-      gap: 6px;
+      gap: 8px;
       line-height: 1.4;
     }
 
-    .benefits-list li::before {
-      content: "✓";
-      color: var(--telegram-blue);
+    .benefits-list li span.check {
+      color: var(--green-pix);
       font-weight: bold;
     }
 
+    /* BOTÃO DE COMPRA DE ALTA CONVERSÃO */
     .btn-buy {
-      display: block;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
       width: 100%;
-      background: linear-gradient(135deg, #0088cc, #24a1de);
-      color: #fff;
+      background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
+      color: #ffffff;
       border: none;
-      padding: 14px;
-      border-radius: 8px;
-      font-weight: bold;
+      padding: 16px 20px;
+      border-radius: 12px;
+      font-weight: 800;
       text-align: center;
-      font-size: 14px;
+      font-size: 15px;
       cursor: pointer;
-      transition: transform 0.2s, opacity 0.2s;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      box-shadow: 0 4px 20px rgba(34, 197, 94, 0.35);
+      transition: transform 0.2s, box-shadow 0.2s;
     }
 
-    .btn-buy:hover { opacity: 0.95; transform: translateY(-1px); }
+    .btn-buy:hover { 
+      transform: translateY(-2px); 
+      box-shadow: 0 6px 24px rgba(34, 197, 94, 0.5);
+    }
 
     .btn-access {
       display: block;
       width: 100%;
-      background: var(--green-btn);
+      background: var(--green-pix);
       color: #fff;
       text-decoration: none;
-      padding: 14px;
-      border-radius: 8px;
-      font-weight: bold;
+      padding: 16px;
+      border-radius: 12px;
+      font-weight: 800;
       text-align: center;
-      font-size: 14px;
+      font-size: 15px;
+      text-transform: uppercase;
     }
 
-    /* MODAL DE LOGIN/CADASTRO */
+    .texto-seguranca {
+      font-size: 11px;
+      color: var(--text-sub);
+      text-align: center;
+      margin-top: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+
+    /* SEÇÃO DE DEPOIMENTOS DE CLIENTES (PROVA SOCIAL) */
+    .reviews-section {
+      margin-top: 40px;
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 18px;
+      padding: 24px 18px;
+    }
+
+    .reviews-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: #fff;
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .reviews-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .review-item {
+      background: rgba(0, 0, 0, 0.2);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 14px;
+    }
+
+    .review-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 6px;
+    }
+
+    .review-user {
+      font-size: 13px;
+      font-weight: bold;
+      color: #f3f4f6;
+    }
+
+    .review-stars {
+      color: #f59e0b;
+      font-size: 12px;
+    }
+
+    .review-text {
+      font-size: 12px;
+      color: #9ca3af;
+      line-height: 1.4;
+    }
+
+    /* MODAIS */
     .modal-overlay {
       display: none;
       position: fixed;
       top: 0; left: 0;
       width: 100%; height: 100%;
       background: rgba(0,0,0,0.85);
+      backdrop-filter: blur(6px);
       justify-content: center;
       align-items: center;
       z-index: 1000;
@@ -356,48 +449,36 @@
 
     .modal {
       background: var(--card-bg);
-      padding: 24px;
-      border-radius: 12px;
+      padding: 26px;
+      border-radius: 16px;
       width: 90%;
       max-width: 400px;
       text-align: center;
       border: 1px solid var(--border-color);
     }
 
-    .modal h3 { margin-bottom: 10px; font-size: 18px; }
-    .modal p.subtitle { font-size: 12px; color: var(--telegram-blue); margin-bottom: 14px; }
+    .modal h3 { margin-bottom: 8px; font-size: 18px; color: #fff; }
+    .modal p.subtitle { font-size: 12px; color: var(--text-sub); margin-bottom: 16px; }
     
     .modal input {
       width: 100%;
-      padding: 12px;
+      padding: 14px;
       margin: 6px 0;
-      border-radius: 6px;
+      border-radius: 8px;
       border: 1px solid var(--border-color);
-      background: #0e1621;
+      background: #080b10;
       color: #fff;
     }
 
-    .modal input:focus { outline: 1px solid var(--telegram-blue); }
-
-    /* ESTILO MODAL DE FOTO TELA CHEIA */
-    .photo-wrapper img {
-      cursor: pointer;
-      transition: opacity 0.2s;
-    }
-
-    .photo-wrapper img:hover {
-      opacity: 0.9;
-    }
+    .modal input:focus { outline: 1px solid var(--green-pix); }
 
     .modal-foto-fullscreen {
       display: none;
       position: fixed;
       z-index: 999999;
-      top: 0;
-      left: 0;
-      width: 100vw;
-      height: 100vh;
-      background-color: rgba(0, 0, 0, 0.92);
+      top: 0; left: 0;
+      width: 100vw; height: 100vh;
+      background-color: rgba(0, 0, 0, 0.95);
       backdrop-filter: blur(5px);
       justify-content: center;
       align-items: center;
@@ -409,25 +490,20 @@
       max-height: 95%;
       object-fit: contain;
       border-radius: 8px;
-      box-shadow: 0 0 20px rgba(0, 0, 0, 0.8);
     }
 
     .modal-foto-fechar {
       position: absolute;
-      top: 15px;
-      right: 20px;
+      top: 15px; right: 20px;
       color: #ffffff;
       font-size: 30px;
       font-weight: bold;
-      cursor: pointer;
     }
 
     @media (max-width: 600px) {
-      .preview-box {
-        gap: 10px;
-        padding: 6px;
-      }
-      .card-header h3 { font-size: 15px; }
+      .hero-banner h2 { font-size: 19px; }
+      .card-header h3 { font-size: 16px; }
+      .btn-buy { font-size: 14px; padding: 14px; }
     }
   </style>
 </head>
@@ -436,10 +512,8 @@
   <!-- POP-UP VERIFICAÇÃO DE IDADE (+18) -->
   <div id="popup-idade" style="
     position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
+    top: 0; left: 0;
+    width: 100vw; height: 100vh;
     background-color: rgba(0, 0, 0, 0.96);
     display: flex;
     justify-content: center;
@@ -448,85 +522,85 @@
     backdrop-filter: blur(8px);
   ">
     <div style="
-      background: #17212b;
-      border: 2px solid #e50914;
-      border-radius: 12px;
-      padding: 24px 20px;
+      background: #131a24;
+      border: 1px solid rgba(239, 68, 68, 0.4);
+      border-radius: 16px;
+      padding: 26px 20px;
       text-align: center;
       max-width: 400px;
       width: 90%;
-      box-shadow: 0 0 25px rgba(229, 9, 20, 0.4);
+      box-shadow: 0 0 30px rgba(239, 68, 68, 0.2);
       color: #ffffff;
-      font-family: system-ui, -apple-system, sans-serif;
     ">
-      <h2 style="color: #e50914; margin-top: 0; margin-bottom: 10px; font-size: 20px; font-weight: bold;">
-        🔞 CONTEÚDO ADULTO (+18)
+      <h2 style="color: #ef4444; margin-top: 0; margin-bottom: 10px; font-size: 20px; font-weight: 800;">
+        🔞 CONTEÚDO EXCLUSIVO (+18)
       </h2>
-      <p style="font-size: 14px; color: #d1d5db; margin-bottom: 8px; line-height: 1.4;">
-        Este site contém material destinado exclusivamente a maiores de idade.
+      <p style="font-size: 14px; color: #9ca3af; margin-bottom: 12px; line-height: 1.4;">
+        Este site contém material restrito para maiores de idade.
       </p>
-      <p style="font-size: 15px; color: #ffffff; margin-bottom: 20px; font-weight: 600;">
-        Você tem 18 anos ou mais?
+      <p style="font-size: 15px; color: #ffffff; margin-bottom: 22px; font-weight: 600;">
+        Você declara ter 18 anos ou mais?
       </p>
       <div style="display: flex; gap: 10px; justify-content: center;">
         <button id="btn-pop-sim" style="
-          background-color: #16a34a;
+          background-color: #22c55e;
           color: #ffffff;
           border: none;
-          padding: 12px 16px;
-          border-radius: 8px;
-          font-weight: bold;
+          padding: 14px;
+          border-radius: 10px;
+          font-weight: 800;
           font-size: 13px;
           cursor: pointer;
           flex: 1;
         ">
-          SIM, SOU MAIOR (+18)
+          SIM, SOU MAIOR
         </button>
         <button id="btn-pop-nao" style="
-          background-color: #dc2626;
-          color: #ffffff;
-          border: none;
-          padding: 12px 16px;
-          border-radius: 8px;
-          font-weight: bold;
+          background-color: rgba(255,255,255,0.08);
+          color: #9ca3af;
+          border: 1px solid rgba(255,255,255,0.1);
+          padding: 14px;
+          border-radius: 10px;
+          font-weight: 600;
           font-size: 13px;
           cursor: pointer;
           flex: 1;
         ">
-          NÃO, SAIR
+          SAIR
         </button>
       </div>
     </div>
   </div>
 
-  <!-- HEADER ESTILO CANAL TELEGRAM -->
+  <!-- HEADER -->
   <header>
     <div class="header-container">
       <div class="channel-info">
         <div class="channel-avatar">VIP</div>
         <div class="channel-details">
-          <h1>Acervo VIP Oficial <span class="verified-badge">✓</span></h1>
-          <span class="channel-stats">14.820 assinantes • Conteúdo diário</span>
+          <h1>Galeria VIP Oficial <span class="verified-badge">✓</span></h1>
+          <span class="channel-stats">14.820 membros • Atualizado hoje</span>
         </div>
       </div>
       <div id="user-area">
-        <button class="auth-btn" onclick="abrirModal()">Entrar / Cadastrar</button>
+        <button class="auth-btn" onclick="abrirModal()">Entrar</button>
       </div>
     </div>
   </header>
 
   <main class="main-container">
 
-    <!-- AVISO DE BOAS VINDAS -->
-    <div class="welcome-msg">
-      <h2>🔥 Seja bem-vindo ao Acervo Exclusivo</h2>
-      <p>Escolha abaixo a categoria desejada e libere seu acesso imediato. <b>Todos os nossos planos garantem 1 ANO (365 dias) de acesso completo sem taxas recorrentes!</b></p>
+    <!-- HERO BANNER (OFIRTA E CONVERSÃO) -->
+    <div class="hero-banner">
+      <span class="badge-promo">🔥 PROMOÇÃO POR TEMPO LIMITADO</span>
+      <h2>Acesso Imediato à Galeria VIP Privada</h2>
+      <p>Escolha a categoria desejada abaixo e assista todo o acervo online em alta definição. <b>Sem mensalidades ou cobranças recorrentes!</b></p>
     </div>
 
-    <!-- VÍDEO DE DEMONSTRAÇÃO VIA IFRAME -->
+    <!-- VÍDEO DE DEMONSTRAÇÃO -->
     <div class="demo-section">
       <div class="demo-title">
-        <span>🎬</span> VEJA COMO É O NOSSO SITE POR DENTRO
+        <span>🎬</span> PRÉVIA: VEJA COMO É A NOSSA GALERIA POR DENTRO
       </div>
       <div class="demo-video-wrapper">
         <iframe src="https://player.mediadelivery.net/embed/756775/24206add-f024-4795-b71f-c102bcd541ea?autoplay=false&preload=false" loading="lazy" allow="autoplay; encrypted-media" allowfullscreen="true"></iframe>
@@ -539,9 +613,9 @@
       <!-- Categoria 1: Amador -->
       <div class="card" id="card-amador">
         <div class="card-header">
-          <h3>⭐Amador Premium⭐</h3>
+          <h3>⭐ Amador Premium ⭐</h3>
           <div class="card-badges">
-            <span class="plan-badge">PLANO 1 ANO</span>
+            <span class="plan-badge">ACESSO 1 ANO</span>
             <span class="status-badge bloqueado" id="badge-amador">🔒 Bloqueado</span>
           </div>
         </div>
@@ -557,34 +631,28 @@
           </div>
 
           <div class="vip-description">
-            <p>Acesso completo ao acervo caseiro e amador sem censura.</p>
+            <p>Assista online todo o acervo caseiro e amador sem censura:</p>
             <ul class="benefits-list">
-              <li>🗓️ <b>ACESSO VÁLIDO POR 1 ANO (365 DIAS)</b></li>
-              <li>✅Vários vídeos amadores</li>
-              <li>✅Faveladas</li>
-              <li>✅incesto trudae</li>
-              <li>✅Amador/vazados</li>
-              <li>✅Mulher Dançando pelada</li>
-              <li>✅videos Tiktok+18</li>
-              <li>✅omegle</li>
-              <li>🔥Entre agora no maior e mais exclusivo vip de amadores/vazados da web</li>
-              <li>🔥Muito coisa boa, o melhor de tudo, não e igual ao telegram que os Vip some do nada, aqui não vai te deixar na mão.</li>
-              <li>🔥Então ta esperando oque, Faça parte do VIP e tenha os melhores videos ocultos do telegram na palma da sua mão😏</li>
-              <li>🟢APÓS O PAGAMENTO E LIBERADO AQUI NO SITE AUTOMÁTICO!🟢</li>
+              <li><span class="check">✓</span> <b>Acesso VIP completo por 1 Ano (365 Dias)</b></li>
+              <li><span class="check">✓</span> Vídeos amadores exclusivos & vazados</li>
+              <li><span class="check">✓</span> Seleções especiais e mídias de redes sociais</li>
+              <li><span class="check">✓</span> Atualizações diárias na plataforma</li>
+              <li><span class="check">✓</span> Streaming rápido direto no seu celular ou PC</li>
             </ul>
           </div>
           
-          <button id="buy-amador" class="btn-buy" onclick="iniciarCompra('amador')">Liberar Acesso Amador (1 Ano) • R$ 19,90</button>
-          <a href="amador.html" id="access-amador" class="btn-access" style="display:none;">Entrar na Galeria Amador</a>
+          <button id="buy-amador" class="btn-buy" onclick="iniciarCompra('amador')">⚡ LIBERAR ACESSO AMADOR • R$ 19,90</button>
+          <a href="amador.html" id="access-amador" class="btn-access" style="display:none;">ENTRAR NA GALERIA AMADOR</a>
+          <div class="texto-seguranca">🔒 Liberação Automática via PIX • Pagamento 100% Discreto</div>
         </div>
       </div>
 
       <!-- Categoria 2: Cam (Spycam) -->
       <div class="card" id="card-cam">
         <div class="card-header">
-          <h3>🔥SPYCAM VIP DARK🔥</h3>
+          <h3>🔥 SPYCAM VIP DARK 🔥</h3>
           <div class="card-badges">
-            <span class="plan-badge">PLANO 1 ANO</span>
+            <span class="plan-badge">ACESSO 1 ANO</span>
             <span class="status-badge bloqueado" id="badge-cam">🔒 Bloqueado</span>
           </div>
         </div>
@@ -600,35 +668,28 @@
           </div>
 
           <div class="vip-description">
-            <p>😈SPYCAM VIP + FLAGRAS DE RUA😈</p>
+            <p>Acesso exclusivo ao canal de câmeras e flagras:</p>
             <ul class="benefits-list">
-              <li>🗓️ <b>ACESSO VÁLIDO POR 1 ANO (365 DIAS)</b></li>
-              <li>✅CASAL</li>
-              <li>✅RESIDENCIAIS</li>
-              <li>✅BANHEIROS</li>
-              <li>✅FLAGRAS REAIS</li>
-              <li>✅FAMILIARES FLAGRADOS</li>
-              <li>✅MOTEL</li>
-              <li>✅TIO E SOBRINHA</li>
-              <li>✅TEM MUITO MAIS ENTREM PRA CONFERIR</li>
-              <li>✅CÂMERAS ESCONDIDAS, SURUBINHA ENTRE PRIMOS, ETC...</li>
-              <li>🔥VOCÊ ESTÁ A UM CLIQUE DE ENTRAR NO MAIOR ACERVO VIP COM CONTEÚDOS MAIS EXCLUSIVOS DA INTERNET!</li>
-              <li>🔥VALOR ESTÁ COM PROMOÇÃO</li>
-              <li>🟢APÓS O PAGAMENTO E LIBERADO AQUI NO SITE AUTOMÁTICO!🟢</li>
+              <li><span class="check">✓</span> <b>Acesso VIP completo por 1 Ano (365 Dias)</b></li>
+              <li><span class="check">✓</span> Câmeras escondidas e flagras reais</li>
+              <li><span class="check">✓</span> Gravações em alta definição sem cortes</li>
+              <li><span class="check">✓</span> Mídias adicionadas diariamente</li>
+              <li><span class="check">✓</span> Sem anúncios ou interrupções</li>
             </ul>
           </div>
           
-          <button id="buy-cam" class="btn-buy" onclick="iniciarCompra('cam')">Liberar Acesso Câmeras (1 Ano) • R$ 19,91</button>
-          <a href="cam.html" id="access-cam" class="btn-access" style="display:none;">Entrar na Galeria Câmeras</a>
+          <button id="buy-cam" class="btn-buy" onclick="iniciarCompra('cam')">⚡ LIBERAR ACESSO CÂMERAS • R$ 19,91</button>
+          <a href="cam.html" id="access-cam" class="btn-access" style="display:none;">ENTRAR NA GALERIA CÂMERAS</a>
+          <div class="texto-seguranca">🔒 Liberação Automática via PIX • Pagamento 100% Discreto</div>
         </div>
       </div>
 
       <!-- Categoria 3: Hentai -->
       <div class="card" id="card-hentai">
         <div class="card-header">
-          <h3>✨Hentai Vip✨</h3>
+          <h3>✨ Hentai VIP HD ✨</h3>
           <div class="card-badges">
-            <span class="plan-badge">PLANO 1 ANO</span>
+            <span class="plan-badge">ACESSO 1 ANO</span>
             <span class="status-badge bloqueado" id="badge-hentai">🔒 Bloqueado</span>
           </div>
         </div>
@@ -644,34 +705,62 @@
           </div>
 
           <div class="vip-description">
-            <p>Hentai Vip Videos HD</p>
+            <p>Galeria completa de animações HD e 3D:</p>
             <ul class="benefits-list">
-              <li>🗓️ <b>ACESSO VÁLIDO POR 1 ANO (365 DIAS)</b></li>
-              <li>✅Animações em HD e realismo</li>
-              <li>✅Vários Videos Hentai/incesto pra você!</li>
-              <li>✅Conteúdo exclusivo com milhares de Videos!</li>
-              <li>✅Animações adultas e artes conceituais em ultra resolução.</li>
-              <li>🟢APÓS O PAGAMENTO E LIBERADO AQUI NO SITE AUTOMÁTICO!🟢</li>
+              <li><span class="check">✓</span> <b>Acesso VIP completo por 1 Ano (365 Dias)</b></li>
+              <li><span class="check">✓</span> Animações adultas em Ultra HD / 4K</li>
+              <li><span class="check">✓</span> Milhares de vídeos e séries completas</li>
+              <li><span class="check">✓</span> Servidor próprio super rápido</li>
             </ul>
           </div>
           
-          <button id="buy-hentai" class="btn-buy" onclick="iniciarCompra('hentai')">Liberar Acesso Hentai (1 Ano) • R$ 11,90</button>
-          <a href="hentai.html" id="access-hentai" class="btn-access" style="display:none;">Entrar na Galeria Hentai</a>
+          <button id="buy-hentai" class="btn-buy" onclick="iniciarCompra('hentai')">⚡ LIBERAR ACESSO HENTAI • R$ 11,90</button>
+          <a href="hentai.html" id="access-hentai" class="btn-access" style="display:none;">ENTRAR NA GALERIA HENTAI</a>
+          <div class="texto-seguranca">🔒 Liberação Automática via PIX • Pagamento 100% Discreto</div>
         </div>
       </div>
 
     </div>
+
+    <!-- SEÇÃO DE PROVA SOCIAL (AVALIAÇÕES) -->
+    <div class="reviews-section">
+      <div class="reviews-title">💬 O que dizem nossos membros VIP</div>
+      <div class="reviews-grid">
+        <div class="review-item">
+          <div class="review-header">
+            <span class="review-user">M***o S.</span>
+            <span class="review-stars">★★★★★</span>
+          </div>
+          <div class="review-text">Paguei no PIX e liberou no mesmo minuto aqui no site. Galeria top demais, vale muito a pena!</div>
+        </div>
+        <div class="review-item">
+          <div class="review-header">
+            <span class="review-user">R***al</span>
+            <span class="review-stars">★★★★★</span>
+          </div>
+          <div class="review-text">Qualidade dos vídeos é impressionante e roda direto sem travar. Recomendo!</div>
+        </div>
+        <div class="review-item">
+          <div class="review-header">
+            <span class="review-user">F***pe C.</span>
+            <span class="review-stars">★★★★★</span>
+          </div>
+          <div class="review-text">Muito melhor que os grupos de Telegram que caem toda hora. Esse site tá perfeito.</div>
+        </div>
+      </div>
+    </div>
+
   </main>
 
   <!-- MODAL AUTH -->
   <div class="modal-overlay" id="modalAuth">
     <div class="modal">
-      <h3 id="modal-title">Acessar ou Criar Conta</h3>
-      <p class="subtitle" id="modal-subtitle">Crie sua conta antes de pagar para vincular o acesso automático.</p>
-      <input type="email" id="auth-email" placeholder="Seu E-mail" />
+      <h3 id="modal-title">Criar Conta / Entrar</h3>
+      <p class="subtitle" id="modal-subtitle">Digite seu e-mail para vincular seu acesso VIP automaticamente após o pagamento.</p>
+      <input type="email" id="auth-email" placeholder="Seu E-mail principal" />
       <input type="password" id="auth-pass" placeholder="Sua Senha (mín. 6 caracteres)" />
-      <button class="auth-btn" style="width:100%; margin-top:10px; padding: 12px; border-radius: 6px;" onclick="fazerAuth()">Continuar para Checkout</button>
-      <button onclick="fecharModal()" style="background:none; border:none; color:#aaa; margin-top:15px; cursor:pointer;">Cancelar</button>
+      <button class="btn-buy" style="width:100%; margin-top:14px; padding: 14px;" onclick="fazerAuth()">CONTINUAR PARA PAGAMENTO</button>
+      <button onclick="fecharModal()" style="background:none; border:none; color:var(--text-sub); margin-top:15px; cursor:pointer; font-size: 13px;">Cancelar</button>
     </div>
   </div>
 
@@ -724,7 +813,6 @@
 
   <!-- SCRIPT SUPABASE E SESSÃO -->
   <script>
-    // IMPORTANTE: Insira sua chave anon pública do Supabase abaixo (ela inicia com "eyJ...")
     const SUPABASE_URL = 'https://xjvkyofktqojuyequuxe.supabase.co';
     const SUPABASE_ANON_KEY = 'sb_publishable__w-crANhzjiYKJuh2AX39w_Kz1-Rf74'; 
     const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
@@ -751,9 +839,9 @@
       categoriaPendente = categoria;
       const subtitle = document.getElementById('modal-subtitle');
       if (categoria) {
-        subtitle.innerText = "Cadastre-se ou faça login com o e-mail que usará na compra.";
+        subtitle.innerText = "Cadastre-se ou faça login com o e-mail que usará no pagamento.";
       } else {
-        subtitle.innerText = "Acesse sua conta para ver seus conteúdos liberados.";
+        subtitle.innerText = "Acesse sua conta para visualizar suas galerias liberadas.";
       }
       document.getElementById('modalAuth').style.display = 'flex';
     }
@@ -787,10 +875,8 @@
         return;
       }
 
-      // Tenta realizar o login
       let { data, error } = await _supabase.auth.signInWithPassword({ email, password });
       
-      // Se falhar o login, tenta criar uma nova conta
       if (error) {
         const create = await _supabase.auth.signUp({ email, password });
         
@@ -821,14 +907,14 @@
           irParaCheckout(catAcomprar, usuarioAtual.email);
         }
       } else {
-        alert("Não foi possível autenticar. Verifique se seu e-mail requer confirmação.");
+        alert("Não foi possível autenticar. Verifique seus dados.");
       }
     }
 
     function atualizarHeader() {
       document.getElementById('user-area').innerHTML = `
         <span style="margin-right:12px; font-size:12px; color:var(--text-sub);">${usuarioAtual.email}</span>
-        <button class="auth-btn" style="background:#2b3642;" onclick="deslogar()">Sair</button>
+        <button class="auth-btn" onclick="deslogar()">Sair</button>
       `;
     }
 
