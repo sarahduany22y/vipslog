@@ -1,117 +1,279 @@
-<script>
-  const SUPABASE_URL = 'https://xjvkyofktqojuyequuxe.supabase.co';
-  const SUPABASE_ANON_KEY = 'sb_publishable__w-crANhzjiYKJuh2AX39w_Kz1-Rf74'; 
-  const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-
-  const EMAIL_ADMIN = "chico@teste.com";
-
-  window.onload = async () => {
-    const { data: { session } } = await _supabase.auth.getSession();
-    if (session && session.user.email.toLowerCase() === EMAIL_ADMIN.toLowerCase()) {
-      exibirPainel();
-    }
-  };
-
-  async function fazerLoginAdmin() {
-    const email = document.getElementById('login-email').value.trim();
-    const password = document.getElementById('login-pass').value;
-
-    if (email.toLowerCase() !== EMAIL_ADMIN.toLowerCase()) {
-      alert("Este e-mail não tem permissão de Administrador.");
-      return;
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Painel ADM - Liberação VIP</title>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <style>
+    :root { 
+      --bg: #0b0e14; 
+      --card: #131a24; 
+      --green: #22c55e; 
+      --red: #ef4444; 
+      --text: #ffffff; 
     }
 
-    const { data, error } = await _supabase.auth.signInWithPassword({ email, password });
+    * { box-sizing: border-box; }
 
-    if (error) {
-      alert("Erro no login: " + error.message);
-    } else {
-      exibirPainel();
-    }
-  }
-
-  function exibirPainel() {
-    document.getElementById('login-box').style.display = 'none';
-    document.getElementById('painel-conteudo').style.display = 'block';
-    carregarVendas();
-  }
-
-  function deslogar() {
-    _supabase.auth.signOut();
-    location.reload();
-  }
-
-  async function carregarVendas() {
-    const tbody = document.getElementById('tabela-vendas');
-    tbody.innerHTML = '<tr><td colspan="3" style="text-align:center;">Carregando...</td></tr>';
-
-    const { data, error } = await _supabase
-      .from('compras_usuario')
-      .select('*')
-      .order('data_expiracao', { ascending: false })
-      .limit(30);
-
-    if (error) {
-      tbody.innerHTML = '<tr><td colspan="3" style="text-align:center; color:#ef4444;">Erro ao carregar dados.</td></tr>';
-      return;
+    body { 
+      font-family: system-ui, -apple-system, sans-serif; 
+      background: var(--bg); 
+      color: var(--text); 
+      padding: 12px; 
+      margin: 0; 
     }
 
-    tbody.innerHTML = '';
-    if (!data || data.length === 0) {
-      tbody.innerHTML = '<tr><td colspan="3" style="text-align:center;">Nenhuma compra encontrada.</td></tr>';
-      return;
+    h1, h2 { 
+      font-size: 18px; 
+      text-align: center; 
+      margin-top: 0;
+      margin-bottom: 16px; 
     }
 
-    data.forEach(item => {
-      const dataExp = new Date(item.data_expiracao).toLocaleDateString('pt-BR');
-      tbody.innerHTML += `
-        <tr>
-          <td style="font-family: monospace;">${item.user_id}</td>
-          <td><span class="badge">${item.categoria_id}</span></td>
-          <td>${dataExp}</td>
-        </tr>
-      `;
-    });
-  }
-
-  async function liberarAcessoManual() {
-    const email = document.getElementById('adm-email').value.trim();
-    const categoria = document.getElementById('adm-categoria').value;
-    const dias = parseInt(document.getElementById('adm-dias').value);
-
-    if (!email) {
-      alert("Digite o e-mail do cliente.");
-      return;
+    .card { 
+      background: var(--card); 
+      border-radius: 12px; 
+      padding: 16px; 
+      margin-bottom: 16px; 
+      border: 1px solid rgba(255,255,255,0.1); 
+      max-width: 600px; 
+      margin-left: auto; 
+      margin-right: auto; 
     }
 
-    // 1. Busca a ID do usuário pela função RPC criada no Supabase
-    const { data: userId, error: rpcErr } = await _supabase
-      .rpc('buscar_id_por_email', { email_busca: email });
-
-    if (rpcErr || !userId) {
-      alert(`O e-mail [${email}] não foi encontrado na lista de contas cadastradas do site.`);
-      return;
+    input, select, button { 
+      width: 100%; 
+      padding: 12px; 
+      margin: 6px 0; 
+      border-radius: 8px; 
+      border: 1px solid #333; 
+      background: #080b10; 
+      color: #fff; 
+      font-size: 14px; 
     }
 
-    // 2. Calcula a data de expiração
-    const dataExpira = new Date();
-    dataExpira.setDate(dataExpira.getDate() + dias);
+    button { 
+      background: var(--green); 
+      font-weight: bold; 
+      cursor: pointer; 
+      border: none; 
+      margin-top: 8px; 
+      transition: opacity 0.2s;
+    }
 
-    // 3. Insere a liberação na tabela
-    const { error } = await _supabase
-      .from('compras_usuario')
-      .insert([{
-        user_id: userId,
-        categoria_id: categoria,
-        data_expiracao: dataExpira.toISOString()
-      }]);
+    button:active { opacity: 0.8; }
 
-    if (error) {
-      alert("Erro ao liberar: " + error.message);
-    } else {
-      alert(`✅ Sucesso! Acesso [${categoria}] liberado para ${email}`);
-      document.getElementById('adm-email').value = '';
+    /* CONTROLE DE ROLAGEM DA TABELA NO CELULAR */
+    .table-container { 
+      width: 100%; 
+      overflow-x: auto; 
+      -webkit-overflow-scrolling: touch; 
+      margin-top: 10px; 
+      border: 1px solid rgba(255,255,255,0.05);
+      border-radius: 8px;
+    }
+
+    table { 
+      width: 100%; 
+      border-collapse: collapse; 
+      font-size: 11px; 
+      white-space: nowrap; 
+    }
+
+    th, td { 
+      padding: 10px 8px; 
+      text-align: left; 
+      border-bottom: 1px solid rgba(255,255,255,0.1); 
+    }
+
+    th { background: rgba(255,255,255,0.05); }
+
+    .badge { 
+      background: rgba(34, 197, 94, 0.15); 
+      color: #22c55e; 
+      padding: 3px 6px; 
+      border-radius: 4px; 
+      font-weight: bold; 
+      font-size: 10px; 
+    }
+
+    #painel-conteudo { display: none; }
+  </style>
+</head>
+<body>
+
+  <h1>📱 Painel ADM - Controle VIP</h1>
+
+  <!-- TELA DE LOGIN ADM -->
+  <div class="card" id="login-box">
+    <h2>🔐 Login de Administrador</h2>
+    <input type="email" id="login-email" placeholder="E-mail de ADM" value="chico@teste.com">
+    <input type="password" id="login-pass" placeholder="Sua Senha">
+    <button onclick="fazerLoginAdmin()">ENTRAR NO PAINEL</button>
+  </div>
+
+  <!-- CONTEÚDO DO PAINEL -->
+  <div id="painel-conteudo">
+    
+    <!-- LIBERAÇÃO MANUAL (PAYPAL / TESTE) -->
+    <div class="card">
+      <h2>⚡ Liberação Manual (PayPal / Teste)</h2>
+      <input type="email" id="adm-email" placeholder="E-mail do Cliente (cadastrado no site)">
+      <select id="adm-categoria">
+        <option value="amador">Amador VIP</option>
+        <option value="cam">Spycam VIP</option>
+        <option value="hentai">Hentai VIP</option>
+      </select>
+      <select id="adm-dias">
+        <option value="365">1 Ano (365 Dias)</option>
+        <option value="30">1 Mês (30 Dias)</option>
+        <option value="7">Teste (7 Dias)</option>
+      </select>
+      <button onclick="liberarAcessoManual()">LIBERAR ACESSO AGORA</button>
+    </div>
+
+    <!-- LISTA DE ÚLTIMAS VENDAS E LIBERAÇÕES -->
+    <div class="card">
+      <h2>🛒 Últimas Vendas / Liberações</h2>
+      <button onclick="carregarVendas()" style="background: rgba(255,255,255,0.1); margin-bottom: 8px;">🔄 Atualizar Lista</button>
+      
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th>ID do Usuário</th>
+              <th>Categoria</th>
+              <th>Data de Expiração</th>
+            </tr>
+          </thead>
+          <tbody id="tabela-vendas">
+            <tr><td colspan="3" style="text-align:center;">Carregando...</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <button onclick="deslogar()" style="background: var(--red); margin-top: 20px;">Sair do Painel</button>
+    </div>
+
+  </div>
+
+  <script>
+    const SUPABASE_URL = 'https://xjvkyofktqojuyequuxe.supabase.co';
+    const SUPABASE_ANON_KEY = 'sb_publishable__w-crANhzjiYKJuh2AX39w_Kz1-Rf74'; 
+    const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    const EMAIL_ADMIN = "chico@teste.com";
+
+    window.onload = async () => {
+      const { data: { session } } = await _supabase.auth.getSession();
+      if (session && session.user.email.toLowerCase() === EMAIL_ADMIN.toLowerCase()) {
+        exibirPainel();
+      }
+    };
+
+    async function fazerLoginAdmin() {
+      const email = document.getElementById('login-email').value.trim();
+      const password = document.getElementById('login-pass').value;
+
+      if (email.toLowerCase() !== EMAIL_ADMIN.toLowerCase()) {
+        alert("Este e-mail não tem permissão de Administrador.");
+        return;
+      }
+
+      const { data, error } = await _supabase.auth.signInWithPassword({ email, password });
+
+      if (error) {
+        alert("Erro no login: " + error.message);
+      } else {
+        exibirPainel();
+      }
+    }
+
+    function exibirPainel() {
+      document.getElementById('login-box').style.display = 'none';
+      document.getElementById('painel-conteudo').style.display = 'block';
       carregarVendas();
     }
-  }
-</script>
+
+    function deslogar() {
+      _supabase.auth.signOut();
+      location.reload();
+    }
+
+    async function carregarVendas() {
+      const tbody = document.getElementById('tabela-vendas');
+      tbody.innerHTML = '<tr><td colspan="3" style="text-align:center;">Carregando...</td></tr>';
+
+      const { data, error } = await _supabase
+        .from('compras_usuario')
+        .select('*')
+        .order('data_expiracao', { ascending: false })
+        .limit(30);
+
+      if (error) {
+        tbody.innerHTML = '<tr><td colspan="3" style="text-align:center; color: var(--red);">Erro ao carregar dados.</td></tr>';
+        return;
+      }
+
+      tbody.innerHTML = '';
+      if (!data || data.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="3" style="text-align:center;">Nenhuma compra encontrada.</td></tr>';
+        return;
+      }
+
+      data.forEach(item => {
+        const dataExp = new Date(item.data_expiracao).toLocaleDateString('pt-BR');
+        tbody.innerHTML += `
+          <tr>
+            <td style="font-family: monospace;">${item.user_id}</td>
+            <td><span class="badge">${item.categoria_id}</span></td>
+            <td>${dataExp}</td>
+          </tr>
+        `;
+      });
+    }
+
+    async function liberarAcessoManual() {
+      const email = document.getElementById('adm-email').value.trim();
+      const categoria = document.getElementById('adm-categoria').value;
+      const dias = parseInt(document.getElementById('adm-dias').value);
+
+      if (!email) {
+        alert("Digite o e-mail do cliente.");
+        return;
+      }
+
+      // 1. Busca a ID do usuário via função RPC no Supabase
+      const { data: userId, error: rpcErr } = await _supabase
+        .rpc('buscar_id_por_email', { email_busca: email });
+
+      if (rpcErr || !userId) {
+        alert(`O e-mail [${email}] não foi encontrado no banco de dados. Verifique se o cliente se cadastrou no site.`);
+        return;
+      }
+
+      // 2. Calcula a data de expiração
+      const dataExpira = new Date();
+      dataExpira.setDate(dataExpira.getDate() + dias);
+
+      // 3. Insere a liberação na tabela compras_usuario
+      const { error } = await _supabase
+        .from('compras_usuario')
+        .insert([{
+          user_id: userId,
+          categoria_id: categoria,
+          data_expiracao: dataExpira.toISOString()
+        }]);
+
+      if (error) {
+        alert("Erro ao liberar: " + error.message);
+      } else {
+        alert(`✅ Sucesso! Acesso [${categoria}] liberado para ${email}`);
+        document.getElementById('adm-email').value = '';
+        carregarVendas();
+      }
+    }
+  </script>
+</body>
+</html>
