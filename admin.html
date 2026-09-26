@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Painel ADM - Liberação VIP</title>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <style>
+    :root { --bg: #0b0e14; --card: #131a24; --green: #22c55e; --text: #fff; }
+    body { font-family: system-ui, sans-serif; background: var(--bg); color: var(--text); padding: 16px; margin: 0; }
+    h1, h2 { font-size: 20px; text-align: center; margin-bottom: 20px; }
+    .card { background: var(--card); border-radius: 12px; padding: 16px; margin-bottom: 20px; border: 1px solid rgba(255,255,255,0.1); }
+    input, select, button { width: 100%; padding: 12px; margin: 6px 0; border-radius: 8px; border: 1px solid #333; background: #080b10; color: #fff; font-size: 14px; box-sizing: border-box; }
+    button { background: var(--green); font-weight: bold; cursor: pointer; border: none; margin-top: 10px; }
+    table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 12px; }
+    th, td { padding: 10px 6px; text-align: left; border-bottom: 1px solid rgba(255,255,255,0.1); word-break: break-all; }
+    th { background: rgba(255,255,255,0.05); }
+    .badge { background: #22c55e22; color: #22c55e; padding: 2px 6px; border-radius: 4px; font-weight: bold; }
+  </style>
+</head>
+<body>
+
+  <h1>📱 Painel ADM - Controle VIP</h1>
+
+  <!-- LIBERAÇÃO MANUAL (PAYPAL / TESTE) -->
+  <div class="card">
+    <h2>⚡ Liberação Manual (PayPal / Teste)</h2>
+    <input type="email" id="adm-email" placeholder="E-mail do Cliente (cadastrado no site)">
+    <select id="adm-categoria">
+      <option value="amador">Amador VIP</option>
+      <option value="cam">Spycam VIP</option>
+      <option value="hentai">Hentai VIP</option>
+    </select>
+    <select id="adm-dias">
+      <option value="365">1 Ano (365 Dias)</option>
+      <option value="30">1 Mês (30 Dias)</option>
+      <option value="7">Teste (7 Dias)</option>
+    </select>
+    <button onclick="liberarAcessoManual()">LIBERAR ACESSO AGORA</button>
+  </div>
+
+  <!-- LISTA DE ÚLTIMAS VENDAS -->
+  <div class="card">
+    <h2>🛒 Últimas Vendas / Liberações</h2>
+    <button onclick="carregarVendas()" style="background: rgba(255,255,255,0.1); margin-bottom: 10px;">🔄 Atualizar Lista</button>
+    <table>
+      <thead>
+        <tr>
+          <th>E-mail / User ID</th>
+          <th>Cat.</th>
+          <th>Expira em</th>
+        </tr>
+      </thead>
+      <tbody id="tabela-vendas">
+        <tr><td colspan="3" style="text-align:center;">Carregando...</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <script>
+    const SUPABASE_URL = 'https://xjvkyofktqojuyequuxe.supabase.co';
+    const SUPABASE_ANON_KEY = 'sb_publishable__w-crANhzjiYKJuh2AX39w_Kz1-Rf74'; 
+    const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    // INSIRA AQUI O SEU E-MAIL DE ADMINISTRADOR PARA PROTEGER
+    const EMAIL_ADMIN = "seu-email-admin@gmail.com";
+
+    window.onload = async () => {
+      const { data: { session } } = await _supabase.auth.getSession();
+      if (!session || session.user.email !== EMAIL_ADMIN) {
+        alert("Acesso restrito apenas ao administrador.");
+        window.location.href = "index.html";
+        return;
+      }
+      carregarVendas();
+    };
+
+    // FUNÇÃO PARA BUSCAR VENDAS RECENTES
+    async function carregarVendas() {
+      const tbody = document.getElementById('tabela-vendas');
+      tbody.innerHTML = '<tr><td colspan="3" style="text-align:center;">Carregando...</td></tr>';
+
+      const { data, error } = await _supabase
+        .from('compras_usuario')
+        .select('*')
+        .order('data_expiracao', { ascending: false })
+        .limit(20);
+
+      if (error) {
+        tbody.innerHTML = '<tr><td colspan="3">Erro ao carregar dados.</td></tr>';
+        return;
+      }
+
+      tbody.innerHTML = '';
+      data.forEach(item => {
+        const dataExp = new Date(item.data_expiracao).toLocaleDateString('pt-BR');
+        tbody.innerHTML += `
+          <tr>
+            <td>${item.user_id.substring(0, 10)}...</td>
+            <td><span class="badge">${item.categoria_id}</span></td>
+            <td>${dataExp}</td>
+          </tr>
+        `;
+      });
+    }
+
+    // FUNÇÃO PARA LIBERAR ACESSO PELO E-MAIL
+    async function liberarAcessoManual() {
+      const email = document.getElementById('adm-email').value.trim();
+      const categoria = document.getElementById('adm-categoria').value;
+      const dias = parseInt(document.getElementById('adm-dias').value);
+
+      if (!email) {
+        alert("Digite o e-mail do cliente.");
+        return;
+      }
+
+      // 1. Busca o ID do usuário pelo e-mail na tabela auth do Supabase (ou view de perfis)
+      // Nota: Caso você não tenha a busca de ID por e-mail via client, ele insere o registro vinculando pelo email
+      const dataExpira = new Date();
+      dataExpira.setDate(dataExpira.getDate() + dias);
+
+      // Busca o ID do usuário através da consulta
+      const { data: users, error: userErr } = await _supabase
+        .from('profiles') // ou tabela customizada se tiver, senão usa RPC/Insert direto
+        .select('id')
+        .eq('email', email)
+        .single();
+
+      let userId = users?.id;
+
+      if (!userId) {
+        alert("Atenção: O usuário precisa ter criado uma conta no site pelo menos uma vez com esse e-mail.");
+        return;
+      }
+
+      // 2. Insere a liberação na tabela de compras
+      const { error } = await _supabase
+        .from('compras_usuario')
+        .insert([{
+          user_id: userId,
+          categoria_id: categoria,
+          data_expiracao: dataExpira.toISOString()
+        }]);
+
+      if (error) {
+        alert("Erro ao liberar: " + error.message);
+      } else {
+        alert(`✅ Categoria [${categoria}] liberada com sucesso para ${email}!`);
+        document.getElementById('adm-email').value = '';
+        carregarVendas();
+      }
+    }
+  </script>
+</body>
+</html>
