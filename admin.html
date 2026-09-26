@@ -74,12 +74,12 @@
     table { 
       width: 100%; 
       border-collapse: collapse; 
-      font-size: 11px; 
+      font-size: 12px; 
       white-space: nowrap; 
     }
 
     th, td { 
-      padding: 10px 8px; 
+      padding: 10px 10px; 
       text-align: left; 
       border-bottom: 1px solid rgba(255,255,255,0.1); 
     }
@@ -99,8 +99,8 @@
     .btn-remove {
       background: var(--red);
       color: #fff;
-      padding: 4px 8px;
-      font-size: 10px;
+      padding: 5px 10px;
+      font-size: 11px;
       border-radius: 4px;
       margin: 0;
       width: auto;
@@ -154,7 +154,7 @@
         <table>
           <thead>
             <tr>
-              <th>ID do Usuário</th>
+              <th>E-mail do Cliente</th>
               <th>Categoria</th>
               <th>Data Expiração</th>
               <th>Ações</th>
@@ -235,19 +235,32 @@
         return;
       }
 
-      data.forEach(item => {
+      // Converte os IDs em e-mails para exibir na tabela
+      for (const item of data) {
+        let emailExibicao = 'E-mail não encontrado';
+        
+        if (item.user_id) {
+          const { data: emailBuscado } = await _supabase
+            .rpc('buscar_email_por_id', { user_id_busca: item.user_id });
+          
+          if (emailBuscado) {
+            emailExibicao = emailBuscado;
+          }
+        }
+
         const dataExp = new Date(item.data_expiracao).toLocaleDateString('pt-BR');
+
         tbody.innerHTML += `
           <tr>
-            <td style="font-family: monospace;">${item.user_id}</td>
+            <td style="font-weight: bold; color: #38bdf8;">${emailExibicao}</td>
             <td><span class="badge">${item.categoria_id}</span></td>
             <td>${dataExp}</td>
             <td>
-              <button class="btn-remove" onclick="removerAcesso('${item.id || ''}', '${item.user_id}', '${item.categoria_id}')">❌ Remover</button>
+              <button class="btn-remove" onclick="removerAcesso('${item.id || ''}', '${item.user_id}', '${item.categoria_id}', '${emailExibicao}')">❌ Remover</button>
             </td>
           </tr>
         `;
-      });
+      }
     }
 
     async function liberarAcessoManual() {
@@ -290,8 +303,8 @@
       }
     }
 
-    async function removerAcesso(rowId, userId, categoria) {
-      if (!confirm(`Tem certeza que deseja remover o acesso VIP à categoria [${categoria}] deste utilizador?`)) {
+    async function removerAcesso(rowId, userId, categoria, emailCliente) {
+      if (!confirm(`Tem certeza que deseja remover o acesso de [${emailCliente}] na categoria [${categoria.toUpperCase()}]?`)) {
         return;
       }
 
