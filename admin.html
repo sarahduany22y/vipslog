@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Painel ADM - Liberação VIP</title>
+  <title>Painel ADM - Controle VIP</title>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
     :root { 
@@ -37,7 +37,7 @@
       padding: 16px; 
       margin-bottom: 16px; 
       border: 1px solid rgba(255,255,255,0.1); 
-      max-width: 600px; 
+      max-width: 650px; 
       margin-left: auto; 
       margin-right: auto; 
     }
@@ -59,12 +59,9 @@
       cursor: pointer; 
       border: none; 
       margin-top: 8px; 
-      transition: opacity 0.2s;
     }
 
-    button:active { opacity: 0.8; }
-
-    /* CONTROLE DE ROLAGEM DA TABELA NO CELULAR */
+    /* TABELA RESPONSIVA */
     .table-container { 
       width: 100%; 
       overflow-x: auto; 
@@ -96,6 +93,18 @@
       border-radius: 4px; 
       font-weight: bold; 
       font-size: 10px; 
+      text-transform: uppercase;
+    }
+
+    .btn-remove {
+      background: var(--red);
+      color: #fff;
+      padding: 4px 8px;
+      font-size: 10px;
+      border-radius: 4px;
+      margin: 0;
+      width: auto;
+      cursor: pointer;
     }
 
     #painel-conteudo { display: none; }
@@ -120,16 +129,19 @@
     <div class="card">
       <h2>⚡ Liberação Manual (PayPal / Teste)</h2>
       <input type="email" id="adm-email" placeholder="E-mail do Cliente (cadastrado no site)">
+      
       <select id="adm-categoria">
         <option value="amador">Amador VIP</option>
         <option value="cam">Spycam VIP</option>
         <option value="hentai">Hentai VIP</option>
       </select>
+
       <select id="adm-dias">
         <option value="365">1 Ano (365 Dias)</option>
         <option value="30">1 Mês (30 Dias)</option>
         <option value="7">Teste (7 Dias)</option>
       </select>
+      
       <button onclick="liberarAcessoManual()">LIBERAR ACESSO AGORA</button>
     </div>
 
@@ -144,11 +156,12 @@
             <tr>
               <th>ID do Usuário</th>
               <th>Categoria</th>
-              <th>Data de Expiração</th>
+              <th>Data Expiração</th>
+              <th>Ações</th>
             </tr>
           </thead>
           <tbody id="tabela-vendas">
-            <tr><td colspan="3" style="text-align:center;">Carregando...</td></tr>
+            <tr><td colspan="4" style="text-align:center;">Carregando...</td></tr>
           </tbody>
         </table>
       </div>
@@ -203,7 +216,7 @@
 
     async function carregarVendas() {
       const tbody = document.getElementById('tabela-vendas');
-      tbody.innerHTML = '<tr><td colspan="3" style="text-align:center;">Carregando...</td></tr>';
+      tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;">Carregando...</td></tr>';
 
       const { data, error } = await _supabase
         .from('compras_usuario')
@@ -212,13 +225,13 @@
         .limit(30);
 
       if (error) {
-        tbody.innerHTML = '<tr><td colspan="3" style="text-align:center; color: var(--red);">Erro ao carregar dados.</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="4" style="text-align:center; color: var(--red);">Erro ao carregar dados.</td></tr>';
         return;
       }
 
       tbody.innerHTML = '';
       if (!data || data.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="3" style="text-align:center;">Nenhuma compra encontrada.</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;">Nenhuma compra encontrada.</td></tr>';
         return;
       }
 
@@ -229,6 +242,9 @@
             <td style="font-family: monospace;">${item.user_id}</td>
             <td><span class="badge">${item.categoria_id}</span></td>
             <td>${dataExp}</td>
+            <td>
+              <button class="btn-remove" onclick="removerAcesso('${item.id || ''}', '${item.user_id}', '${item.categoria_id}')">❌ Remover</button>
+            </td>
           </tr>
         `;
       });
@@ -236,7 +252,8 @@
 
     async function liberarAcessoManual() {
       const email = document.getElementById('adm-email').value.trim();
-      const categoria = document.getElementById('adm-categoria').value;
+      const selectCategoria = document.getElementById('adm-categoria');
+      const categoria = selectCategoria.options[selectCategoria.selectedIndex].value;
       const dias = parseInt(document.getElementById('adm-dias').value);
 
       if (!email) {
@@ -244,20 +261,18 @@
         return;
       }
 
-      // 1. Busca a ID do usuário via função RPC no Supabase
+      // Busca ID do utilizador via RPC
       const { data: userId, error: rpcErr } = await _supabase
         .rpc('buscar_id_por_email', { email_busca: email });
 
       if (rpcErr || !userId) {
-        alert(`O e-mail [${email}] não foi encontrado no banco de dados. Verifique se o cliente se cadastrou no site.`);
+        alert(`O e-mail [${email}] não foi encontrado no banco de dados. O cliente precisa criar conta no site primeiro.`);
         return;
       }
 
-      // 2. Calcula a data de expiração
       const dataExpira = new Date();
       dataExpira.setDate(dataExpira.getDate() + dias);
 
-      // 3. Insere a liberação na tabela compras_usuario
       const { error } = await _supabase
         .from('compras_usuario')
         .insert([{
@@ -269,8 +284,31 @@
       if (error) {
         alert("Erro ao liberar: " + error.message);
       } else {
-        alert(`✅ Sucesso! Acesso [${categoria}] liberado para ${email}`);
+        alert(`✅ Categoria [${categoria.toUpperCase()}] liberada com sucesso para ${email}!`);
         document.getElementById('adm-email').value = '';
+        carregarVendas();
+      }
+    }
+
+    async function removerAcesso(rowId, userId, categoria) {
+      if (!confirm(`Tem certeza que deseja remover o acesso VIP à categoria [${categoria}] deste utilizador?`)) {
+        return;
+      }
+
+      let query = _supabase.from('compras_usuario').delete();
+
+      if (rowId) {
+        query = query.eq('id', rowId);
+      } else {
+        query = query.eq('user_id', userId).eq('categoria_id', categoria);
+      }
+
+      const { error } = await query;
+
+      if (error) {
+        alert("Erro ao remover acesso: " + error.message);
+      } else {
+        alert("Acesso removido com sucesso!");
         carregarVendas();
       }
     }
