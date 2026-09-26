@@ -929,7 +929,7 @@
     })();
   </script>
 
-  <!-- SCRIPT SUPABASE E SESSÃO -->
+<!-- SCRIPT SUPABASE E SESSÃO -->
   <script>
     const SUPABASE_URL = 'https://xjvkyofktqojuyequuxe.supabase.co';
     const SUPABASE_ANON_KEY = 'sb_publishable__w-crANhzjiYKJuh2AX39w_Kz1-Rf74'; 
@@ -1050,7 +1050,7 @@
         .eq('user_id', usuarioAtual.id)
         .gt('data_expiracao', new Date().toISOString());
 
-      if (compras && !error) {
+      if (compras && compras.length > 0 && !error) {
         compras.forEach(item => {
           const cat = item.categoria_id;
           
@@ -1070,5 +1070,3 @@
       }
     }
   </script>
-</body>
-</html>
