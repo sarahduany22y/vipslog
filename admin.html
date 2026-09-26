@@ -7,15 +7,18 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
     :root { --bg: #0b0e14; --card: #131a24; --green: #22c55e; --text: #fff; }
-    body { font-family: system-ui, sans-serif; background: var(--bg); color: var(--text); padding: 16px; margin: 0; }
-    h1, h2 { font-size: 20px; text-align: center; margin-bottom: 20px; }
-    .card { background: var(--card); border-radius: 12px; padding: 16px; margin-bottom: 20px; border: 1px solid rgba(255,255,255,0.1); max-width: 600px; margin-left: auto; margin-right: auto; }
+    body { font-family: system-ui, sans-serif; background: var(--bg); color: var(--text); padding: 12px; margin: 0; }
+    h1, h2 { font-size: 18px; text-align: center; margin-bottom: 16px; }
+    .card { background: var(--card); border-radius: 12px; padding: 16px; margin-bottom: 16px; border: 1px solid rgba(255,255,255,0.1); max-width: 600px; margin-left: auto; margin-right: auto; box-sizing: border-box; }
     input, select, button { width: 100%; padding: 12px; margin: 6px 0; border-radius: 8px; border: 1px solid #333; background: #080b10; color: #fff; font-size: 14px; box-sizing: border-box; }
-    button { background: var(--green); font-weight: bold; cursor: pointer; border: none; margin-top: 10px; }
-    table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 12px; }
-    th, td { padding: 10px 6px; text-align: left; border-bottom: 1px solid rgba(255,255,255,0.1); word-break: break-all; }
+    button { background: var(--green); font-weight: bold; cursor: pointer; border: none; margin-top: 8px; }
+    
+    /* TABELA RESPONSIVA PARA CELULAR */
+    .table-container { width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; margin-top: 10px; }
+    table { width: 100%; border-collapse: collapse; font-size: 11px; white-space: nowrap; }
+    th, td { padding: 10px 8px; text-align: left; border-bottom: 1px solid rgba(255,255,255,0.1); }
     th { background: rgba(255,255,255,0.05); }
-    .badge { background: #22c55e22; color: #22c55e; padding: 2px 6px; border-radius: 4px; font-weight: bold; }
+    .badge { background: #22c55e22; color: #22c55e; padding: 3px 6px; border-radius: 4px; font-weight: bold; font-size: 10px; }
     #painel-conteudo { display: none; }
   </style>
 </head>
@@ -51,22 +54,26 @@
       <button onclick="liberarAcessoManual()">LIBERAR ACESSO AGORA</button>
     </div>
 
-    <!-- LISTA DE ÚLTIMAS VENDAS -->
+    <!-- LISTA DE ÚLTIMAS VENDAS E LIBERAÇÕES -->
     <div class="card">
       <h2>🛒 Últimas Vendas / Liberações</h2>
-      <button onclick="carregarVendas()" style="background: rgba(255,255,255,0.1); margin-bottom: 10px;">🔄 Atualizar Lista</button>
-      <table>
-        <thead>
-          <tr>
-            <th>User ID</th>
-            <th>Cat.</th>
-            <th>Expira em</th>
-          </tr>
-        </thead>
-        <tbody id="tabela-vendas">
-          <tr><td colspan="3" style="text-align:center;">Carregando...</td></tr>
-        </tbody>
-      </table>
+      <button onclick="carregarVendas()" style="background: rgba(255,255,255,0.1); margin-bottom: 8px;">🔄 Atualizar Lista</button>
+      
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th>ID do Usuário</th>
+              <th>Categoria</th>
+              <th>Data de Expiração</th>
+            </tr>
+          </thead>
+          <tbody id="tabela-vendas">
+            <tr><td colspan="3" style="text-align:center;">Carregando...</td></tr>
+          </tbody>
+        </table>
+      </div>
+
       <button onclick="deslogar()" style="background: #ef4444; margin-top: 20px;">Sair do Painel</button>
     </div>
 
@@ -77,7 +84,6 @@
     const SUPABASE_ANON_KEY = 'sb_publishable__w-crANhzjiYKJuh2AX39w_Kz1-Rf74'; 
     const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-    // E-MAIL AUTORIZADO A ACESSAR O PAINEL
     const EMAIL_ADMIN = "chico@teste.com";
 
     window.onload = async () => {
@@ -120,14 +126,15 @@
       const tbody = document.getElementById('tabela-vendas');
       tbody.innerHTML = '<tr><td colspan="3" style="text-align:center;">Carregando...</td></tr>';
 
+      // Consulta a tabela de compras sem truncar o ID
       const { data, error } = await _supabase
         .from('compras_usuario')
         .select('*')
         .order('data_expiracao', { ascending: false })
-        .limit(20);
+        .limit(30);
 
       if (error) {
-        tbody.innerHTML = '<tr><td colspan="3">Erro ao carregar dados.</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="3" style="text-align:center; color:#ef4444;">Erro ao carregar dados do banco.</td></tr>';
         return;
       }
 
@@ -141,7 +148,7 @@
         const dataExp = new Date(item.data_expiracao).toLocaleDateString('pt-BR');
         tbody.innerHTML += `
           <tr>
-            <td>${item.user_id ? item.user_id.substring(0, 8) : 'N/A'}...</td>
+            <td style="font-family: monospace;">${item.user_id}</td>
             <td><span class="badge">${item.categoria_id}</span></td>
             <td>${dataExp}</td>
           </tr>
@@ -162,25 +169,22 @@
       const dataExpira = new Date();
       dataExpira.setDate(dataExpira.getDate() + dias);
 
-      // Procura a id do usuário através de permissões RLS ou vinculação por email
-      const { data: userRecord, error: userErr } = await _supabase
-        .rpc('get_user_id_by_email', { email_input: email });
+      // 1. Tenta buscar o ID do usuário diretamente pelo email na tabela de perfis
+      const { data: profile } = await _supabase
+        .from('profiles')
+        .select('id')
+        .eq('email', email)
+        .maybeSingle();
 
-      let userId = userRecord;
+      let userId = profile?.id;
 
+      // 2. Se não encontrou no perfil, solicita confirmação com o User ID digitado se necessário
       if (!userId) {
-        // Fallback: Tenta buscar diretamente se a view de usuários/perfis existir
-        const { data: profile } = await _supabase
-          .from('profiles')
-          .select('id')
-          .eq('email', email)
-          .maybeSingle();
-
-        userId = profile?.id;
+        userId = prompt(`Não encontramos a conta de [${email}] automaticamente.\nSe você tiver o ID do usuário (Auth UUID), cole abaixo:`);
       }
 
       if (!userId) {
-        alert("O cliente precisa ter se cadastrado pelo menos uma vez no site usando este e-mail.");
+        alert("Operação cancelada. O cliente precisa se cadastrar no site antes de ter a conta liberada.");
         return;
       }
 
@@ -193,9 +197,9 @@
         }]);
 
       if (error) {
-        alert("Erro ao liberar: " + error.message);
+        alert("Erro ao liberar no Supabase: " + error.message);
       } else {
-        alert(`✅ Categoria [${categoria}] liberada com sucesso para ${email}!`);
+        alert(`✅ Categoria [${categoria}] liberada com sucesso!`);
         document.getElementById('adm-email').value = '';
         carregarVendas();
       }
