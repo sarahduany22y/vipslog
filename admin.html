@@ -10,7 +10,7 @@
     body { font-family: system-ui, -apple-system, sans-serif; background: var(--bg); color: var(--text); padding: 16px; margin: 0; }
     h1 { font-size: 20px; text-align: center; margin-bottom: 16px; }
     
-    /* MENU DE ABAS (TABS) */
+    /* MENU DE ABAS */
     .tabs-nav { display: flex; gap: 8px; margin-bottom: 16px; }
     .tab-btn { flex: 1; padding: 12px; background: var(--card); border: 1px solid rgba(255,255,255,0.1); color: var(--sub); font-weight: bold; border-radius: 8px; cursor: pointer; text-align: center; }
     .tab-btn.active { background: var(--green); color: #000; border-color: var(--green); }
@@ -104,13 +104,16 @@
     const SUPABASE_ANON_KEY = 'sb_publishable__w-crANhzjiYKJuh2AX39w_Kz1-Rf74'; 
     const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-    // INSIRA SEU E-MAIL DE ADM PARA SEGURANÇA
-    const EMAIL_ADMIN = "chico@teste.com";
+    // LISTA DE E-MAILS AUTORIZADOS COMO ADMINISTRADOR
+    const EMAILS_ADMIN = [
+      "chico@teste.com" // ALTERE AQUI PARA O SEU E-MAIL REAL
+    ];
+
     let listaLogsCache = [];
 
     window.onload = async () => {
       const { data: { session } } = await _supabase.auth.getSession();
-      if (!session || session.user.email !== EMAIL_ADMIN) {
+      if (!session || !EMAILS_ADMIN.includes(session.user.email)) {
         alert("Acesso restrito apenas ao administrador.");
         window.location.href = "index.html";
         return;
@@ -157,20 +160,20 @@
       });
     }
 
-    // CARREGAR LOGS DE E-MAILS CADASTRADOS
+    // CARREGAR LOGS DE E-MAILS CADASTRADOS (USANDO VW_USUARIOS)
     async function carregarLogsUsuarios() {
       const tbody = document.getElementById('tabela-logs');
       tbody.innerHTML = '<tr><td colspan="2" style="text-align:center;">Buscando registros...</td></tr>';
 
-      // Busca os registros da tabela de perfis/usuarios
       const { data, error } = await _supabase
-        .from('profiles') // Altere para a sua tabela de perfis/usuarios se tiver outro nome
+        .from('vw_usuarios')
         .select('email, created_at')
         .order('created_at', { ascending: false })
         .limit(50);
 
       if (error) {
-        tbody.innerHTML = '<tr><td colspan="2" style="text-align:center; color:#ef4444;">Necessário tabela profiles/view para listar logs do Auth.</td></tr>';
+        console.error(error);
+        tbody.innerHTML = '<tr><td colspan="2" style="text-align:center; color:#ef4444;">Erro ao carregar logs. Verifique a view no Supabase.</td></tr>';
         return;
       }
 
@@ -206,7 +209,7 @@
       renderizarLogs(filtrados);
     }
 
-    // LIBERAÇÃO MANUAL
+    // LIBERAÇÃO MANUAL (USANDO VW_USUARIOS)
     async function liberarAcessoManual() {
       const email = document.getElementById('adm-email').value.trim();
       const categoria = document.getElementById('adm-categoria').value;
@@ -220,29 +223,29 @@
       const dataExpira = new Date();
       dataExpira.setDate(dataExpira.getDate() + dias);
 
-      const { data: users } = await _supabase
-        .from('profiles')
+      const { data: user, error: userError } = await _supabase
+        .from('vw_usuarios')
         .select('id')
         .eq('email', email)
-        .single();
+        .maybeSingle();
 
-      if (!users?.id) {
-        alert("Atenção: O usuário precisa estar cadastrado no site.");
+      if (userError || !user?.id) {
+        alert("Atenção: O utilizador precisa de estar registado no site com este e-mail.");
         return;
       }
 
       const { error } = await _supabase
         .from('compras_usuario')
         .insert([{
-          user_id: users.id,
+          user_id: user.id,
           categoria_id: categoria,
           data_expiracao: dataExpira.toISOString()
         }]);
 
       if (error) {
-        alert("Erro ao liberar: " + error.message);
+        alert("Erro ao libertar acesso: " + error.message);
       } else {
-        alert(`✅ Categoria [${categoria}] liberada com sucesso!`);
+        alert(`✅ Categoria [${categoria}] libertada com sucesso para ${email}!`);
         document.getElementById('adm-email').value = '';
         carregarVendas();
       }
