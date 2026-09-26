@@ -26,7 +26,6 @@
       --card-header: #1a2332;
       --green-pix: #22c55e;
       --green-pix-hover: #16a34a;
-      --telegram-blue: #24a1de;
       --text-main: #f9fafb;
       --text-sub: #9ca3af;
       --border-color: rgba(255, 255, 255, 0.08);
@@ -127,7 +126,7 @@
       padding: 0 14px;
     }
 
-    /* BANNER DE VENDAS (HERO SECTION) */
+    /* BANNER DE VENDAS */
     .hero-banner {
       background: linear-gradient(180deg, rgba(34, 197, 94, 0.1) 0%, rgba(19, 26, 36, 0.6) 100%);
       border: 1px solid rgba(34, 197, 94, 0.25);
@@ -165,7 +164,7 @@
       line-height: 1.5;
     }
 
-    /* SEÇÃO DEMO (VÍDEO DE APRESENTAÇÃO) */
+    /* SEÇÃO DEMO */
     .demo-section {
       background: var(--card-bg);
       border: 1px solid var(--border-color);
@@ -328,9 +327,9 @@
       font-weight: bold;
     }
 
-    /* BOTÃO DE COMPRA DE ALTA CONVERSÃO */
+    /* BOTÃO DE COMPRA PIX */
     .btn-buy {
-      display: flex;
+      display: flex !important;
       align-items: center;
       justify-content: center;
       gap: 8px;
@@ -353,6 +352,33 @@
     .btn-buy:hover { 
       transform: translateY(-2px); 
       box-shadow: 0 6px 24px rgba(34, 197, 94, 0.5);
+    }
+
+    /* BOTÃO PAYPAL (ESTRANGEIROS) */
+    .btn-paypal {
+      display: flex !important;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      width: 100%;
+      margin-top: 10px;
+      background: linear-gradient(135deg, #0070ba 0%, #005ea6 100%);
+      color: #ffffff;
+      border: none;
+      padding: 12px 18px;
+      border-radius: 12px;
+      font-weight: 700;
+      text-align: center;
+      font-size: 13px;
+      cursor: pointer;
+      text-decoration: none;
+      box-shadow: 0 4px 15px rgba(0, 112, 186, 0.3);
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .btn-paypal:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(0, 112, 186, 0.45);
     }
 
     .btn-access {
@@ -380,7 +406,7 @@
       gap: 6px;
     }
 
-    /* SEÇÃO DE DEPOIMENTOS DE CLIENTES (PROVA SOCIAL) */
+    /* REVIEWS */
     .reviews-section {
       margin-top: 40px;
       background: var(--card-bg);
@@ -434,7 +460,7 @@
       line-height: 1.4;
     }
 
-    /* ESTILO DO RODAPÉ (FOOTER) */
+    /* RODAPÉ */
     footer {
       margin-top: 50px;
       background: rgba(19, 26, 36, 0.8);
@@ -544,6 +570,7 @@
       .hero-banner h2 { font-size: 19px; }
       .card-header h3 { font-size: 16px; }
       .btn-buy { font-size: 14px; padding: 14px; }
+      .btn-paypal { font-size: 12px; padding: 11px; }
     }
   </style>
 </head>
@@ -630,7 +657,7 @@
 
   <main class="main-container">
 
-    <!-- HERO BANNER (OFERTA E CONVERSÃO) -->
+    <!-- HERO BANNER -->
     <div class="hero-banner">
       <span class="badge-promo">🔥 PROMOÇÃO POR TEMPO LIMITADO</span>
       <h2>Acesso Imediato à Galeria VIP Privada</h2>
@@ -688,6 +715,11 @@
           </div>
           
           <button id="buy-amador" class="btn-buy" onclick="iniciarCompra('amador')">⚡ LIBERAR ACESSO AMADOR • R$ 19,90</button>
+          
+          <a href="https://t.me/hksuporte" target="_blank" class="btn-paypal" id="paypal-amador">
+            🌐 Pay via PayPal / Foreigners (Telegram Support)
+          </a>
+
           <a href="amador.html" id="access-amador" class="btn-access" style="display:none;">ENTRAR NA GALERIA AMADOR</a>
           <div class="texto-seguranca">🔒 Liberação Automática via PIX • Pagamento 100% Discreto</div>
         </div>
@@ -734,6 +766,11 @@
           </div>
           
           <button id="buy-cam" class="btn-buy" onclick="iniciarCompra('cam')">⚡ LIBERAR ACESSO CÂMERAS • R$ 19,91</button>
+          
+          <a href="https://t.me/hksuporte" target="_blank" class="btn-paypal" id="paypal-cam">
+            🌐 Pay via PayPal / Foreigners (Telegram Support)
+          </a>
+
           <a href="cam.html" id="access-cam" class="btn-access" style="display:none;">ENTRAR NA GALERIA CÂMERAS</a>
           <div class="texto-seguranca">🔒 Liberação Automática via PIX • Pagamento 100% Discreto</div>
         </div>
@@ -770,6 +807,11 @@
           </div>
           
           <button id="buy-hentai" class="btn-buy" onclick="iniciarCompra('hentai')">⚡ LIBERAR ACESSO HENTAI • R$ 11,90</button>
+          
+          <a href="https://t.me/hksuporte" target="_blank" class="btn-paypal" id="paypal-hentai">
+            🌐 Pay via PayPal / Foreigners (Telegram Support)
+          </a>
+
           <a href="hentai.html" id="access-hentai" class="btn-access" style="display:none;">ENTRAR NA GALERIA HENTAI</a>
           <div class="texto-seguranca">🔒 Liberação Automática via PIX • Pagamento 100% Discreto</div>
         </div>
@@ -777,7 +819,7 @@
 
     </div>
 
-    <!-- SEÇÃO DE PROVA SOCIAL (AVALIAÇÕES) -->
+    <!-- SEÇÃO DE REVIEWS -->
     <div class="reviews-section">
       <div class="reviews-title">💬 O que dizem nossos membros VIP</div>
       <div class="reviews-grid">
@@ -807,7 +849,7 @@
 
   </main>
 
-  <!-- RODAPÉ DA PÁGINA PRINCIPAL -->
+  <!-- RODAPÉ -->
   <footer>
     <div class="footer-container">
       <div class="footer-copy">
@@ -843,7 +885,7 @@
   <!-- JS EXTERNO DE LINKS (CAM) -->
   <script src="links-cam.js"></script>
 
-  <!-- SCRIPT DE TELA CHEIA PARA FOTOS -->
+  <!-- SCRIPT TELA CHEIA FOTOS -->
   <script>
     document.addEventListener('click', function (e) {
       if (e.target && e.target.matches('.photo-wrapper img')) {
@@ -859,7 +901,7 @@
     }
   </script>
 
-  <!-- SCRIPT DO POP-UP +18 -->
+  <!-- SCRIPT POP-UP +18 -->
   <script>
     (function() {
       const popup = document.getElementById("popup-idade");
@@ -996,27 +1038,33 @@
     async function checarPermissoes() {
       if (!usuarioAtual) return;
 
-      const { data: compras, error } = await _supabase
-        .from('compras_usuario')
-        .select('categoria_id')
-        .eq('user_id', usuarioAtual.id)
-        .gt('data_expiracao', new Date().toISOString());
+      try {
+        const { data: compras, error } = await _supabase
+          .from('compras_usuario')
+          .select('categoria_id')
+          .eq('user_id', usuarioAtual.id)
+          .gt('data_expiracao', new Date().toISOString());
 
-      if (compras && !error) {
-        compras.forEach(item => {
-          const cat = item.categoria_id;
-          
-          const badge = document.getElementById(`badge-${cat}`);
-          const btnBuy = document.getElementById(`buy-${cat}`);
-          const btnAccess = document.getElementById(`access-${cat}`);
+        if (compras && compras.length > 0 && !error) {
+          compras.forEach(item => {
+            const cat = item.categoria_id;
+            
+            const badge = document.getElementById(`badge-${cat}`);
+            const btnBuy = document.getElementById(`buy-${cat}`);
+            const btnPaypal = document.getElementById(`paypal-${cat}`);
+            const btnAccess = document.getElementById(`access-${cat}`);
 
-          if (badge) { 
-            badge.innerHTML = "🔓 Liberado"; 
-            badge.className = "status-badge liberado"; 
-          }
-          if (btnBuy) btnBuy.style.display = "none";
-          if (btnAccess) btnAccess.style.display = "block";
-        });
+            if (badge) { 
+              badge.innerHTML = "🔓 Liberado"; 
+              badge.className = "status-badge liberado"; 
+            }
+            if (btnBuy) btnBuy.style.setProperty('display', 'none', 'important');
+            if (btnPaypal) btnPaypal.style.setProperty('display', 'none', 'important');
+            if (btnAccess) btnAccess.style.display = "block";
+          });
+        }
+      } catch (err) {
+        console.error("Erro ao verificar compras:", err);
       }
     }
   </script>
