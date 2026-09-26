@@ -66,7 +66,7 @@
       <table>
         <thead>
           <tr>
-            <th>User ID</th>
+            <th>E-mail do Cliente</th>
             <th>Cat.</th>
             <th>Expiração</th>
           </tr>
@@ -106,7 +106,7 @@
 
     // LISTA DE E-MAILS AUTORIZADOS COMO ADMINISTRADOR
     const EMAILS_ADMIN = [
-      "chico@teste.com" // ALTERE AQUI PARA O SEU E-MAIL REAL
+      "chico@teste.com" // ALTERE AQUI PARA O SEU E-MAIL DE LOGIN REAL
     ];
 
     let listaLogsCache = [];
@@ -131,28 +131,50 @@
       btn.classList.add('active');
     }
 
-    // CARREGAR HISTÓRICO DE VENDAS
+    // CARREGAR HISTÓRICO DE VENDAS COM O E-MAIL DO CLIENTE
     async function carregarVendas() {
       const tbody = document.getElementById('tabela-vendas');
       tbody.innerHTML = '<tr><td colspan="3" style="text-align:center;">Carregando...</td></tr>';
 
-      const { data, error } = await _supabase
+      // 1. Busca as compras na tabela compras_usuario
+      const { data: compras, error: erroCompras } = await _supabase
         .from('compras_usuario')
         .select('*')
         .order('data_expiracao', { ascending: false })
         .limit(15);
 
-      if (error) {
-        tbody.innerHTML = '<tr><td colspan="3">Erro ao carregar dados.</td></tr>';
+      if (erroCompras) {
+        console.error(erroCompras);
+        tbody.innerHTML = '<tr><td colspan="3" style="text-align:center; color:#ef4444;">Erro ao carregar vendas.</td></tr>';
         return;
       }
 
+      if (!compras || compras.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="3" style="text-align:center;">Nenhuma venda encontrada.</td></tr>';
+        return;
+      }
+
+      // 2. Busca e mapeia os e-mails dos utilizadores através da view
+      const { data: usuarios } = await _supabase
+        .from('vw_usuarios')
+        .select('id, email');
+
+      const mapaEmails = {};
+      if (usuarios) {
+        usuarios.forEach(u => {
+          mapaEmails[u.id] = u.email;
+        });
+      }
+
+      // 3. Monta a tabela exibindo o e-mail
       tbody.innerHTML = '';
-      data.forEach(item => {
+      compras.forEach(item => {
         const dataExp = new Date(item.data_expiracao).toLocaleDateString('pt-BR');
+        const emailCliente = mapaEmails[item.user_id] || (item.user_id.substring(0, 8) + '...');
+
         tbody.innerHTML += `
           <tr>
-            <td>${item.user_id.substring(0, 8)}...</td>
+            <td style="font-weight: 500;">${emailCliente}</td>
             <td><span class="badge">${item.categoria_id}</span></td>
             <td>${dataExp}</td>
           </tr>
@@ -160,7 +182,7 @@
       });
     }
 
-    // CARREGAR LOGS DE E-MAILS CADASTRADOS (USANDO VW_USUARIOS)
+    // CARREGAR LOGS DE E-MAILS CADASTRADOS (VW_USUARIOS)
     async function carregarLogsUsuarios() {
       const tbody = document.getElementById('tabela-logs');
       tbody.innerHTML = '<tr><td colspan="2" style="text-align:center;">Buscando registros...</td></tr>';
@@ -173,7 +195,7 @@
 
       if (error) {
         console.error(error);
-        tbody.innerHTML = '<tr><td colspan="2" style="text-align:center; color:#ef4444;">Erro ao carregar logs. Verifique a view no Supabase.</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="2" style="text-align:center; color:#ef4444;">Erro ao carregar logs. Verifique a view vw_usuarios.</td></tr>';
         return;
       }
 
@@ -209,7 +231,7 @@
       renderizarLogs(filtrados);
     }
 
-    // LIBERAÇÃO MANUAL (USANDO VW_USUARIOS)
+    // LIBERAÇÃO MANUAL
     async function liberarAcessoManual() {
       const email = document.getElementById('adm-email').value.trim();
       const categoria = document.getElementById('adm-categoria').value;
