@@ -3,172 +3,100 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Painel ADM - Controle VIP</title>
+  <title>Painel ADM - Controle & Logs</title>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
-    :root { 
-      --bg: #0b0e14; 
-      --card: #131a24; 
-      --green: #22c55e; 
-      --red: #ef4444; 
-      --text: #ffffff; 
-    }
+    :root { --bg: #0b0e14; --card: #131a24; --green: #22c55e; --text: #fff; --sub: #94a3b8; }
+    body { font-family: system-ui, -apple-system, sans-serif; background: var(--bg); color: var(--text); padding: 16px; margin: 0; }
+    h1 { font-size: 20px; text-align: center; margin-bottom: 16px; }
+    
+    /* MENU DE ABAS (TABS) */
+    .tabs-nav { display: flex; gap: 8px; margin-bottom: 16px; }
+    .tab-btn { flex: 1; padding: 12px; background: var(--card); border: 1px solid rgba(255,255,255,0.1); color: var(--sub); font-weight: bold; border-radius: 8px; cursor: pointer; text-align: center; }
+    .tab-btn.active { background: var(--green); color: #000; border-color: var(--green); }
 
-    * { box-sizing: border-box; }
+    /* CONTEÚDO DAS ABAS */
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
 
-    body { 
-      font-family: system-ui, -apple-system, sans-serif; 
-      background: var(--bg); 
-      color: var(--text); 
-      padding: 12px; 
-      margin: 0; 
-    }
-
-    h1, h2 { 
-      font-size: 18px; 
-      text-align: center; 
-      margin-top: 0;
-      margin-bottom: 16px; 
-    }
-
-    .card { 
-      background: var(--card); 
-      border-radius: 12px; 
-      padding: 16px; 
-      margin-bottom: 16px; 
-      border: 1px solid rgba(255,255,255,0.1); 
-      max-width: 650px; 
-      margin-left: auto; 
-      margin-right: auto; 
-    }
-
-    input, select, button { 
-      width: 100%; 
-      padding: 12px; 
-      margin: 6px 0; 
-      border-radius: 8px; 
-      border: 1px solid #333; 
-      background: #080b10; 
-      color: #fff; 
-      font-size: 14px; 
-    }
-
-    button { 
-      background: var(--green); 
-      font-weight: bold; 
-      cursor: pointer; 
-      border: none; 
-      margin-top: 8px; 
-    }
-
-    /* TABELA RESPONSIVA */
-    .table-container { 
-      width: 100%; 
-      overflow-x: auto; 
-      -webkit-overflow-scrolling: touch; 
-      margin-top: 10px; 
-      border: 1px solid rgba(255,255,255,0.05);
-      border-radius: 8px;
-    }
-
-    table { 
-      width: 100%; 
-      border-collapse: collapse; 
-      font-size: 12px; 
-      white-space: nowrap; 
-    }
-
-    th, td { 
-      padding: 10px 10px; 
-      text-align: left; 
-      border-bottom: 1px solid rgba(255,255,255,0.1); 
-    }
-
-    th { background: rgba(255,255,255,0.05); }
-
-    .badge { 
-      background: rgba(34, 197, 94, 0.15); 
-      color: #22c55e; 
-      padding: 3px 6px; 
-      border-radius: 4px; 
-      font-weight: bold; 
-      font-size: 10px; 
-      text-transform: uppercase;
-    }
-
-    .btn-remove {
-      background: var(--red);
-      color: #fff;
-      padding: 5px 10px;
-      font-size: 11px;
-      border-radius: 4px;
-      margin: 0;
-      width: auto;
-      cursor: pointer;
-    }
-
-    #painel-conteudo { display: none; }
+    .card { background: var(--card); border-radius: 12px; padding: 16px; margin-bottom: 16px; border: 1px solid rgba(255,255,255,0.1); }
+    h2 { font-size: 16px; margin-top: 0; margin-bottom: 12px; color: var(--text); }
+    
+    input, select, button { width: 100%; padding: 12px; margin: 6px 0; border-radius: 8px; border: 1px solid #333; background: #080b10; color: #fff; font-size: 14px; box-sizing: border-box; }
+    button.btn-primary { background: var(--green); color: #000; font-weight: bold; cursor: pointer; border: none; margin-top: 10px; }
+    
+    table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 12px; }
+    th, td { padding: 10px 6px; text-align: left; border-bottom: 1px solid rgba(255,255,255,0.1); word-break: break-all; }
+    th { color: var(--sub); background: rgba(255,255,255,0.03); }
+    .badge { background: #22c55e22; color: #22c55e; padding: 2px 6px; border-radius: 4px; font-weight: bold; }
+    .date-text { color: var(--sub); font-size: 11px; }
   </style>
 </head>
 <body>
 
-  <h1>📱 Painel ADM - Controle VIP</h1>
+  <h1>📱 Painel ADM</h1>
 
-  <!-- TELA DE LOGIN ADM -->
-  <div class="card" id="login-box">
-    <h2>🔐 Login de Administrador</h2>
-    <input type="email" id="login-email" placeholder="E-mail de ADM" value="chico@teste.com">
-    <input type="password" id="login-pass" placeholder="Sua Senha">
-    <button onclick="fazerLoginAdmin()">ENTRAR NO PAINEL</button>
+  <!-- NAVEGAÇÃO DE ABAS -->
+  <div class="tabs-nav">
+    <button class="tab-btn active" onclick="trocarAba('aba-liberacao', this)">⚡ Liberação</button>
+    <button class="tab-btn" onclick="trocarAba('aba-logs', this)">📋 Logs de E-mails</button>
   </div>
 
-  <!-- CONTEÚDO DO PAINEL -->
-  <div id="painel-conteudo">
-    
-    <!-- LIBERAÇÃO MANUAL (PAYPAL / TESTE) -->
+  <!-- ================= ABA 1: LIBERAÇÃO MANUAL ================= -->
+  <div id="aba-liberacao" class="tab-content active">
     <div class="card">
       <h2>⚡ Liberação Manual (PayPal / Teste)</h2>
-      <input type="email" id="adm-email" placeholder="E-mail do Cliente (cadastrado no site)">
-      
+      <input type="email" id="adm-email" placeholder="E-mail do Cliente">
       <select id="adm-categoria">
         <option value="amador">Amador VIP</option>
         <option value="cam">Spycam VIP</option>
         <option value="hentai">Hentai VIP</option>
       </select>
-
       <select id="adm-dias">
         <option value="365">1 Ano (365 Dias)</option>
         <option value="30">1 Mês (30 Dias)</option>
         <option value="7">Teste (7 Dias)</option>
       </select>
-      
-      <button onclick="liberarAcessoManual()">LIBERAR ACESSO AGORA</button>
+      <button class="btn-primary" onclick="liberarAcessoManual()">LIBERAR ACESSO AGORA</button>
     </div>
 
-    <!-- LISTA DE ÚLTIMAS VENDAS E LIBERAÇÕES -->
     <div class="card">
       <h2>🛒 Últimas Vendas / Liberações</h2>
-      <button onclick="carregarVendas()" style="background: rgba(255,255,255,0.1); margin-bottom: 8px;">🔄 Atualizar Lista</button>
-      
-      <div class="table-container">
-        <table>
-          <thead>
-            <tr>
-              <th>E-mail do Cliente</th>
-              <th>Categoria</th>
-              <th>Data Expiração</th>
-              <th>Ações</th>
-            </tr>
-          </thead>
-          <tbody id="tabela-vendas">
-            <tr><td colspan="4" style="text-align:center;">Carregando...</td></tr>
-          </tbody>
-        </table>
-      </div>
-
-      <button onclick="deslogar()" style="background: var(--red); margin-top: 20px;">Sair do Painel</button>
+      <button onclick="carregarVendas()" style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);">🔄 Atualizar Vendas</button>
+      <table>
+        <thead>
+          <tr>
+            <th>User ID</th>
+            <th>Cat.</th>
+            <th>Expiração</th>
+          </tr>
+        </thead>
+        <tbody id="tabela-vendas">
+          <tr><td colspan="3" style="text-align:center;">Carregando...</td></tr>
+        </tbody>
+      </table>
     </div>
+  </div>
 
+  <!-- ================= ABA 2: LOGS DE USUÁRIOS REGISTRADOS ================= -->
+  <div id="aba-logs" class="tab-content">
+    <div class="card">
+      <h2>📋 E-mails Cadastrados no Sistema</h2>
+      <input type="text" id="busca-log" placeholder="🔍 Pesquisar e-mail..." onkeyup="filtrarLogs()">
+      <button onclick="carregarLogsUsuarios()" style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);">🔄 Atualizar Logs</button>
+      
+      <table>
+        <thead>
+          <tr>
+            <th>Data Cadastro</th>
+            <th>E-mail</th>
+          </tr>
+        </thead>
+        <tbody id="tabela-logs">
+          <tr><td colspan="2" style="text-align:center;">Carregando logs...</td></tr>
+        </tbody>
+      </table>
+    </div>
   </div>
 
   <script>
@@ -176,97 +104,112 @@
     const SUPABASE_ANON_KEY = 'sb_publishable__w-crANhzjiYKJuh2AX39w_Kz1-Rf74'; 
     const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-    const EMAIL_ADMIN = "chico@teste.com";
+    // INSIRA SEU E-MAIL DE ADM PARA SEGURANÇA
+    const EMAIL_ADMIN = "seu-email-admin@gmail.com";
+    let listaLogsCache = [];
 
     window.onload = async () => {
       const { data: { session } } = await _supabase.auth.getSession();
-      if (session && session.user.email.toLowerCase() === EMAIL_ADMIN.toLowerCase()) {
-        exibirPainel();
-      }
-    };
-
-    async function fazerLoginAdmin() {
-      const email = document.getElementById('login-email').value.trim();
-      const password = document.getElementById('login-pass').value;
-
-      if (email.toLowerCase() !== EMAIL_ADMIN.toLowerCase()) {
-        alert("Este e-mail não tem permissão de Administrador.");
+      if (!session || session.user.email !== EMAIL_ADMIN) {
+        alert("Acesso restrito apenas ao administrador.");
+        window.location.href = "index.html";
         return;
       }
-
-      const { data, error } = await _supabase.auth.signInWithPassword({ email, password });
-
-      if (error) {
-        alert("Erro no login: " + error.message);
-      } else {
-        exibirPainel();
-      }
-    }
-
-    function exibirPainel() {
-      document.getElementById('login-box').style.display = 'none';
-      document.getElementById('painel-conteudo').style.display = 'block';
       carregarVendas();
+      carregarLogsUsuarios();
+    };
+
+    // ALTERNAR ENTRE AS ABAS
+    function trocarAba(abaId, btn) {
+      document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      
+      document.getElementById(abaId).classList.add('active');
+      btn.classList.add('active');
     }
 
-    function deslogar() {
-      _supabase.auth.signOut();
-      location.reload();
-    }
-
+    // CARREGAR HISTÓRICO DE VENDAS
     async function carregarVendas() {
       const tbody = document.getElementById('tabela-vendas');
-      tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;">Carregando...</td></tr>';
+      tbody.innerHTML = '<tr><td colspan="3" style="text-align:center;">Carregando...</td></tr>';
 
       const { data, error } = await _supabase
         .from('compras_usuario')
         .select('*')
         .order('data_expiracao', { ascending: false })
-        .limit(30);
+        .limit(15);
 
       if (error) {
-        tbody.innerHTML = '<tr><td colspan="4" style="text-align:center; color: var(--red);">Erro ao carregar dados.</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="3">Erro ao carregar dados.</td></tr>';
         return;
       }
 
       tbody.innerHTML = '';
-      if (!data || data.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;">Nenhuma compra encontrada.</td></tr>';
+      data.forEach(item => {
+        const dataExp = new Date(item.data_expiracao).toLocaleDateString('pt-BR');
+        tbody.innerHTML += `
+          <tr>
+            <td>${item.user_id.substring(0, 8)}...</td>
+            <td><span class="badge">${item.categoria_id}</span></td>
+            <td>${dataExp}</td>
+          </tr>
+        `;
+      });
+    }
+
+    // CARREGAR LOGS DE E-MAILS CADASTRADOS
+    async function carregarLogsUsuarios() {
+      const tbody = document.getElementById('tabela-logs');
+      tbody.innerHTML = '<tr><td colspan="2" style="text-align:center;">Buscando registros...</td></tr>';
+
+      // Busca os registros da tabela de perfis/usuarios
+      const { data, error } = await _supabase
+        .from('profiles') // Altere para a sua tabela de perfis/usuarios se tiver outro nome
+        .select('email, created_at')
+        .order('created_at', { ascending: false })
+        .limit(50);
+
+      if (error) {
+        tbody.innerHTML = '<tr><td colspan="2" style="text-align:center; color:#ef4444;">Necessário tabela profiles/view para listar logs do Auth.</td></tr>';
         return;
       }
 
-      // Converte os IDs em e-mails para exibir na tabela
-      for (const item of data) {
-        let emailExibicao = 'E-mail não encontrado';
-        
-        if (item.user_id) {
-          const { data: emailBuscado } = await _supabase
-            .rpc('buscar_email_por_id', { user_id_busca: item.user_id });
-          
-          if (emailBuscado) {
-            emailExibicao = emailBuscado;
-          }
-        }
-
-        const dataExp = new Date(item.data_expiracao).toLocaleDateString('pt-BR');
-
-        tbody.innerHTML += `
-          <tr>
-            <td style="font-weight: bold; color: #38bdf8;">${emailExibicao}</td>
-            <td><span class="badge">${item.categoria_id}</span></td>
-            <td>${dataExp}</td>
-            <td>
-              <button class="btn-remove" onclick="removerAcesso('${item.id || ''}', '${item.user_id}', '${item.categoria_id}', '${emailExibicao}')">❌ Remover</button>
-            </td>
-          </tr>
-        `;
-      }
+      listaLogsCache = data || [];
+      renderizarLogs(listaLogsCache);
     }
 
+    // RENDERIZAR TABELA DE LOGS
+    function renderizarLogs(lista) {
+      const tbody = document.getElementById('tabela-logs');
+      tbody.innerHTML = '';
+
+      if (lista.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="2" style="text-align:center;">Nenhum e-mail encontrado.</td></tr>';
+        return;
+      }
+
+      lista.forEach(item => {
+        const dataCad = new Date(item.created_at).toLocaleDateString('pt-BR') + ' ' + new Date(item.created_at).toLocaleTimeString('pt-BR', {hour: '2-digit', minute:'2-digit'});
+        tbody.innerHTML += `
+          <tr>
+            <td class="date-text">${dataCad}</td>
+            <td style="font-weight: 500;">${item.email}</td>
+          </tr>
+        `;
+      });
+    }
+
+    // FILTRO DE BUSCA NOS LOGS
+    function filtrarLogs() {
+      const termo = document.getElementById('busca-log').value.toLowerCase();
+      const filtrados = listaLogsCache.filter(item => item.email.toLowerCase().includes(termo));
+      renderizarLogs(filtrados);
+    }
+
+    // LIBERAÇÃO MANUAL
     async function liberarAcessoManual() {
       const email = document.getElementById('adm-email').value.trim();
-      const selectCategoria = document.getElementById('adm-categoria');
-      const categoria = selectCategoria.options[selectCategoria.selectedIndex].value;
+      const categoria = document.getElementById('adm-categoria').value;
       const dias = parseInt(document.getElementById('adm-dias').value);
 
       if (!email) {
@@ -274,22 +217,24 @@
         return;
       }
 
-      // Busca ID do utilizador via RPC
-      const { data: userId, error: rpcErr } = await _supabase
-        .rpc('buscar_id_por_email', { email_busca: email });
-
-      if (rpcErr || !userId) {
-        alert(`O e-mail [${email}] não foi encontrado no banco de dados. O cliente precisa criar conta no site primeiro.`);
-        return;
-      }
-
       const dataExpira = new Date();
       dataExpira.setDate(dataExpira.getDate() + dias);
+
+      const { data: users } = await _supabase
+        .from('profiles')
+        .select('id')
+        .eq('email', email)
+        .single();
+
+      if (!users?.id) {
+        alert("Atenção: O usuário precisa estar cadastrado no site.");
+        return;
+      }
 
       const { error } = await _supabase
         .from('compras_usuario')
         .insert([{
-          user_id: userId,
+          user_id: users.id,
           categoria_id: categoria,
           data_expiracao: dataExpira.toISOString()
         }]);
@@ -297,31 +242,8 @@
       if (error) {
         alert("Erro ao liberar: " + error.message);
       } else {
-        alert(`✅ Categoria [${categoria.toUpperCase()}] liberada com sucesso para ${email}!`);
+        alert(`✅ Categoria [${categoria}] liberada com sucesso!`);
         document.getElementById('adm-email').value = '';
-        carregarVendas();
-      }
-    }
-
-    async function removerAcesso(rowId, userId, categoria, emailCliente) {
-      if (!confirm(`Tem certeza que deseja remover o acesso de [${emailCliente}] na categoria [${categoria.toUpperCase()}]?`)) {
-        return;
-      }
-
-      let query = _supabase.from('compras_usuario').delete();
-
-      if (rowId) {
-        query = query.eq('id', rowId);
-      } else {
-        query = query.eq('user_id', userId).eq('categoria_id', categoria);
-      }
-
-      const { error } = await query;
-
-      if (error) {
-        alert("Erro ao remover acesso: " + error.message);
-      } else {
-        alert("Acesso removido com sucesso!");
         carregarVendas();
       }
     }
