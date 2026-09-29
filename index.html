@@ -420,9 +420,14 @@
       letter-spacing: 0.5px;
     }
 
-    /* BOTÃO EXCLUIR ADMIN NO CHAT */
-    .btn-del-msg {
-      background: #ef4444;
+    /* BOTOES ADM NO CHAT */
+    .btn-adm-actions {
+      float: right;
+      display: flex;
+      gap: 4px;
+    }
+
+    .btn-del-msg, .btn-ban-user {
       color: #fff;
       border: none;
       font-size: 10px;
@@ -430,10 +435,13 @@
       padding: 2px 6px;
       border-radius: 4px;
       cursor: pointer;
-      margin-left: 8px;
-      float: right;
     }
+    
+    .btn-del-msg { background: #ef4444; }
     .btn-del-msg:hover { background: #dc2626; }
+    
+    .btn-ban-user { background: #7c3aed; }
+    .btn-ban-user:hover { background: #6d28d9; }
 
     /* REVIEWS */
     .reviews-section {
@@ -555,9 +563,9 @@
     .modal h3 { margin-bottom: 8px; font-size: 18px; color: #fff; }
     .modal p.subtitle { font-size: 12px; color: var(--text-sub); margin-bottom: 16px; }
     
-    .modal input {
+    .modal input, .modal select {
       width: 100%;
-      padding: 14px;
+      padding: 12px;
       margin: 6px 0;
       border-radius: 8px;
       border: 1px solid var(--border-color);
@@ -565,7 +573,7 @@
       color: #fff;
     }
 
-    .modal input:focus { outline: 1px solid var(--green-pix); }
+    .modal input:focus, .modal select:focus { outline: 1px solid var(--green-pix); }
 
     .modal-foto-fullscreen {
       display: none;
@@ -907,9 +915,9 @@
         </div>
       </div>
 
-      <!-- Caixa de envio -->
+      <!-- Caixa de envio com limite de caracteres -->
       <div style="display: flex; gap: 8px;">
-        <input type="text" id="chat-input-texto" placeholder="Digite sua mensagem no chat..." maxlength="250" style="
+        <input type="text" id="chat-input-texto" placeholder="Digite sua mensagem no chat (máx. 150 caracteres)..." maxlength="150" style="
           flex: 1;
           background: #080b10;
           border: 1px solid var(--border-color);
@@ -988,17 +996,25 @@
   <div class="modal-overlay" id="modalAdmin">
     <div class="modal" style="max-width: 550px; text-align: left;">
       <h3 style="color:#ef4444; font-size:18px; margin-bottom:6px;">⚙️ Painel de Moderação ADM</h3>
-      <p class="subtitle">Bem-vindo, Admin! Gerencie o chat e a lista de palavras proibidas:</p>
+      <p class="subtitle">Gerencie as palavras proibidas, banimentos e mensagens:</p>
 
-      <!-- SEÇÃO GERENCIAR PALAVRAS PROIBIDAS -->
+      <!-- SEÇÃO PALAVRAS PROIBIDAS -->
       <div style="background:#080b10; border:1px solid var(--border-color); padding:12px; border-radius:8px; margin-bottom:16px;">
         <h4 style="font-size:13px; color:#fff; margin-bottom:8px;">🚫 Adicionar Palavra Proibida</h4>
         <div style="display:flex; gap:6px; margin-bottom:10px;">
           <input type="text" id="inputPalavraProibida" placeholder="Ex: golpe, pessimo, etc." style="flex:1; padding:8px; background:#131a24; border:1px solid var(--border-color); color:#fff; border-radius:6px; font-size:12px;" />
           <button onclick="adicionarPalavraProibida()" style="background:#22c55e; color:#fff; border:none; padding:8px 14px; border-radius:6px; font-weight:bold; font-size:12px; cursor:pointer;">Add</button>
         </div>
-        <div id="listaPalavrasProibidas" style="display:flex; flex-wrap:wrap; gap:6px; max-height:100px; overflow-y:auto;">
+        <div id="listaPalavrasProibidas" style="display:flex; flex-wrap:wrap; gap:6px; max-height:80px; overflow-y:auto;">
           <span style="font-size:11px; color:var(--text-sub);">Carregando termos...</span>
+        </div>
+      </div>
+
+      <!-- SEÇÃO USUÁRIOS BANIDOS -->
+      <div style="background:#080b10; border:1px solid var(--border-color); padding:12px; border-radius:8px; margin-bottom:16px;">
+        <h4 style="font-size:13px; color:#fff; margin-bottom:8px;">🚫 Lista de Usuários Banidos / Restritos</h4>
+        <div id="listaUsuariosBanidos" style="display:flex; flex-direction:column; gap:6px; max-height:100px; overflow-y:auto;">
+          <span style="font-size:11px; color:var(--text-sub);">Carregando banidos...</span>
         </div>
       </div>
 
@@ -1008,7 +1024,7 @@
       </div>
 
       <div id="admin-lista-msgs" style="
-        height: 200px; 
+        height: 160px; 
         overflow-y: auto; 
         background: #080b10; 
         border: 1px solid var(--border-color); 
@@ -1087,7 +1103,6 @@
     const TERMOS_PADRAO = [
       'golpe', 'fraude', 'fake', 'mentira', 'enganacao', 'lixo', 'ruim', 
       'merda', 'puta', 'caralho', 'fdp', 'viado', 'corno', 'vadia',
-      'http', 'https', 'www', '.com', '.br', 't.me', 'telegram', 'whatsapp', 'zap', 
       'infantil', 'cp', 'estupro', 'pedofilia', 'droga', 'armas', 'vender'
     ];
 
@@ -1108,13 +1123,97 @@
         await checarPermissoes();
       }
 
-      // Carregar palavras proibidas salvas no banco
       await carregarPalavrasProibidasBanco();
-
-      // Inicialização do Chat
       carregarMensagensAntigas();
       escutarNovasMensagens();
     };
+
+    // ==========================================
+    // GERENCIAMENTO DE BANIMENTO E RESTRIÇÕES
+    // ==========================================
+    async function verificarSeUsuarioEstaBanido(userId) {
+      if (!userId) return false;
+      try {
+        const { data, error } = await _supabase
+          .from('usuarios_banidos')
+          .select('*')
+          .eq('user_id', userId);
+
+        if (error || !data || data.length === 0) return false;
+
+        const agora = new Date();
+        for (const registro of data) {
+          if (!registro.expira_em) return true; // Ban permanente
+          if (new Date(registro.expira_em) > agora) return true; // Restrição temporária ativa
+        }
+        return false;
+      } catch (err) {
+        return false;
+      }
+    }
+
+    async function banirUsuario(userId, dias) {
+      if (!ehAdmin) return;
+      let expiraEm = null;
+
+      if (dias > 0) {
+        const dataExp = new Date();
+        dataExp.setDate(dataExp.getDate() + dias);
+        expiraEm = dataExp.toISOString();
+      }
+
+      const { error } = await _supabase
+        .from('usuarios_banidos')
+        .insert([{ user_id: userId, expira_em: expiraEm }]);
+
+      if (error) {
+        alert("Erro ao aplicar banimento: " + error.message);
+      } else {
+        alert(dias === 0 ? "Usuário Banido PERMANENTEMENTE!" : `Usuário suspenso por ${dias} dia(s)!`);
+        carregarListaBanidosAdmin();
+      }
+    }
+
+    async function removerBanimento(banId) {
+      if (!ehAdmin) return;
+      const { error } = await _supabase
+        .from('usuarios_banidos')
+        .delete()
+        .eq('id', banId);
+
+      if (!error) {
+        carregarListaBanidosAdmin();
+      } else {
+        alert("Erro ao remover banimento.");
+      }
+    }
+
+    async function carregarListaBanidosAdmin() {
+      const container = document.getElementById('listaUsuariosBanidos');
+      if (!container) return;
+
+      const { data, error } = await _supabase
+        .from('usuarios_banidos')
+        .select('*')
+        .order('created_at', { ascending: false });
+
+      container.innerHTML = '';
+      if (error || !data || data.length === 0) {
+        container.innerHTML = '<span style="font-size:11px; color:var(--text-sub);">Nenhum usuário banido no momento.</span>';
+        return;
+      }
+
+      data.forEach(item => {
+        const div = document.createElement('div');
+        div.style.cssText = 'display:flex; justify-content:space-between; align-items:center; background:#131a24; padding:6px 10px; border-radius:6px; font-size:11px;';
+        const status = item.expira_em ? `Restrito até: ${new Date(item.expira_em).toLocaleDateString()}` : 'Banido Permanente';
+        div.innerHTML = `
+          <span>ID: <b>${item.user_id.substring(0,8)}...</b> (${status})</span>
+          <button onclick="removerBanimento(${item.id})" style="background:#22c55e; color:#fff; border:none; padding:2px 8px; border-radius:4px; cursor:pointer; font-weight:bold;">Desbanir</button>
+        `;
+        container.appendChild(div);
+      });
+    }
 
     // ==========================================
     // GERENCIAMENTO DE PALAVRAS PROIBIDAS (SUPABASE)
@@ -1128,10 +1227,7 @@
 
         if (!error && data) {
           palavrasProibidasBanco = data.map(item => item.palavra.toLowerCase());
-          
-          if (ehAdmin) {
-            renderizarChipsPalavrasProibidas(data);
-          }
+          if (ehAdmin) renderizarChipsPalavrasProibidas(data);
         }
       } catch (err) {
         console.error("Erro ao buscar palavras proibidas:", err);
@@ -1144,7 +1240,7 @@
 
       container.innerHTML = '';
       if (lista.length === 0) {
-        container.innerHTML = '<span style="font-size:11px; color:var(--text-sub);">Nenhuma palavra personalizada cadastrada.</span>';
+        container.innerHTML = '<span style="font-size:11px; color:var(--text-sub);">Nenhuma palavra cadastrada.</span>';
         return;
       }
 
@@ -1170,7 +1266,7 @@
         .insert([{ palavra }]);
 
       if (error) {
-        alert('Erro ao adicionar palavra (ela pode já estar cadastrada).');
+        alert('Erro ao adicionar palavra.');
       } else {
         input.value = '';
         await carregarPalavrasProibidasBanco();
@@ -1183,23 +1279,21 @@
         .delete()
         .eq('id', id);
 
-      if (error) {
-        alert('Erro ao remover palavra.');
-      } else {
-        await carregarPalavrasProibidasBanco();
-      }
+      if (!error) await carregarPalavrasProibidasBanco();
     }
 
-    function contemPalavrasProibidas(texto) {
+    function contemPalavrasProibidasOuLinks(texto) {
       const textoLower = texto.toLowerCase();
-      
-      // Valida contra termos nativos + termos cadastrados no Supabase
+
+      // 1. BLOQUEIO DE LINKS E BOT/INSTAGRAM (@) VIA REGEX
+      const regexLinksEAt = /(https?:\/\/|[a-zA-Z0-9-]+\.[a-zA-Z]{2,}|www\.|t\.me|wa\.me|@)/i;
+      if (regexLinksEAt.test(textoLower)) {
+        return true;
+      }
+
+      // 2. VALIDAÇÃO CONTRA PALAVRAS E TERMOS PROIBIDOS
       const todosOsTermos = [...TERMOS_PADRAO, ...palavrasProibidasBanco];
-      
-      return todosOsTermos.some(termo => {
-        if (!termo) return false;
-        return textoLower.includes(termo.toLowerCase());
-      });
+      return todosOsTermos.some(termo => termo && textoLower.includes(termo.toLowerCase()));
     }
 
     // ==========================================
@@ -1236,6 +1330,7 @@
       document.getElementById('modalAdmin').style.display = 'flex';
       carregarListaAdmin();
       carregarPalavrasProibidasBanco();
+      carregarListaBanidosAdmin();
     }
 
     function fecharModalAdmin() {
@@ -1270,7 +1365,6 @@
       
       if (error) {
         const create = await _supabase.auth.signUp({ email, password });
-        
         if (create.error) {
           alert("Erro na autenticação: " + create.error.message);
           return;
@@ -1289,7 +1383,6 @@
       if (session) {
         usuarioAtual = session.user;
         verificarSeEhAdmin();
-        
         fecharModal();
         atualizarHeader();
         await checarPermissoes();
@@ -1298,7 +1391,7 @@
           irParaCheckout(categoriaPendente, usuarioAtual.email);
         }
       } else {
-        alert("Não foi possível autenticar. Verifique seus dados.");
+        alert("Não foi possível autenticar.");
       }
     }
 
@@ -1327,7 +1420,6 @@
         if (compras && compras.length > 0 && !error) {
           compras.forEach(item => {
             const cat = item.categoria_id;
-            
             const badge = document.getElementById(`badge-${cat}`);
             const btnBuy = document.getElementById(`buy-${cat}`);
             const btnPaypal = document.getElementById(`paypal-${cat}`);
@@ -1348,14 +1440,14 @@
     }
 
     // ==========================================
-    // LÓGICA DO CHAT REALTIME, MODERAÇÃO E ADMIN
+    // LÓGICA DO CHAT REALTIME E MODERAÇÃO
     // ==========================================
     let meuApelidoChat = localStorage.getItem('chat_apelido') || '';
 
     async function verificarSeUserEhVip(userId) {
       if (!userId) return false;
       try {
-        const { data, error } = await _supabase
+        const { data } = await _supabase
           .from('compras_usuario')
           .select('id')
           .eq('user_id', userId)
@@ -1388,7 +1480,7 @@
         if (mensagens && mensagens.length > 0) {
           for (const m of mensagens) {
             const ehVip = await verificarSeUserEhVip(m.user_id);
-            adicionarMensagemNaTela(m.id, m.nome_exibicao, m.mensagem, ehVip);
+            adicionarMensagemNaTela(m.id, m.user_id, m.nome_exibicao, m.mensagem, ehVip);
           }
         } else {
           box.innerHTML = '<div style="font-size: 12px; color: var(--text-sub); text-align: center;">Seja o primeiro a enviar uma mensagem no chat!</div>';
@@ -1405,7 +1497,7 @@
         .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'chat_mensagens' }, async payload => {
           const m = payload.new;
           const ehVip = await verificarSeUserEhVip(m.user_id);
-          adicionarMensagemNaTela(m.id, m.nome_exibicao, m.mensagem, ehVip);
+          adicionarMensagemNaTela(m.id, m.user_id, m.nome_exibicao, m.mensagem, ehVip);
           const box = document.getElementById('chat-mensagens');
           if (box) box.scrollTop = box.scrollHeight;
         })
@@ -1416,7 +1508,7 @@
         .subscribe();
     }
 
-    function adicionarMensagemNaTela(msgId, nome, texto, ehVip = false) {
+    function adicionarMensagemNaTela(msgId, userId, nome, texto, ehVip = false) {
       const box = document.getElementById('chat-mensagens');
       if (!box) return;
 
@@ -1425,7 +1517,17 @@
       }
 
       const seloVip = ehVip ? `<span class="tag-vip-amarela">[VIP] 🟨</span>` : '';
-      const botaoExcluirAdmin = ehAdmin ? `<button class="btn-del-msg" onclick="deletarMensagem('${msgId}')">Excluir</button>` : '';
+      
+      // BOTÕES DE AÇÃO ADMINISTRATIVA
+      let botoesAdmin = '';
+      if (ehAdmin) {
+        botoesAdmin = `
+          <div class="btn-adm-actions">
+            <button class="btn-del-msg" onclick="deletarMensagem('${msgId}')">Excluir</button>
+            <button class="btn-ban-user" onclick="promptBanirUsuario('${userId}')">Banir/Restringir</button>
+          </div>
+        `;
+      }
 
       const div = document.createElement('div');
       div.id = `msg-item-${msgId}`;
@@ -1438,14 +1540,30 @@
         line-height: 1.4;
         word-break: break-word;
       `;
-      div.innerHTML = `${botaoExcluirAdmin}<b style="color: var(--green-pix);">${escaparHTML(nome)}</b>${seloVip}: <span style="color: #e5e7eb;">${escaparHTML(texto)}</span>`;
+      div.innerHTML = `${botoesAdmin}<b style="color: var(--green-pix);">${escaparHTML(nome)}</b>${seloVip}: <span style="color: #e5e7eb;">${escaparHTML(texto)}</span>`;
       box.appendChild(div);
+    }
+
+    function promptBanirUsuario(userId) {
+      const opcao = prompt("Escolha a duração do banimento:\n1 = 1 dia\n3 = 3 dias\n7 = 7 dias\n15 = 15 dias\n0 = BAN PERMANENTE");
+      if (opcao === null) return;
+      const dias = parseInt(opcao);
+      if (!isNaN(dias)) {
+        banirUsuario(userId, dias);
+      }
     }
 
     async function enviarMensagemChat() {
       if (!usuarioAtual) {
-        alert("Você precisa criar uma conta ou entrar com seu e-mail para participar do chat!");
+        alert("Você precisa criar uma conta ou entrar para participar do chat!");
         abrirModal();
+        return;
+      }
+
+      // VERIFICAÇÃO DE BANIMENTO
+      const estaBanido = await verificarSeUsuarioEstaBanido(usuarioAtual.id);
+      if (estaBanido) {
+        alert("Sua conta está impossibilitada de enviar mensagens no chat no momento.");
         return;
       }
 
@@ -1453,8 +1571,8 @@
         const nomeDigitado = prompt("Escolha o seu apelido para o chat:");
         if (!nomeDigitado || !nomeDigitado.trim()) return;
         
-        if (contemPalavrasProibidas(nomeDigitado)) {
-          alert("Este apelido contém palavras ou termos proibidos!");
+        if (contemPalavrasProibidasOuLinks(nomeDigitado)) {
+          alert("Apelido inválido ou com caracteres/termos proibidos.");
           return;
         }
 
@@ -1467,9 +1585,15 @@
 
       if (!texto) return;
 
-      // FILTRO DE SEGURANÇA E PALAVRAS PROIBIDAS
-      if (contemPalavrasProibidas(texto)) {
-        alert("Sua mensagem contém termos ou links não permitidos no chat.");
+      // VALIDAÇÃO DE LIMITE DE CARACTERES
+      if (texto.length > 150) {
+        alert("Sua mensagem ultrapassou o limite de 150 caracteres.");
+        return;
+      }
+
+      // FILTRO DE SEGURANÇA, LINKS E @
+      if (contemPalavrasProibidasOuLinks(texto)) {
+        alert("Proibido o envio de links, redes sociais (@) ou palavras não permitidas.");
         return;
       }
 
@@ -1494,8 +1618,8 @@
     function alterarNomeChat() {
       const novoNome = prompt("Digite seu novo apelido:", meuApelidoChat);
       if (novoNome && novoNome.trim()) {
-        if (contemPalavrasProibidas(novoNome)) {
-          alert("Este apelido contém termos ou nomes não permitidos!");
+        if (contemPalavrasProibidasOuLinks(novoNome)) {
+          alert("Apelido contém termos ou símbolos não permitidos!");
           return;
         }
         meuApelidoChat = novoNome.trim();
@@ -1504,10 +1628,9 @@
       }
     }
 
-    // EXCLUSÃO PELO ADMIN
     async function deletarMensagem(msgId) {
       if (!ehAdmin) return;
-      if (!confirm("Deseja realmente apagar esta mensagem do chat?")) return;
+      if (!confirm("Deseja apagar esta mensagem?")) return;
 
       const { error } = await _supabase
         .from('chat_mensagens')
@@ -1515,7 +1638,7 @@
         .eq('id', msgId);
 
       if (error) {
-        alert("Erro ao excluir mensagem: " + error.message);
+        alert("Erro ao excluir mensagem.");
       } else {
         const el = document.getElementById(`msg-item-${msgId}`);
         if (el) el.remove();
@@ -1535,19 +1658,22 @@
 
       box.innerHTML = '';
       if (!mensagens || mensagens.length === 0) {
-        box.innerHTML = '<div style="font-size:12px; color:var(--text-sub); text-align:center;">Nenhuma mensagem cadastrada.</div>';
+        box.innerHTML = '<div style="font-size:12px; color:var(--text-sub); text-align:center;">Nenhuma mensagem enviada.</div>';
         return;
       }
 
       mensagens.forEach(m => {
         const item = document.createElement('div');
-        item.style.cssText = 'display:flex; justify-content:space-between; align-items:center; background:#131a24; padding:8px; border-radius:6px; font-size:12px;';
+        item.style.cssText = 'display:flex; justify-content:space-between; align-items:center; background:#131a24; padding:6px; border-radius:6px; font-size:11px;';
         item.innerHTML = `
           <div>
             <b style="color:var(--green-pix);">${escaparHTML(m.nome_exibicao)}:</b> 
             <span style="color:#fff;">${escaparHTML(m.mensagem)}</span>
           </div>
-          <button onclick="deletarMensagem('${m.id}')" style="background:#ef4444; color:#fff; border:none; padding:4px 8px; border-radius:4px; font-weight:bold; cursor:pointer;">Apagar</button>
+          <div style="display:flex; gap:4px;">
+            <button onclick="promptBanirUsuario('${m.user_id}')" style="background:#7c3aed; color:#fff; border:none; padding:2px 6px; border-radius:4px; font-weight:bold; cursor:pointer;">Banir</button>
+            <button onclick="deletarMensagem('${m.id}')" style="background:#ef4444; color:#fff; border:none; padding:2px 6px; border-radius:4px; font-weight:bold; cursor:pointer;">Apagar</button>
+          </div>
         `;
         box.appendChild(item);
       });
