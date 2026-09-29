@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
-  <title>Melhores Vazados De Novinhas Amador da Net 🔞 - Conteúdo Privado Exclusivo</title>
+  <title>Canal VIP Oficial 🔞 - Galeria Privada Exclusiva</title>
 
   <!-- GOOGLE ANALYTICS -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-Q7KTN7GPTN"></script>
@@ -406,6 +406,20 @@
       gap: 6px;
     }
 
+    /* ESTILO DA TAG VIP NO CHAT */
+    .tag-vip-amarela {
+      background: linear-gradient(135deg, #f59e0b, #d97706);
+      color: #000;
+      font-weight: 800;
+      font-size: 10px;
+      padding: 2px 6px;
+      border-radius: 4px;
+      margin-left: 4px;
+      display: inline-block;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
     /* REVIEWS */
     .reviews-section {
       margin-top: 40px;
@@ -645,7 +659,7 @@
       <div class="channel-info">
         <div class="channel-avatar">VIP</div>
         <div class="channel-details">
-          <h1>👑Porno Amador Premium👑<span class="verified-badge">✓</span></h1>
+          <h1>Galeria VIP Oficial <span class="verified-badge">✓</span></h1>
           <span class="channel-stats">14.820 membros • Atualizado hoje</span>
         </div>
       </div>
@@ -819,6 +833,72 @@
 
     </div>
 
+    <!-- SEÇÃO DO CHAT AO VIVO -->
+    <div style="
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 18px;
+      padding: 20px;
+      margin-top: 32px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+    ">
+      <div style="
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 12px;
+        padding-bottom: 10px;
+        border-bottom: 1px solid var(--border-color);
+      ">
+        <h3 style="font-size: 16px; font-weight: 700; color: #fff; display: flex; align-items: center; gap: 8px; margin: 0;">
+          💬 Chat da Comunidade VIP
+        </h3>
+        <button onclick="alterarNomeChat()" style="
+          background: rgba(255, 255, 255, 0.08);
+          color: var(--text-sub);
+          border: 1px solid var(--border-color);
+          padding: 5px 12px;
+          border-radius: 6px;
+          font-size: 11px;
+          cursor: pointer;
+        ">Mudar Apelido</button>
+      </div>
+
+      <!-- Caixa de mensagens -->
+      <div id="chat-mensagens" style="
+        height: 250px;
+        overflow-y: auto;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        padding-right: 6px;
+        margin-bottom: 14px;
+      ">
+        <div style="font-size: 12px; color: var(--text-sub); text-align: center; margin-top: 20px;">
+          Carregando mensagens do bate-papo...
+        </div>
+      </div>
+
+      <!-- Caixa de envio -->
+      <div style="display: flex; gap: 8px;">
+        <input type="text" id="chat-input-texto" placeholder="Digite sua mensagem no chat..." maxlength="250" style="
+          flex: 1;
+          background: #080b10;
+          border: 1px solid var(--border-color);
+          border-radius: 10px;
+          padding: 12px;
+          color: #fff;
+          font-size: 13px;
+        " onkeypress="if(event.key === 'Enter') enviarMensagemChat()" />
+        <button onclick="enviarMensagemChat()" class="btn-buy" style="
+          width: auto;
+          padding: 0 20px;
+          border-radius: 10px;
+          font-size: 13px;
+        ">Enviar</button>
+      </div>
+    </div>
+
     <!-- SEÇÃO DE REVIEWS -->
     <div class="reviews-section">
       <div class="reviews-title">💬 O que dizem nossos membros VIP</div>
@@ -923,7 +1003,7 @@
     })();
   </script>
 
-  <!-- SCRIPT SUPABASE E SESSÃO -->
+  <!-- SCRIPT SUPABASE, SESSÃO E CHAT REALTIME COM SELO VIP -->
   <script>
     const SUPABASE_URL = 'https://xjvkyofktqojuyequuxe.supabase.co';
     const SUPABASE_ANON_KEY = 'sb_publishable__w-crANhzjiYKJuh2AX39w_Kz1-Rf74'; 
@@ -945,6 +1025,10 @@
         atualizarHeader();
         await checarPermissoes();
       }
+
+      // Inicialização do Chat
+      carregarMensagensAntigas();
+      escutarNovasMensagens();
     };
 
     function abrirModal(categoria = null) {
@@ -1066,6 +1150,148 @@
       } catch (err) {
         console.error("Erro ao verificar compras:", err);
       }
+    }
+
+    // ==========================================
+    // LÓGICA DO CHAT REALTIME + IDENTIFICAÇÃO VIP
+    // ==========================================
+    let meuApelidoChat = localStorage.getItem('chat_apelido') || '';
+
+    // Função para verificar se um ID de usuário é assinante ativo
+    async function verificarSeUserEhVip(userId) {
+      if (!userId) return false;
+      try {
+        const { data, error } = await _supabase
+          .from('compras_usuario')
+          .select('id')
+          .eq('user_id', userId)
+          .gt('data_expiracao', new Date().toISOString())
+          .limit(1);
+
+        return data && data.length > 0;
+      } catch (err) {
+        return false;
+      }
+    }
+
+    async function carregarMensagensAntigas() {
+      try {
+        const { data: mensagens, error } = await _supabase
+          .from('chat_mensagens')
+          .select('*')
+          .order('created_at', { ascending: true })
+          .limit(60);
+
+        const box = document.getElementById('chat-mensagens');
+        if (!box) return;
+        box.innerHTML = '';
+
+        if (error) {
+          box.innerHTML = '<div style="font-size: 12px; color: #ef4444; text-align: center;">Erro ao carregar o chat.</div>';
+          return;
+        }
+
+        if (mensagens && mensagens.length > 0) {
+          for (const m of mensagens) {
+            const ehVip = await verificarSeUserEhVip(m.user_id);
+            adicionarMensagemNaTela(m.nome_exibicao, m.mensagem, ehVip);
+          }
+        } else {
+          box.innerHTML = '<div style="font-size: 12px; color: var(--text-sub); text-align: center;">Seja o primeiro a enviar uma mensagem no chat!</div>';
+        }
+        box.scrollTop = box.scrollHeight;
+      } catch (err) {
+        console.error("Erro ao carregar mensagens:", err);
+      }
+    }
+
+    function escutarNovasMensagens() {
+      _supabase
+        .channel('public:chat_mensagens')
+        .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'chat_mensagens' }, async payload => {
+          const ehVip = await verificarSeUserEhVip(payload.new.user_id);
+          adicionarMensagemNaTela(payload.new.nome_exibicao, payload.new.mensagem, ehVip);
+          const box = document.getElementById('chat-mensagens');
+          if (box) box.scrollTop = box.scrollHeight;
+        })
+        .subscribe();
+    }
+
+    function adicionarMensagemNaTela(nome, texto, ehVip = false) {
+      const box = document.getElementById('chat-mensagens');
+      if (!box) return;
+
+      if (box.children.length === 1 && box.children[0].innerText.includes('Seja o primeiro')) {
+        box.innerHTML = '';
+      }
+
+      // Adiciona o selo amarelo caso seja assinante VIP
+      const seloVip = ehVip ? `<span class="tag-vip-amarela">[VIP] 🟨</span>` : '';
+
+      const div = document.createElement('div');
+      div.style.cssText = `
+        background: rgba(0, 0, 0, 0.25);
+        border: 1px solid var(--border-color);
+        padding: 8px 12px;
+        border-radius: 8px;
+        font-size: 13px;
+        line-height: 1.4;
+        word-break: break-word;
+      `;
+      div.innerHTML = `<b style="color: var(--green-pix);">${escaparHTML(nome)}</b>${seloVip}: <span style="color: #e5e7eb;">${escaparHTML(texto)}</span>`;
+      box.appendChild(div);
+    }
+
+    async function enviarMensagemChat() {
+      if (!usuarioAtual) {
+        alert("Você precisa criar uma conta ou entrar com seu e-mail para participar do chat!");
+        abrirModal();
+        return;
+      }
+
+      if (!meuApelidoChat) {
+        const nomeDigitado = prompt("Escolha o seu apelido para o chat:");
+        if (!nomeDigitado || !nomeDigitado.trim()) return;
+        meuApelidoChat = nomeDigitado.trim();
+        localStorage.setItem('chat_apelido', meuApelidoChat);
+      }
+
+      const input = document.getElementById('chat-input-texto');
+      const texto = input.value.trim();
+
+      if (!texto) return;
+
+      input.value = '';
+
+      const { error } = await _supabase
+        .from('chat_mensagens')
+        .insert([
+          { 
+            user_id: usuarioAtual.id, 
+            nome_exibicao: meuApelidoChat, 
+            mensagem: texto 
+          }
+        ]);
+
+      if (error) {
+        console.error("Erro no envio:", error);
+        alert("Erro ao enviar mensagem no chat.");
+      }
+    }
+
+    function alterarNomeChat() {
+      const novoNome = prompt("Digite seu novo apelido:", meuApelidoChat);
+      if (novoNome && novoNome.trim()) {
+        meuApelidoChat = novoNome.trim();
+        localStorage.setItem('chat_apelido', meuApelidoChat);
+        alert("Apelido alterado para: " + meuApelidoChat);
+      }
+    }
+
+    function escaparHTML(str) {
+      return str.replace(/[&<>'"]/g, 
+        tag => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[tag] || tag)
+      );
     }
   </script>
 </body>
