@@ -1018,9 +1018,19 @@
         </div>
       </div>
 
-      <!-- SEÇÃO CHAT DA COMUNIDADE -->
-      <div style="margin-bottom:8px; font-size:12px; color:var(--text-sub);">
-        <b>Mensagens Recentes no Chat:</b>
+      <!-- SEÇÃO CHAT DA COMUNIDADE COM OPÇÃO DE LIMPAR -->
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+        <span style="font-size:12px; color:var(--text-sub);"><b>Mensagens Recentes no Chat:</b></span>
+        <button onclick="limparChatInteiro()" style="
+          background: #ef4444; 
+          color: #fff; 
+          border: none; 
+          padding: 4px 10px; 
+          border-radius: 6px; 
+          font-size: 11px; 
+          font-weight: bold; 
+          cursor: pointer;
+        ">🧹 Limpar Todo o Chat</button>
       </div>
 
       <div id="admin-lista-msgs" style="
@@ -1504,6 +1514,12 @@
         .on('postgres_changes', { event: 'DELETE', schema: 'public', table: 'chat_mensagens' }, payload => {
           const el = document.getElementById(`msg-item-${payload.old.id}`);
           if (el) el.remove();
+          
+          // Se não houver mais mensagens na tela, ajusta o aviso
+          const box = document.getElementById('chat-mensagens');
+          if (box && box.children.length === 0) {
+            box.innerHTML = '<div style="font-size: 12px; color: var(--text-sub); text-align: center;">Seja o primeiro a enviar uma mensagem no chat!</div>';
+          }
         })
         .subscribe();
     }
@@ -1642,6 +1658,25 @@
       } else {
         const el = document.getElementById(`msg-item-${msgId}`);
         if (el) el.remove();
+        carregarListaAdmin();
+      }
+    }
+
+    // NOVA FUNÇÃO: LIMPAR TODO O CHAT
+    async function limparChatInteiro() {
+      if (!ehAdmin) return;
+      if (!confirm("⚠️ ATENÇÃO: Tem certeza que deseja APAGAR TODAS as mensagens do chat? Esta ação não pode ser desfeita!")) return;
+
+      const { error } = await _supabase
+        .from('chat_mensagens')
+        .delete()
+        .neq('id', '00000000-0000-0000-0000-000000000000'); // Seleciona todas as linhas válidas
+
+      if (error) {
+        alert("Erro ao limpar chat: " + error.message);
+      } else {
+        alert("Chat limpo com sucesso!");
+        carregarMensagensAntigas();
         carregarListaAdmin();
       }
     }
