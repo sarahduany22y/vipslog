@@ -988,14 +988,27 @@
   <div class="modal-overlay" id="modalAdmin">
     <div class="modal" style="max-width: 550px; text-align: left;">
       <h3 style="color:#ef4444; font-size:18px; margin-bottom:6px;">⚙️ Painel de Moderação ADM</h3>
-      <p class="subtitle">Bem-vindo, Admin! Gerencie o chat da comunidade abaixo:</p>
+      <p class="subtitle">Bem-vindo, Admin! Gerencie o chat e a lista de palavras proibidas:</p>
 
-      <div style="margin-bottom:15px; font-size:12px; color:var(--text-sub);">
-        <b>Filtros Ativos:</b> Nomes e palavras ofensivas, golpes, divulgações de links/grupos e conteúdos proibidos são automaticamente bloqueados.
+      <!-- SEÇÃO GERENCIAR PALAVRAS PROIBIDAS -->
+      <div style="background:#080b10; border:1px solid var(--border-color); padding:12px; border-radius:8px; margin-bottom:16px;">
+        <h4 style="font-size:13px; color:#fff; margin-bottom:8px;">🚫 Adicionar Palavra Proibida</h4>
+        <div style="display:flex; gap:6px; margin-bottom:10px;">
+          <input type="text" id="inputPalavraProibida" placeholder="Ex: golpe, pessimo, etc." style="flex:1; padding:8px; background:#131a24; border:1px solid var(--border-color); color:#fff; border-radius:6px; font-size:12px;" />
+          <button onclick="adicionarPalavraProibida()" style="background:#22c55e; color:#fff; border:none; padding:8px 14px; border-radius:6px; font-weight:bold; font-size:12px; cursor:pointer;">Add</button>
+        </div>
+        <div id="listaPalavrasProibidas" style="display:flex; flex-wrap:wrap; gap:6px; max-height:100px; overflow-y:auto;">
+          <span style="font-size:11px; color:var(--text-sub);">Carregando termos...</span>
+        </div>
+      </div>
+
+      <!-- SEÇÃO CHAT DA COMUNIDADE -->
+      <div style="margin-bottom:8px; font-size:12px; color:var(--text-sub);">
+        <b>Mensagens Recentes no Chat:</b>
       </div>
 
       <div id="admin-lista-msgs" style="
-        height: 250px; 
+        height: 200px; 
         overflow-y: auto; 
         background: #080b10; 
         border: 1px solid var(--border-color); 
@@ -1070,13 +1083,15 @@
     let ehAdmin = false;
     let categoriaPendente = null;
 
-    // PALAVRAS E PALAVRÕES PROIBIDOS (Filtro Automático)
-    const TERMOS_PROIBIDOS = [
+    // TERMOS PADRÃO DE SEGURANÇA
+    const TERMOS_PADRAO = [
       'golpe', 'fraude', 'fake', 'mentira', 'enganacao', 'lixo', 'ruim', 
       'merda', 'puta', 'caralho', 'fdp', 'viado', 'corno', 'vadia',
       'http', 'https', 'www', '.com', '.br', 't.me', 'telegram', 'whatsapp', 'zap', 
       'infantil', 'cp', 'estupro', 'pedofilia', 'droga', 'armas', 'vender'
     ];
+
+    let palavrasProibidasBanco = [];
 
     const CHECKOUTS = {
       amador: "https://link.syncpayments.com.br/MicvMz",
@@ -1093,11 +1108,103 @@
         await checarPermissoes();
       }
 
+      // Carregar palavras proibidas salvas no banco
+      await carregarPalavrasProibidasBanco();
+
       // Inicialização do Chat
       carregarMensagensAntigas();
       escutarNovasMensagens();
     };
 
+    // ==========================================
+    // GERENCIAMENTO DE PALAVRAS PROIBIDAS (SUPABASE)
+    // ==========================================
+    async function carregarPalavrasProibidasBanco() {
+      try {
+        const { data, error } = await _supabase
+          .from('palavras_proibidas')
+          .select('*')
+          .order('palavra', { ascending: true });
+
+        if (!error && data) {
+          palavrasProibidasBanco = data.map(item => item.palavra.toLowerCase());
+          
+          if (ehAdmin) {
+            renderizarChipsPalavrasProibidas(data);
+          }
+        }
+      } catch (err) {
+        console.error("Erro ao buscar palavras proibidas:", err);
+      }
+    }
+
+    function renderizarChipsPalavrasProibidas(lista) {
+      const container = document.getElementById('listaPalavrasProibidas');
+      if (!container) return;
+
+      container.innerHTML = '';
+      if (lista.length === 0) {
+        container.innerHTML = '<span style="font-size:11px; color:var(--text-sub);">Nenhuma palavra personalizada cadastrada.</span>';
+        return;
+      }
+
+      lista.forEach(item => {
+        const badge = document.createElement('span');
+        badge.style.cssText = 'display:inline-flex; align-items:center; gap:4px; background:rgba(239,68,68,0.2); color:#ef4444; border:1px solid rgba(239,68,68,0.3); padding:2px 8px; border-radius:12px; font-size:11px; font-weight:bold;';
+        badge.innerHTML = `
+          ${escaparHTML(item.palavra)}
+          <button onclick="removerPalavraProibida(${item.id})" style="background:none; border:none; color:#ef4444; cursor:pointer; font-weight:bold; font-size:12px; margin-left:2px;">&times;</button>
+        `;
+        container.appendChild(badge);
+      });
+    }
+
+    async function adicionarPalavraProibida() {
+      const input = document.getElementById('inputPalavraProibida');
+      const palavra = input.value.trim().toLowerCase();
+
+      if (!palavra) return;
+
+      const { error } = await _supabase
+        .from('palavras_proibidas')
+        .insert([{ palavra }]);
+
+      if (error) {
+        alert('Erro ao adicionar palavra (ela pode já estar cadastrada).');
+      } else {
+        input.value = '';
+        await carregarPalavrasProibidasBanco();
+      }
+    }
+
+    async function removerPalavraProibida(id) {
+      const { error } = await _supabase
+        .from('palavras_proibidas')
+        .delete()
+        .eq('id', id);
+
+      if (error) {
+        alert('Erro ao remover palavra.');
+      } else {
+        await carregarPalavrasProibidasBanco();
+      }
+    }
+
+    function contemPalavrasProibidas(texto) {
+      const textoLower = texto.toLowerCase();
+      
+      // Valida contra termos nativos + termos cadastrados no Supabase
+      const todosOsTermos = [...TERMOS_PADRAO, ...palavrasProibidasBanco];
+      
+      return todosOsTermos.some(termo => {
+        if (!termo) return false;
+        return textoLower.includes(termo.toLowerCase());
+      });
+    }
+
+    // ==========================================
+    // AUTENTICAÇÃO E PERMISSÕES
+    // ==========================================
     function verificarSeEhAdmin() {
       if (usuarioAtual && usuarioAtual.email.toLowerCase() === EMAIL_ADMIN.toLowerCase()) {
         ehAdmin = true;
@@ -1128,6 +1235,7 @@
       if (!ehAdmin) return;
       document.getElementById('modalAdmin').style.display = 'flex';
       carregarListaAdmin();
+      carregarPalavrasProibidasBanco();
     }
 
     function fecharModalAdmin() {
@@ -1244,11 +1352,6 @@
     // ==========================================
     let meuApelidoChat = localStorage.getItem('chat_apelido') || '';
 
-    function contemPalavrasProibidas(texto) {
-      const textoLower = texto.toLowerCase();
-      return TERMOS_PROIBIDOS.some(termo => textoLower.includes(termo));
-    }
-
     async function verificarSeUserEhVip(userId) {
       if (!userId) return false;
       try {
@@ -1351,7 +1454,7 @@
         if (!nomeDigitado || !nomeDigitado.trim()) return;
         
         if (contemPalavrasProibidas(nomeDigitado)) {
-          alert("Este apelido contém palavras ou nomes proibidos!");
+          alert("Este apelido contém palavras ou termos proibidos!");
           return;
         }
 
