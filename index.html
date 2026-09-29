@@ -420,6 +420,21 @@
       letter-spacing: 0.5px;
     }
 
+    /* BOTÃO EXCLUIR ADMIN NO CHAT */
+    .btn-del-msg {
+      background: #ef4444;
+      color: #fff;
+      border: none;
+      font-size: 10px;
+      font-weight: bold;
+      padding: 2px 6px;
+      border-radius: 4px;
+      cursor: pointer;
+      margin-left: 8px;
+      float: right;
+    }
+    .btn-del-msg:hover { background: #dc2626; }
+
     /* REVIEWS */
     .reviews-section {
       margin-top: 40px;
@@ -853,15 +868,28 @@
         <h3 style="font-size: 16px; font-weight: 700; color: #fff; display: flex; align-items: center; gap: 8px; margin: 0;">
           💬 Chat da Comunidade VIP
         </h3>
-        <button onclick="alterarNomeChat()" style="
-          background: rgba(255, 255, 255, 0.08);
-          color: var(--text-sub);
-          border: 1px solid var(--border-color);
-          padding: 5px 12px;
-          border-radius: 6px;
-          font-size: 11px;
-          cursor: pointer;
-        ">Mudar Apelido</button>
+        <div style="display: flex; gap: 8px;">
+          <button id="btn-painel-adm" onclick="abrirModalAdmin()" style="
+            display: none;
+            background: #ef4444;
+            color: #fff;
+            border: none;
+            padding: 5px 12px;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: bold;
+            cursor: pointer;
+          ">Painel ADM ⚙️</button>
+          <button onclick="alterarNomeChat()" style="
+            background: rgba(255, 255, 255, 0.08);
+            color: var(--text-sub);
+            border: 1px solid var(--border-color);
+            padding: 5px 12px;
+            border-radius: 6px;
+            font-size: 11px;
+            cursor: pointer;
+          ">Mudar Apelido</button>
+        </div>
       </div>
 
       <!-- Caixa de mensagens -->
@@ -956,6 +984,34 @@
     </div>
   </div>
 
+  <!-- MODAL PAINEL ADM -->
+  <div class="modal-overlay" id="modalAdmin">
+    <div class="modal" style="max-width: 550px; text-align: left;">
+      <h3 style="color:#ef4444; font-size:18px; margin-bottom:6px;">⚙️ Painel de Moderação ADM</h3>
+      <p class="subtitle">Bem-vindo, Admin! Gerencie o chat da comunidade abaixo:</p>
+
+      <div style="margin-bottom:15px; font-size:12px; color:var(--text-sub);">
+        <b>Filtros Ativos:</b> Nomes e palavras ofensivas, golpes, divulgações de links/grupos e conteúdos proibidos são automaticamente bloqueados.
+      </div>
+
+      <div id="admin-lista-msgs" style="
+        height: 250px; 
+        overflow-y: auto; 
+        background: #080b10; 
+        border: 1px solid var(--border-color); 
+        padding: 10px; 
+        border-radius: 8px;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      ">
+        <div style="font-size:12px; color:var(--text-sub); text-align:center;">Carregando mensagens...</div>
+      </div>
+
+      <button onclick="fecharModalAdmin()" class="auth-btn" style="width:100%; margin-top:16px;">Fechar Painel</button>
+    </div>
+  </div>
+
   <!-- CONTAINER MODAL TELA CHEIA (FOTOS) -->
   <div id="modalFotoFullscreen" class="modal-foto-fullscreen" onclick="fecharFotoFullscreen()">
     <span class="modal-foto-fechar">&times;</span>
@@ -1003,14 +1059,24 @@
     })();
   </script>
 
-  <!-- SCRIPT SUPABASE, SESSÃO E CHAT REALTIME COM SELO VIP -->
+  <!-- SCRIPT SUPABASE, MODERAÇÃO E CHAT REALTIME -->
   <script>
     const SUPABASE_URL = 'https://xjvkyofktqojuyequuxe.supabase.co';
     const SUPABASE_ANON_KEY = 'sb_publishable__w-crANhzjiYKJuh2AX39w_Kz1-Rf74'; 
     const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
+    const EMAIL_ADMIN = 'chico@teste.com';
     let usuarioAtual = null;
+    let ehAdmin = false;
     let categoriaPendente = null;
+
+    // PALAVRAS E PALAVRÕES PROIBIDOS (Filtro Automático)
+    const TERMOS_PROIBIDOS = [
+      'golpe', 'fraude', 'fake', 'mentira', 'enganacao', 'lixo', 'ruim', 
+      'merda', 'puta', 'caralho', 'fdp', 'viado', 'corno', 'vadia',
+      'http', 'https', 'www', '.com', '.br', 't.me', 'telegram', 'whatsapp', 'zap', 
+      'infantil', 'cp', 'estupro', 'pedofilia', 'droga', 'armas', 'vender'
+    ];
 
     const CHECKOUTS = {
       amador: "https://link.syncpayments.com.br/MicvMz",
@@ -1022,6 +1088,7 @@
       const { data: { session } } = await _supabase.auth.getSession();
       if (session) {
         usuarioAtual = session.user;
+        verificarSeEhAdmin();
         atualizarHeader();
         await checarPermissoes();
       }
@@ -1030,6 +1097,16 @@
       carregarMensagensAntigas();
       escutarNovasMensagens();
     };
+
+    function verificarSeEhAdmin() {
+      if (usuarioAtual && usuarioAtual.email.toLowerCase() === EMAIL_ADMIN.toLowerCase()) {
+        ehAdmin = true;
+        const btnAdmin = document.getElementById('btn-painel-adm');
+        if (btnAdmin) btnAdmin.style.display = 'inline-block';
+      } else {
+        ehAdmin = false;
+      }
+    }
 
     function abrirModal(categoria = null) {
       categoriaPendente = categoria;
@@ -1045,6 +1122,16 @@
     function fecharModal() {
       categoriaPendente = null;
       document.getElementById('modalAuth').style.display = 'none';
+    }
+
+    function abrirModalAdmin() {
+      if (!ehAdmin) return;
+      document.getElementById('modalAdmin').style.display = 'flex';
+      carregarListaAdmin();
+    }
+
+    function fecharModalAdmin() {
+      document.getElementById('modalAdmin').style.display = 'none';
     }
 
     function iniciarCompra(categoria) {
@@ -1093,14 +1180,14 @@
       
       if (session) {
         usuarioAtual = session.user;
-        const catAcomprar = categoriaPendente;
+        verificarSeEhAdmin();
         
         fecharModal();
         atualizarHeader();
         await checarPermissoes();
 
-        if (catAcomprar) {
-          irParaCheckout(catAcomprar, usuarioAtual.email);
+        if (categoriaPendente) {
+          irParaCheckout(categoriaPendente, usuarioAtual.email);
         }
       } else {
         alert("Não foi possível autenticar. Verifique seus dados.");
@@ -1109,7 +1196,7 @@
 
     function atualizarHeader() {
       document.getElementById('user-area').innerHTML = `
-        <span style="margin-right:12px; font-size:12px; color:var(--text-sub);">${usuarioAtual.email}</span>
+        <span style="margin-right:12px; font-size:12px; color:var(--text-sub);">${usuarioAtual.email} ${ehAdmin ? '<b style="color:#ef4444;">[ADMIN]</b>' : ''}</span>
         <button class="auth-btn" onclick="deslogar()">Sair</button>
       `;
     }
@@ -1153,11 +1240,15 @@
     }
 
     // ==========================================
-    // LÓGICA DO CHAT REALTIME + IDENTIFICAÇÃO VIP
+    // LÓGICA DO CHAT REALTIME, MODERAÇÃO E ADMIN
     // ==========================================
     let meuApelidoChat = localStorage.getItem('chat_apelido') || '';
 
-    // Função para verificar se um ID de usuário é assinante ativo
+    function contemPalavrasProibidas(texto) {
+      const textoLower = texto.toLowerCase();
+      return TERMOS_PROIBIDOS.some(termo => textoLower.includes(termo));
+    }
+
     async function verificarSeUserEhVip(userId) {
       if (!userId) return false;
       try {
@@ -1194,7 +1285,7 @@
         if (mensagens && mensagens.length > 0) {
           for (const m of mensagens) {
             const ehVip = await verificarSeUserEhVip(m.user_id);
-            adicionarMensagemNaTela(m.nome_exibicao, m.mensagem, ehVip);
+            adicionarMensagemNaTela(m.id, m.nome_exibicao, m.mensagem, ehVip);
           }
         } else {
           box.innerHTML = '<div style="font-size: 12px; color: var(--text-sub); text-align: center;">Seja o primeiro a enviar uma mensagem no chat!</div>';
@@ -1209,15 +1300,20 @@
       _supabase
         .channel('public:chat_mensagens')
         .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'chat_mensagens' }, async payload => {
-          const ehVip = await verificarSeUserEhVip(payload.new.user_id);
-          adicionarMensagemNaTela(payload.new.nome_exibicao, payload.new.mensagem, ehVip);
+          const m = payload.new;
+          const ehVip = await verificarSeUserEhVip(m.user_id);
+          adicionarMensagemNaTela(m.id, m.nome_exibicao, m.mensagem, ehVip);
           const box = document.getElementById('chat-mensagens');
           if (box) box.scrollTop = box.scrollHeight;
+        })
+        .on('postgres_changes', { event: 'DELETE', schema: 'public', table: 'chat_mensagens' }, payload => {
+          const el = document.getElementById(`msg-item-${payload.old.id}`);
+          if (el) el.remove();
         })
         .subscribe();
     }
 
-    function adicionarMensagemNaTela(nome, texto, ehVip = false) {
+    function adicionarMensagemNaTela(msgId, nome, texto, ehVip = false) {
       const box = document.getElementById('chat-mensagens');
       if (!box) return;
 
@@ -1225,10 +1321,11 @@
         box.innerHTML = '';
       }
 
-      // Adiciona o selo amarelo caso seja assinante VIP
       const seloVip = ehVip ? `<span class="tag-vip-amarela">[VIP] 🟨</span>` : '';
+      const botaoExcluirAdmin = ehAdmin ? `<button class="btn-del-msg" onclick="deletarMensagem('${msgId}')">Excluir</button>` : '';
 
       const div = document.createElement('div');
+      div.id = `msg-item-${msgId}`;
       div.style.cssText = `
         background: rgba(0, 0, 0, 0.25);
         border: 1px solid var(--border-color);
@@ -1238,7 +1335,7 @@
         line-height: 1.4;
         word-break: break-word;
       `;
-      div.innerHTML = `<b style="color: var(--green-pix);">${escaparHTML(nome)}</b>${seloVip}: <span style="color: #e5e7eb;">${escaparHTML(texto)}</span>`;
+      div.innerHTML = `${botaoExcluirAdmin}<b style="color: var(--green-pix);">${escaparHTML(nome)}</b>${seloVip}: <span style="color: #e5e7eb;">${escaparHTML(texto)}</span>`;
       box.appendChild(div);
     }
 
@@ -1252,6 +1349,12 @@
       if (!meuApelidoChat) {
         const nomeDigitado = prompt("Escolha o seu apelido para o chat:");
         if (!nomeDigitado || !nomeDigitado.trim()) return;
+        
+        if (contemPalavrasProibidas(nomeDigitado)) {
+          alert("Este apelido contém palavras ou nomes proibidos!");
+          return;
+        }
+
         meuApelidoChat = nomeDigitado.trim();
         localStorage.setItem('chat_apelido', meuApelidoChat);
       }
@@ -1260,6 +1363,12 @@
       const texto = input.value.trim();
 
       if (!texto) return;
+
+      // FILTRO DE SEGURANÇA E PALAVRAS PROIBIDAS
+      if (contemPalavrasProibidas(texto)) {
+        alert("Sua mensagem contém termos ou links não permitidos no chat.");
+        return;
+      }
 
       input.value = '';
 
@@ -1282,10 +1391,63 @@
     function alterarNomeChat() {
       const novoNome = prompt("Digite seu novo apelido:", meuApelidoChat);
       if (novoNome && novoNome.trim()) {
+        if (contemPalavrasProibidas(novoNome)) {
+          alert("Este apelido contém termos ou nomes não permitidos!");
+          return;
+        }
         meuApelidoChat = novoNome.trim();
         localStorage.setItem('chat_apelido', meuApelidoChat);
         alert("Apelido alterado para: " + meuApelidoChat);
       }
+    }
+
+    // EXCLUSÃO PELO ADMIN
+    async function deletarMensagem(msgId) {
+      if (!ehAdmin) return;
+      if (!confirm("Deseja realmente apagar esta mensagem do chat?")) return;
+
+      const { error } = await _supabase
+        .from('chat_mensagens')
+        .delete()
+        .eq('id', msgId);
+
+      if (error) {
+        alert("Erro ao excluir mensagem: " + error.message);
+      } else {
+        const el = document.getElementById(`msg-item-${msgId}`);
+        if (el) el.remove();
+        carregarListaAdmin();
+      }
+    }
+
+    async function carregarListaAdmin() {
+      const box = document.getElementById('admin-lista-msgs');
+      if (!box) return;
+      
+      const { data: mensagens } = await _supabase
+        .from('chat_mensagens')
+        .select('*')
+        .order('created_at', { ascending: false })
+        .limit(30);
+
+      box.innerHTML = '';
+      if (!mensagens || mensagens.length === 0) {
+        box.innerHTML = '<div style="font-size:12px; color:var(--text-sub); text-align:center;">Nenhuma mensagem cadastrada.</div>';
+        return;
+      }
+
+      mensagens.forEach(m => {
+        const item = document.createElement('div');
+        item.style.cssText = 'display:flex; justify-content:space-between; align-items:center; background:#131a24; padding:8px; border-radius:6px; font-size:12px;';
+        item.innerHTML = `
+          <div>
+            <b style="color:var(--green-pix);">${escaparHTML(m.nome_exibicao)}:</b> 
+            <span style="color:#fff;">${escaparHTML(m.mensagem)}</span>
+          </div>
+          <button onclick="deletarMensagem('${m.id}')" style="background:#ef4444; color:#fff; border:none; padding:4px 8px; border-radius:4px; font-weight:bold; cursor:pointer;">Apagar</button>
+        `;
+        box.appendChild(item);
+      });
     }
 
     function escaparHTML(str) {
