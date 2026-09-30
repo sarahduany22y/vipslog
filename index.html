@@ -406,7 +406,7 @@
       gap: 6px;
     }
 
-    /* ESTILO DA TAG VIP NO CHAT */
+    /* ESTILO DAS TAGS NO CHAT */
     .tag-vip-amarela {
       background: linear-gradient(135deg, #f59e0b, #d97706);
       color: #000;
@@ -420,7 +420,20 @@
       letter-spacing: 0.5px;
     }
 
-    /* BOTOES ADM NO CHAT */
+    .tag-adm-vermelha {
+      background: linear-gradient(135deg, #ef4444, #dc2626);
+      color: #fff;
+      font-weight: 800;
+      font-size: 10px;
+      padding: 2px 6px;
+      border-radius: 4px;
+      margin-left: 4px;
+      display: inline-block;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    /* BOTOES NO CHAT */
     .btn-adm-actions {
       float: right;
       display: flex;
@@ -917,7 +930,6 @@
 
       <!-- Caixa de envio com proteções contra o salva-senhas do Google -->
       <form id="form-chat-envio" onsubmit="event.preventDefault(); enviarMensagemChat();" autocomplete="off" style="display: flex; gap: 8px;">
-        <!-- Input invisível para desviar a detecção de senha do navegador -->
         <input type="password" style="display:none;" tabindex="-1">
         
         <input 
@@ -1033,7 +1045,7 @@
       </div>
 
       <!-- SEÇÃO CHAT DA COMUNIDADE COM OPÇÃO DE LIMPAR -->
-      <div style="display:flex; justify-between; align-items:center; margin-bottom:8px;">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
         <span style="font-size:12px; color:var(--text-sub);"><b>Mensagens Recentes no Chat:</b></span>
         <button onclick="limparChatInteiro()" style="
           background: #ef4444; 
@@ -1145,12 +1157,31 @@
         verificarSeEhAdmin();
         atualizarHeader();
         await checarPermissoes();
+        carregarApelidoDoUsuario();
       }
 
       await carregarPalavrasProibidasBanco();
       carregarMensagensAntigas();
       escutarNovasMensagens();
     };
+
+    // ==========================================
+    // PERSISTÊNCIA DE APELIDO POR E-MAIL / USUÁRIO
+    // ==========================================
+    let meuApelidoChat = '';
+
+    function carregarApelidoDoUsuario() {
+      if (usuarioAtual) {
+        const apelidoSalvo = localStorage.getItem(`chat_apelido_${usuarioAtual.id}`);
+        if (apelidoSalvo) {
+          meuApelidoChat = apelidoSalvo;
+        } else {
+          // Usa parte antes do @ como sugestão inicial se não tiver apelido salvo
+          meuApelidoChat = usuarioAtual.email.split('@')[0];
+          localStorage.setItem(`chat_apelido_${usuarioAtual.id}`, meuApelidoChat);
+        }
+      }
+    }
 
     // ==========================================
     // GERENCIAMENTO DE BANIMENTO E RESTRIÇÕES
@@ -1167,8 +1198,8 @@
 
         const agora = new Date();
         for (const registro of data) {
-          if (!registro.expira_em) return true; // Ban permanente
-          if (new Date(registro.expira_em) > agora) return true; // Restrição temporária ativa
+          if (!registro.expira_em) return true;
+          if (new Date(registro.expira_em) > agora) return true;
         }
         return false;
       } catch (err) {
@@ -1308,14 +1339,11 @@
 
     function contemPalavrasProibidasOuLinks(texto) {
       const textoLower = texto.toLowerCase();
-
-      // 1. BLOQUEIO DE LINKS E BOT/INSTAGRAM (@) VIA REGEX
       const regexLinksEAt = /(https?:\/\/|[a-zA-Z0-9-]+\.[a-zA-Z]{2,}|www\.|t\.me|wa\.me|@)/i;
       if (regexLinksEAt.test(textoLower)) {
         return true;
       }
 
-      // 2. VALIDAÇÃO CONTRA PALAVRAS E TERMOS PROIBIDOS
       const todosOsTermos = [...TERMOS_PADRAO, ...palavrasProibidasBanco];
       return todosOsTermos.some(termo => termo && textoLower.includes(termo.toLowerCase()));
     }
@@ -1410,6 +1438,7 @@
         fecharModal();
         atualizarHeader();
         await checarPermissoes();
+        carregarApelidoDoUsuario();
 
         if (categoriaPendente) {
           irParaCheckout(categoriaPendente, usuarioAtual.email);
@@ -1466,8 +1495,6 @@
     // ==========================================
     // LÓGICA DO CHAT REALTIME E MODERAÇÃO
     // ==========================================
-    let meuApelidoChat = localStorage.getItem('chat_apelido') || '';
-
     async function verificarSeUserEhVip(userId) {
       if (!userId) return false;
       try {
@@ -1529,7 +1556,6 @@
           const el = document.getElementById(`msg-item-${payload.old.id}`);
           if (el) el.remove();
           
-          // Se não houver mais mensagens na tela, ajusta o aviso
           const box = document.getElementById('chat-mensagens');
           if (box && box.children.length === 0) {
             box.innerHTML = '<div style="font-size: 12px; color: var(--text-sub); text-align: center;">Seja o primeiro a enviar uma mensagem no chat!</div>';
@@ -1546,15 +1572,31 @@
         box.innerHTML = '';
       }
 
-      const seloVip = ehVip ? `<span class="tag-vip-amarela">[VIP] 🟨</span>` : '';
+      // 1. LÓGICA DAS TAGS: ADM VS VIP VS COMUM
+      const ehEsseUserAdmin = (nome.toLowerCase() === 'chico' || userId === 'ADMIN_ID' || (usuarioAtual && usuarioAtual.email.toLowerCase() === EMAIL_ADMIN.toLowerCase() && usuarioAtual.id === userId));
       
-      // BOTÕES DE AÇÃO ADMINISTRATIVA
-      let botoesAdmin = '';
+      let seloTag = '';
+      if (ehEsseUserAdmin) {
+        seloTag = `<span class="tag-adm-vermelha">[ADM] 🔴</span>`;
+      } else if (ehVip) {
+        seloTag = `<span class="tag-vip-amarela">[VIP] 🟨</span>`;
+      }
+
+      // 2. LÓGICA DE BOTÕES (APAGAR PRÓPRIA MENSAGEM OU AÇÕES ADM)
+      let botoesAcao = '';
+      const ehDonoDaMensagem = usuarioAtual && (usuarioAtual.id === userId);
+
       if (ehAdmin) {
-        botoesAdmin = `
+        botoesAcao = `
           <div class="btn-adm-actions">
             <button class="btn-del-msg" onclick="deletarMensagem('${msgId}')">Excluir</button>
             <button class="btn-ban-user" onclick="promptBanirUsuario('${userId}')">Banir/Restringir</button>
+          </div>
+        `;
+      } else if (ehDonoDaMensagem) {
+        botoesAcao = `
+          <div class="btn-adm-actions">
+            <button class="btn-del-msg" onclick="deletarMinhaMensagem('${msgId}')">Apagar</button>
           </div>
         `;
       }
@@ -1570,7 +1612,7 @@
         line-height: 1.4;
         word-break: break-word;
       `;
-      div.innerHTML = `${botoesAdmin}<b style="color: var(--green-pix);">${escaparHTML(nome)}</b>${seloVip}: <span style="color: #e5e7eb;">${escaparHTML(texto)}</span>`;
+      div.innerHTML = `${botoesAcao}<b style="color: var(--green-pix);">${escaparHTML(nome)}</b>${seloTag}: <span style="color: #e5e7eb;">${escaparHTML(texto)}</span>`;
       box.appendChild(div);
     }
 
@@ -1590,7 +1632,6 @@
         return;
       }
 
-      // VERIFICAÇÃO DE BANIMENTO
       const estaBanido = await verificarSeUsuarioEstaBanido(usuarioAtual.id);
       if (estaBanido) {
         alert("Sua conta está impossibilitada de enviar mensagens no chat no momento.");
@@ -1598,16 +1639,19 @@
       }
 
       if (!meuApelidoChat) {
-        const nomeDigitado = prompt("Escolha o seu apelido para o chat:");
-        if (!nomeDigitado || !nomeDigitado.trim()) return;
-        
-        if (contemPalavrasProibidasOuLinks(nomeDigitado)) {
-          alert("Apelido inválido ou com caracteres/termos proibidos.");
-          return;
-        }
+        carregarApelidoDoUsuario();
+        if (!meuApelidoChat) {
+          const nomeDigitado = prompt("Escolha o seu apelido para o chat:");
+          if (!nomeDigitado || !nomeDigitado.trim()) return;
+          
+          if (contemPalavrasProibidasOuLinks(nomeDigitado)) {
+            alert("Apelido inválido ou com caracteres/termos proibidos.");
+            return;
+          }
 
-        meuApelidoChat = nomeDigitado.trim();
-        localStorage.setItem('chat_apelido', meuApelidoChat);
+          meuApelidoChat = nomeDigitado.trim();
+          localStorage.setItem(`chat_apelido_${usuarioAtual.id}`, meuApelidoChat);
+        }
       }
 
       const input = document.getElementById('chat-input-texto');
@@ -1615,13 +1659,11 @@
 
       if (!texto) return;
 
-      // VALIDAÇÃO DE LIMITE DE CARACTERES
       if (texto.length > 150) {
         alert("Sua mensagem ultrapassou o limite de 150 caracteres.");
         return;
       }
 
-      // FILTRO DE SEGURANÇA, LINKS E @
       if (contemPalavrasProibidasOuLinks(texto)) {
         alert("Proibido o envio de links, redes sociais (@) ou palavras não permitidas.");
         return;
@@ -1646,6 +1688,12 @@
     }
 
     function alterarNomeChat() {
+      if (!usuarioAtual) {
+        alert("Você precisa estar logado para alterar seu apelido.");
+        abrirModal();
+        return;
+      }
+
       const novoNome = prompt("Digite seu novo apelido:", meuApelidoChat);
       if (novoNome && novoNome.trim()) {
         if (contemPalavrasProibidasOuLinks(novoNome)) {
@@ -1653,14 +1701,32 @@
           return;
         }
         meuApelidoChat = novoNome.trim();
-        localStorage.setItem('chat_apelido', meuApelidoChat);
-        alert("Apelido alterado para: " + meuApelidoChat);
+        localStorage.setItem(`chat_apelido_${usuarioAtual.id}`, meuApelidoChat);
+        alert("Apelido alterado com sucesso para: " + meuApelidoChat);
+      }
+    }
+
+    async function deletarMinhaMensagem(msgId) {
+      if (!usuarioAtual) return;
+      if (!confirm("Deseja apagar sua mensagem?")) return;
+
+      const { error } = await _supabase
+        .from('chat_mensagens')
+        .delete()
+        .eq('id', msgId)
+        .eq('user_id', usuarioAtual.id);
+
+      if (error) {
+        alert("Erro ao apagar mensagem.");
+      } else {
+        const el = document.getElementById(`msg-item-${msgId}`);
+        if (el) el.remove();
       }
     }
 
     async function deletarMensagem(msgId) {
       if (!ehAdmin) return;
-      if (!confirm("Deseja apagar esta mensagem?")) return;
+      if (!confirm("Deseja apagar esta mensagem como Administrador?")) return;
 
       const { error } = await _supabase
         .from('chat_mensagens')
@@ -1676,12 +1742,10 @@
       }
     }
 
-    // FUNÇÃO: LIMPAR TODO O CHAT (CORRIGIDA PARA ID BIGINT / NUMÉRICO)
     async function limparChatInteiro() {
       if (!ehAdmin) return;
       if (!confirm("⚠️ ATENÇÃO: Tem certeza que deseja APAGAR TODAS as mensagens do chat? Esta ação não pode ser desfeita!")) return;
 
-      // Apaga registros onde id é maior que zero (BigInt)
       const { error } = await _supabase
         .from('chat_mensagens')
         .delete()
