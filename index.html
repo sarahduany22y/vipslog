@@ -14,7 +14,6 @@
     gtag('config', 'G-Q7KTN7GPTN');
   </script>
 
-  <!-- FAVICON INLINE -->
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><circle cx=%2250%22 cy=%2250%22 r=%2250%22 fill=%22%2322c55e%22/><text y=%22.9em%22 x=%2220%22 font-size=%2270%22 fill=%22white%22>🔞</text></svg>">
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -23,15 +22,12 @@
     :root {
       --bg-dark: #0a0f1a;
       --bg-deep: #060910;
-      --card-bg: rgba(17, 24, 39, 0.92);
-      --card-header: rgba(26, 35, 50, 0.95);
-      --glass: rgba(17, 24, 39, 0.75);
+      --card-bg: #10161f;
+      --card-header: #1a2332;
       --green-pix: #22c55e;
       --green-neon: #22c55e;
       --green-glow: rgba(34, 197, 94, 0.55);
-      --green-pix-hover: #16a34a;
       --red-neon: #ef4444;
-      --red-glow: rgba(239, 68, 68, 0.45);
       --yellow-vip: #f59e0b;
       --text-main: #f9fafb;
       --text-sub: #9ca3af;
@@ -49,25 +45,24 @@
 
     body {
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-      background: var(--bg-deep);
+      background-color: var(--bg-deep);
       background-image:
-        radial-gradient(circle at 15% 10%, rgba(34, 197, 94, 0.10) 0%, transparent 45%),
-        radial-gradient(circle at 85% 20%, rgba(239, 68, 68, 0.07) 0%, transparent 40%),
-        radial-gradient(circle at 50% 90%, rgba(34, 197, 94, 0.06) 0%, transparent 50%);
+        radial-gradient(circle at 15% 10%, rgba(34, 197, 94, 0.08) 0%, transparent 45%),
+        radial-gradient(circle at 85% 20%, rgba(239, 68, 68, 0.05) 0%, transparent 40%);
       background-attachment: fixed;
       color: var(--text-main);
-      padding-bottom: 0px;
       min-height: 100vh;
-      position: relative;
+      -webkit-font-smoothing: antialiased;
     }
 
-    /* ===== PARTÍCULAS NEON DE FUNDO ===== */
+    /* ===== PARTÍCULAS (SOMENTE DESKTOP) ===== */
     .particles-bg {
       position: fixed;
       inset: 0;
       pointer-events: none;
       z-index: 0;
       overflow: hidden;
+      display: none;
     }
     .particle {
       position: absolute;
@@ -75,28 +70,26 @@
       height: 3px;
       border-radius: 50%;
       background: var(--green-neon);
-      box-shadow: 0 0 8px 2px var(--green-glow);
       opacity: 0;
       animation: floatUp linear infinite;
+      will-change: transform, opacity;
     }
     @keyframes floatUp {
-      0% { transform: translateY(100vh) scale(0.5); opacity: 0; }
-      15% { opacity: 0.85; }
-      85% { opacity: 0.55; }
-      100% { transform: translateY(-10vh) scale(1.1); opacity: 0; }
+      0% { transform: translate3d(0, 100vh, 0) scale(0.5); opacity: 0; }
+      15% { opacity: 0.7; }
+      85% { opacity: 0.45; }
+      100% { transform: translate3d(0, -10vh, 0) scale(1); opacity: 0; }
     }
 
     /* ===== HEADER ===== */
     header {
-      background: rgba(10, 15, 26, 0.85);
-      backdrop-filter: blur(18px);
-      -webkit-backdrop-filter: blur(18px);
+      background: rgba(10, 15, 26, 0.92);
       border-bottom: 1px solid var(--border-neon);
-      box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5), 0 1px 0 rgba(34, 197, 94, 0.15) inset;
       padding: 12px 16px;
       position: sticky;
       top: 0;
       z-index: 90;
+      transform: translateZ(0);
     }
 
     .header-container {
@@ -124,12 +117,7 @@
       font-size: 16px;
       font-weight: 800;
       color: #fff;
-      box-shadow: 0 0 18px rgba(34, 197, 94, 0.6), 0 0 4px rgba(34, 197, 94, 0.9);
-      animation: avatarPulse 2.4s ease-in-out infinite;
-    }
-    @keyframes avatarPulse {
-      0%, 100% { box-shadow: 0 0 18px rgba(34, 197, 94, 0.6), 0 0 4px rgba(34, 197, 94, 0.9); }
-      50% { box-shadow: 0 0 26px rgba(34, 197, 94, 0.9), 0 0 8px rgba(34, 197, 94, 1); }
+      box-shadow: 0 0 14px rgba(34, 197, 94, 0.5);
     }
 
     .channel-details h1 {
@@ -138,13 +126,11 @@
       display: flex;
       align-items: center;
       gap: 6px;
-      text-shadow: 0 0 12px rgba(34, 197, 94, 0.35);
     }
 
     .verified-badge {
       color: var(--green-pix);
       font-size: 15px;
-      text-shadow: 0 0 10px var(--green-glow);
     }
 
     .channel-stats {
@@ -161,14 +147,9 @@
       font-weight: 600;
       font-size: 13px;
       cursor: pointer;
-      transition: all 0.25s ease;
+      transition: background 0.2s ease;
     }
-
-    .auth-btn:hover {
-      background: rgba(34, 197, 94, 0.22);
-      box-shadow: 0 0 18px rgba(34, 197, 94, 0.5);
-      transform: translateY(-1px);
-    }
+    .auth-btn:hover { background: rgba(34, 197, 94, 0.22); }
 
     /* ===== CONTAINER ===== */
     .main-container {
@@ -184,33 +165,14 @@
       position: relative;
       background:
         linear-gradient(180deg, rgba(34, 197, 94, 0.16) 0%, rgba(10, 15, 26, 0.85) 100%),
-        radial-gradient(circle at 50% 0%, rgba(34, 197, 94, 0.25) 0%, transparent 60%);
+        radial-gradient(circle at 50% 0%, rgba(34, 197, 94, 0.18) 0%, transparent 60%);
       border: 1px solid var(--border-neon);
       border-radius: 22px;
       padding: 36px 22px 30px;
       margin-bottom: 28px;
       text-align: center;
       overflow: hidden;
-      box-shadow: 0 0 40px rgba(34, 197, 94, 0.18), 0 20px 50px rgba(0, 0, 0, 0.5);
-      animation: heroFadeIn 0.9s cubic-bezier(0.16, 1, 0.3, 1) both;
-    }
-    @keyframes heroFadeIn {
-      from { opacity: 0; transform: translateY(24px) scale(0.98); }
-      to { opacity: 1; transform: translateY(0) scale(1); }
-    }
-    .hero-banner::before {
-      content: '';
-      position: absolute;
-      top: -50%;
-      left: -50%;
-      width: 200%;
-      height: 200%;
-      background: conic-gradient(from 0deg, transparent, rgba(34, 197, 94, 0.10), transparent 30%);
-      animation: rotateGlow 8s linear infinite;
-      pointer-events: none;
-    }
-    @keyframes rotateGlow {
-      to { transform: rotate(360deg); }
+      box-shadow: 0 0 30px rgba(34, 197, 94, 0.12), 0 16px 40px rgba(0, 0, 0, 0.4);
     }
 
     .badge-promo {
@@ -225,14 +187,6 @@
       text-transform: uppercase;
       letter-spacing: 1px;
       margin-bottom: 14px;
-      box-shadow: 0 0 18px rgba(34, 197, 94, 0.35);
-      animation: badgeGlow 2s ease-in-out infinite;
-      position: relative;
-      z-index: 1;
-    }
-    @keyframes badgeGlow {
-      0%, 100% { box-shadow: 0 0 14px rgba(34, 197, 94, 0.30); }
-      50% { box-shadow: 0 0 26px rgba(34, 197, 94, 0.65); }
     }
 
     .hero-banner h2 {
@@ -242,9 +196,7 @@
       margin-bottom: 12px;
       line-height: 1.25;
       letter-spacing: -0.5px;
-      text-shadow: 0 0 24px rgba(34, 197, 94, 0.45), 0 2px 4px rgba(0,0,0,0.6);
-      position: relative;
-      z-index: 1;
+      text-shadow: 0 0 18px rgba(34, 197, 94, 0.4);
     }
 
     .hero-banner p {
@@ -253,8 +205,6 @@
       line-height: 1.55;
       max-width: 560px;
       margin: 0 auto 22px;
-      position: relative;
-      z-index: 1;
     }
 
     .hero-cta {
@@ -272,33 +222,25 @@
       cursor: pointer;
       text-transform: uppercase;
       letter-spacing: 0.8px;
-      box-shadow: 0 0 30px rgba(34, 197, 94, 0.55), 0 8px 20px rgba(0, 0, 0, 0.4);
+      box-shadow: 0 0 22px rgba(34, 197, 94, 0.45), 0 8px 20px rgba(0, 0, 0, 0.4);
       transition: transform 0.2s ease, box-shadow 0.2s ease;
-      animation: ctaPulse 2.2s ease-in-out infinite;
-      position: relative;
-      z-index: 1;
       text-decoration: none;
-    }
-    @keyframes ctaPulse {
-      0%, 100% { box-shadow: 0 0 22px rgba(34, 197, 94, 0.45), 0 8px 20px rgba(0, 0, 0, 0.4); }
-      50% { box-shadow: 0 0 42px rgba(34, 197, 94, 0.85), 0 8px 26px rgba(0, 0, 0, 0.5); }
+      transform: translateZ(0);
     }
     .hero-cta:hover {
-      transform: translateY(-3px) scale(1.02);
-      box-shadow: 0 0 50px rgba(34, 197, 94, 0.9), 0 12px 28px rgba(0, 0, 0, 0.55);
+      transform: translate3d(0, -3px, 0);
+      box-shadow: 0 0 38px rgba(34, 197, 94, 0.75), 0 10px 24px rgba(0, 0, 0, 0.5);
     }
 
     /* ===== DEMO ===== */
     .demo-section {
       background: var(--card-bg);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
       border: 1px solid var(--border-neon);
       border-radius: 18px;
       padding: 18px;
       margin-bottom: 30px;
       text-align: center;
-      box-shadow: 0 0 30px rgba(34, 197, 94, 0.10), 0 12px 30px rgba(0, 0, 0, 0.45);
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.4);
     }
 
     .demo-title {
@@ -310,7 +252,6 @@
       align-items: center;
       justify-content: center;
       gap: 8px;
-      text-shadow: 0 0 14px rgba(34, 197, 94, 0.4);
       letter-spacing: 0.3px;
     }
 
@@ -322,7 +263,6 @@
       overflow: hidden;
       background: #000;
       border: 1px solid var(--border-neon);
-      box-shadow: 0 0 24px rgba(34, 197, 94, 0.30), inset 0 0 20px rgba(0,0,0,0.6);
     }
 
     .demo-video-wrapper iframe {
@@ -332,7 +272,7 @@
       border: none;
     }
 
-    /* ===== GRID BENTO ===== */
+    /* ===== GRID ===== */
     .grid {
       display: grid;
       grid-template-columns: 1fr;
@@ -342,23 +282,22 @@
     .card {
       position: relative;
       background: var(--card-bg);
-      backdrop-filter: blur(22px);
-      -webkit-backdrop-filter: blur(22px);
       border: 1px solid var(--border-neon);
       border-radius: 22px;
       overflow: hidden;
-      box-shadow: 0 0 30px rgba(34, 197, 94, 0.10), 0 16px 40px rgba(0,0,0,0.55);
-      transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s ease, border-color 0.3s ease;
+      box-shadow: 0 12px 30px rgba(0,0,0,0.45);
+      transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+      transform: translateZ(0);
     }
 
     .card:hover {
-      transform: translateY(-6px) scale(1.008);
-      border-color: rgba(34, 197, 94, 0.65);
-      box-shadow: 0 0 55px rgba(34, 197, 94, 0.35), 0 22px 50px rgba(0,0,0,0.6);
+      transform: translate3d(0, -4px, 0);
+      border-color: rgba(34, 197, 94, 0.6);
+      box-shadow: 0 0 40px rgba(34, 197, 94, 0.25), 0 16px 40px rgba(0,0,0,0.5);
     }
 
     .card-header {
-      background: linear-gradient(180deg, rgba(26, 35, 50, 0.98) 0%, rgba(17, 24, 39, 0.95) 100%);
+      background: linear-gradient(180deg, #1a2332 0%, #131a24 100%);
       padding: 18px 20px;
       display: flex;
       justify-content: space-between;
@@ -375,7 +314,6 @@
       align-items: center;
       gap: 8px;
       margin: 0;
-      text-shadow: 0 0 16px rgba(34, 197, 94, 0.40);
       letter-spacing: -0.3px;
     }
 
@@ -394,7 +332,6 @@
       font-size: 11px;
       font-weight: 800;
       letter-spacing: 0.5px;
-      box-shadow: 0 0 12px rgba(239, 68, 68, 0.25);
     }
 
     .status-badge {
@@ -403,7 +340,6 @@
       font-size: 11px;
       font-weight: 800;
       display: inline-block;
-      transition: all 0.3s ease;
     }
 
     .bloqueado {
@@ -414,12 +350,12 @@
     .liberado {
       background: var(--green-pix);
       color: #fff;
-      box-shadow: 0 0 18px rgba(34, 197, 94, 0.65);
+      box-shadow: 0 0 14px rgba(34, 197, 94, 0.55);
     }
 
     .card-body { padding: 20px; }
 
-    /* ===== PREVIEW MÍDIAS ===== */
+    /* ===== PREVIEW ===== */
     .preview-box {
       width: 100%;
       display: grid;
@@ -427,10 +363,9 @@
       gap: 12px;
       margin-bottom: 22px;
       padding: 10px;
-      background: rgba(6, 9, 16, 0.9);
+      background: #060910;
       border-radius: 16px;
       border: 1px solid var(--border-neon);
-      box-shadow: inset 0 0 30px rgba(34, 197, 94, 0.08);
     }
 
     .video-item {
@@ -438,14 +373,12 @@
       border-radius: 12px;
       overflow: hidden;
       border: 1px solid rgba(34, 197, 94, 0.25);
-      position: relative;
-      transition: transform 0.35s ease, box-shadow 0.35s ease, border-color 0.3s ease;
+      transition: transform 0.3s ease, border-color 0.3s ease;
+      transform: translateZ(0);
     }
     .video-item:hover {
-      transform: scale(1.03);
-      border-color: rgba(34, 197, 94, 0.85);
-      box-shadow: 0 0 28px rgba(34, 197, 94, 0.55);
-      z-index: 2;
+      transform: scale(1.02);
+      border-color: rgba(34, 197, 94, 0.8);
     }
 
     .preview-box iframe {
@@ -464,7 +397,6 @@
       color: #e5e7eb;
       font-weight: 700;
       margin-bottom: 14px;
-      letter-spacing: 0.2px;
     }
 
     .benefits-list {
@@ -481,17 +413,11 @@
       align-items: flex-start;
       gap: 9px;
       line-height: 1.45;
-      transition: color 0.2s ease, transform 0.2s ease;
-    }
-    .benefits-list li:hover {
-      color: #e5e7eb;
-      transform: translateX(3px);
     }
 
     .benefits-list li span.check {
       color: var(--green-pix);
       font-weight: 900;
-      text-shadow: 0 0 10px var(--green-glow);
       flex-shrink: 0;
     }
 
@@ -513,23 +439,13 @@
       cursor: pointer;
       text-transform: uppercase;
       letter-spacing: 0.6px;
-      box-shadow: 0 0 26px rgba(34, 197, 94, 0.45), 0 6px 18px rgba(0,0,0,0.4);
+      box-shadow: 0 0 20px rgba(34, 197, 94, 0.4), 0 6px 18px rgba(0,0,0,0.4);
       transition: transform 0.2s ease, box-shadow 0.25s ease;
-      position: relative;
-      overflow: hidden;
+      transform: translateZ(0);
     }
-    .btn-buy::after {
-      content: '';
-      position: absolute;
-      top: 0; left: -100%;
-      width: 100%; height: 100%;
-      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.28), transparent);
-      transition: left 0.6s ease;
-    }
-    .btn-buy:hover::after { left: 100%; }
     .btn-buy:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 0 42px rgba(34, 197, 94, 0.85), 0 10px 24px rgba(0,0,0,0.5);
+      transform: translate3d(0, -2px, 0);
+      box-shadow: 0 0 34px rgba(34, 197, 94, 0.75), 0 10px 24px rgba(0,0,0,0.5);
     }
 
     .btn-paypal {
@@ -549,13 +465,11 @@
       font-size: 13px;
       cursor: pointer;
       text-decoration: none;
-      box-shadow: 0 0 18px rgba(0, 112, 186, 0.35), 0 4px 12px rgba(0,0,0,0.35);
-      transition: transform 0.2s ease, box-shadow 0.25s ease;
+      box-shadow: 0 4px 12px rgba(0, 112, 186, 0.35);
+      transition: transform 0.2s ease;
+      transform: translateZ(0);
     }
-    .btn-paypal:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 0 28px rgba(0, 112, 186, 0.65), 0 8px 18px rgba(0,0,0,0.45);
-    }
+    .btn-paypal:hover { transform: translate3d(0, -2px, 0); }
 
     .btn-access {
       display: block;
@@ -570,11 +484,10 @@
       font-size: 15px;
       text-transform: uppercase;
       letter-spacing: 0.6px;
-      box-shadow: 0 0 26px rgba(34, 197, 94, 0.55);
-      animation: ctaPulse 2.2s ease-in-out infinite;
+      box-shadow: 0 0 20px rgba(34, 197, 94, 0.5);
       transition: transform 0.2s ease;
     }
-    .btn-access:hover { transform: translateY(-3px); }
+    .btn-access:hover { transform: translate3d(0, -2px, 0); }
 
     .texto-seguranca {
       font-size: 11px;
@@ -599,7 +512,6 @@
       display: inline-block;
       text-transform: uppercase;
       letter-spacing: 0.5px;
-      box-shadow: 0 0 12px rgba(245, 158, 11, 0.6);
     }
 
     .tag-adm-vermelha {
@@ -613,7 +525,6 @@
       display: inline-block;
       text-transform: uppercase;
       letter-spacing: 0.5px;
-      box-shadow: 0 0 12px rgba(239, 68, 68, 0.7);
     }
 
     .btn-adm-actions {
@@ -630,23 +541,20 @@
       padding: 2px 7px;
       border-radius: 5px;
       cursor: pointer;
-      transition: transform 0.15s ease;
     }
-    .btn-del-msg { background: #ef4444; box-shadow: 0 0 10px rgba(239,68,68,0.5); }
-    .btn-del-msg:hover { background: #dc2626; transform: scale(1.06); }
-    .btn-ban-user { background: #7c3aed; box-shadow: 0 0 10px rgba(124,58,237,0.5); }
-    .btn-ban-user:hover { background: #6d28d9; transform: scale(1.06); }
+    .btn-del-msg { background: #ef4444; }
+    .btn-del-msg:hover { background: #dc2626; }
+    .btn-ban-user { background: #7c3aed; }
+    .btn-ban-user:hover { background: #6d28d9; }
 
     /* ===== REVIEWS ===== */
     .reviews-section {
       margin-top: 44px;
       background: var(--card-bg);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
       border: 1px solid var(--border-neon);
       border-radius: 22px;
       padding: 26px 18px;
-      box-shadow: 0 0 30px rgba(34, 197, 94, 0.10), 0 16px 40px rgba(0,0,0,0.5);
+      box-shadow: 0 12px 30px rgba(0,0,0,0.4);
     }
 
     .reviews-title {
@@ -655,8 +563,6 @@
       color: #fff;
       text-align: center;
       margin-bottom: 22px;
-      text-shadow: 0 0 16px rgba(34, 197, 94, 0.4);
-      letter-spacing: 0.2px;
     }
 
     .reviews-grid {
@@ -666,16 +572,15 @@
     }
 
     .review-item {
-      background: rgba(6, 9, 16, 0.55);
+      background: #060910;
       border: 1px solid rgba(34, 197, 94, 0.18);
       border-radius: 14px;
       padding: 14px 16px;
-      transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+      transition: transform 0.25s ease, border-color 0.25s ease;
     }
     .review-item:hover {
-      transform: translateY(-3px);
-      border-color: rgba(34, 197, 94, 0.55);
-      box-shadow: 0 0 22px rgba(34, 197, 94, 0.25);
+      transform: translate3d(0, -2px, 0);
+      border-color: rgba(34, 197, 94, 0.5);
     }
 
     .review-header {
@@ -694,7 +599,6 @@
     .review-stars {
       color: #f59e0b;
       font-size: 12px;
-      text-shadow: 0 0 10px rgba(245, 158, 11, 0.6);
     }
 
     .review-text {
@@ -706,9 +610,7 @@
     /* ===== RODAPÉ ===== */
     footer {
       margin-top: 50px;
-      background: rgba(10, 15, 26, 0.85);
-      backdrop-filter: blur(18px);
-      -webkit-backdrop-filter: blur(18px);
+      background: rgba(10, 15, 26, 0.92);
       border-top: 1px solid var(--border-neon);
       padding: 32px 16px;
       text-align: center;
@@ -733,12 +635,8 @@
     .footer-link {
       color: #4ade80;
       text-decoration: underline;
-      transition: color 0.2s, text-shadow 0.2s;
     }
-    .footer-link:hover {
-      color: #22c55e;
-      text-shadow: 0 0 12px var(--green-glow);
-    }
+    .footer-link:hover { color: #22c55e; }
 
     .footer-keywords {
       font-size: 11px;
@@ -753,35 +651,21 @@
       position: fixed;
       top: 0; left: 0;
       width: 100%; height: 100%;
-      background: rgba(0,0,0,0.88);
-      backdrop-filter: blur(10px);
-      -webkit-backdrop-filter: blur(10px);
+      background: rgba(0,0,0,0.9);
       justify-content: center;
       align-items: center;
       z-index: 1000;
-      animation: overlayIn 0.3s ease both;
-    }
-    @keyframes overlayIn {
-      from { opacity: 0; }
-      to { opacity: 1; }
     }
 
     .modal {
-      background: rgba(17, 24, 39, 0.96);
-      backdrop-filter: blur(22px);
-      -webkit-backdrop-filter: blur(22px);
+      background: #10161f;
       padding: 28px 24px;
       border-radius: 20px;
       width: 90%;
       max-width: 400px;
       text-align: center;
       border: 1px solid var(--border-neon);
-      box-shadow: 0 0 45px rgba(34, 197, 94, 0.25), 0 20px 50px rgba(0,0,0,0.7);
-      animation: modalIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) both;
-    }
-    @keyframes modalIn {
-      from { opacity: 0; transform: scale(0.92) translateY(16px); }
-      to { opacity: 1; transform: scale(1) translateY(0); }
+      box-shadow: 0 0 35px rgba(34, 197, 94, 0.2), 0 20px 50px rgba(0,0,0,0.7);
     }
 
     .modal h3 {
@@ -789,7 +673,6 @@
       font-size: 19px;
       color: #fff;
       font-weight: 800;
-      text-shadow: 0 0 16px rgba(34, 197, 94, 0.4);
     }
     .modal p.subtitle {
       font-size: 12px;
@@ -803,19 +686,16 @@
       margin: 6px 0;
       border-radius: 10px;
       border: 1px solid var(--border-neon);
-      background: rgba(6, 9, 16, 0.85);
+      background: #060910;
       color: #fff;
       font-size: 13px;
-      transition: border-color 0.2s, box-shadow 0.2s;
     }
 
     .modal input:focus, .modal select:focus {
       outline: none;
       border-color: var(--green-pix);
-      box-shadow: 0 0 18px rgba(34, 197, 94, 0.45);
     }
 
-    /* ===== MODAL FOTO FULLSCREEN ===== */
     .modal-foto-fullscreen {
       display: none;
       position: fixed;
@@ -823,7 +703,6 @@
       top: 0; left: 0;
       width: 100vw; height: 100vh;
       background-color: rgba(0, 0, 0, 0.96);
-      backdrop-filter: blur(8px);
       justify-content: center;
       align-items: center;
       cursor: pointer;
@@ -834,7 +713,6 @@
       max-height: 95%;
       object-fit: contain;
       border-radius: 10px;
-      box-shadow: 0 0 60px rgba(34, 197, 94, 0.35);
     }
 
     .modal-foto-fechar {
@@ -843,11 +721,10 @@
       color: #ffffff;
       font-size: 30px;
       font-weight: bold;
-      text-shadow: 0 0 12px var(--green-glow);
     }
 
-    /* ===== RESPONSIVO ===== */
-    @media (max-width: 600px) {
+    /* ===== AJUSTES MOBILE ===== */
+    @media (max-width: 768px) {
       .hero-banner h2 { font-size: 20px; }
       .hero-banner { padding: 28px 18px 24px; }
       .hero-cta { font-size: 13px; padding: 14px 24px; }
@@ -855,15 +732,38 @@
       .btn-buy { font-size: 14px; padding: 14px; }
       .btn-paypal { font-size: 12px; padding: 11px; }
       .modal { padding: 24px 18px; }
+
+      /* Desativa efeitos pesados no mobile */
+      .card:hover,
+      .video-item:hover,
+      .review-item:hover,
+      .hero-cta:hover,
+      .btn-buy:hover,
+      .btn-paypal:hover,
+      .btn-access:hover {
+        transform: none !important;
+      }
+
+      .particles-bg { display: none !important; }
+    }
+
+    /* Preferência de redução de movimento (acessibilidade + performance) */
+    @media (prefers-reduced-motion: reduce) {
+      * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
+      .particles-bg { display: none !important; }
     }
   </style>
 </head>
 <body>
 
-  <!-- PARTÍCULAS NEON DE FUNDO -->
+  <!-- PARTÍCULAS (só aparecem no desktop via JS) -->
   <div class="particles-bg" id="particlesBg"></div>
 
-  <!-- POP-UP VERIFICAÇÃO DE IDADE (+18) -->
+  <!-- POP-UP +18 -->
   <div id="popup-idade" style="
     position: fixed;
     top: 0; left: 0;
@@ -873,21 +773,19 @@
     justify-content: center;
     align-items: center;
     z-index: 999999;
-    backdrop-filter: blur(10px);
   ">
     <div style="
-      background: rgba(17, 24, 39, 0.96);
+      background: #10161f;
       border: 1px solid rgba(239, 68, 68, 0.6);
       border-radius: 20px;
       padding: 30px 22px;
       text-align: center;
       max-width: 400px;
       width: 90%;
-      box-shadow: 0 0 50px rgba(239, 68, 68, 0.35), 0 20px 50px rgba(0,0,0,0.8);
+      box-shadow: 0 0 40px rgba(239, 68, 68, 0.3), 0 20px 50px rgba(0,0,0,0.8);
       color: #ffffff;
-      animation: modalIn 0.45s cubic-bezier(0.16, 1, 0.3, 1) both;
     ">
-      <h2 style="color: #ef4444; margin-top: 0; margin-bottom: 10px; font-size: 22px; font-weight: 900; text-shadow: 0 0 20px rgba(239,68,68,0.6);">
+      <h2 style="color: #ef4444; margin-top: 0; margin-bottom: 10px; font-size: 22px; font-weight: 900;">
         🔞 CONTEÚDO EXCLUSIVO (+18)
       </h2>
       <p style="font-size: 14px; color: #9ca3af; margin-bottom: 12px; line-height: 1.5;">
@@ -907,8 +805,7 @@
           font-size: 13px;
           cursor: pointer;
           flex: 1;
-          box-shadow: 0 0 24px rgba(34, 197, 94, 0.55);
-          transition: transform 0.2s ease, box-shadow 0.2s ease;
+          box-shadow: 0 0 20px rgba(34, 197, 94, 0.5);
         ">
           SIM, SOU MAIOR
         </button>
@@ -922,7 +819,6 @@
           font-size: 13px;
           cursor: pointer;
           flex: 1;
-          transition: background 0.2s ease;
         ">
           SAIR
         </button>
@@ -1017,7 +913,7 @@
         </div>
       </div>
 
-      <!-- Categoria 2: Cam (Spycam) -->
+      <!-- Categoria 2: Cam -->
       <div class="card" id="card-cam">
         <div class="card-header">
           <h3>🔥 SPYCAM VIP DARK 🔥</h3>
@@ -1111,16 +1007,14 @@
 
     </div>
 
-    <!-- SEÇÃO DO CHAT AO VIVO -->
+    <!-- CHAT -->
     <div style="
       background: var(--card-bg);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
       border: 1px solid var(--border-neon);
       border-radius: 22px;
       padding: 20px;
       margin-top: 36px;
-      box-shadow: 0 0 30px rgba(34, 197, 94, 0.10), 0 16px 40px rgba(0,0,0,0.5);
+      box-shadow: 0 12px 30px rgba(0,0,0,0.4);
     ">
       <div style="
         display: flex;
@@ -1130,7 +1024,7 @@
         padding-bottom: 12px;
         border-bottom: 1px solid var(--border-neon);
       ">
-        <h3 style="font-size: 16px; font-weight: 800; color: #fff; display: flex; align-items: center; gap: 8px; margin: 0; text-shadow: 0 0 14px rgba(34,197,94,0.4);">
+        <h3 style="font-size: 16px; font-weight: 800; color: #fff; display: flex; align-items: center; gap: 8px; margin: 0;">
           💬 Chat Aberto 🟢
         </h3>
         <div style="display: flex; gap: 8px;">
@@ -1144,8 +1038,6 @@
             font-size: 11px;
             font-weight: bold;
             cursor: pointer;
-            box-shadow: 0 0 16px rgba(239,68,68,0.5);
-            transition: transform 0.2s ease;
           ">Painel ADM ⚙️</button>
           <button onclick="alterarNomeChat()" style="
             background: rgba(34, 197, 94, 0.10);
@@ -1155,12 +1047,10 @@
             border-radius: 8px;
             font-size: 11px;
             cursor: pointer;
-            transition: background 0.2s ease;
           ">Mudar Apelido</button>
         </div>
       </div>
 
-      <!-- Caixa de mensagens -->
       <div id="chat-mensagens" style="
         height: 260px;
         overflow-y: auto;
@@ -1175,7 +1065,6 @@
         </div>
       </div>
 
-      <!-- Caixa de envio -->
       <form id="form-chat-envio" onsubmit="event.preventDefault(); enviarMensagemChat();" autocomplete="off" style="display: flex; gap: 8px;">
         <input type="password" style="display:none;" tabindex="-1">
 
@@ -1191,13 +1080,12 @@
           maxlength="150"
           style="
             flex: 1;
-            background: rgba(6, 9, 16, 0.85);
+            background: #060910;
             border: 1px solid var(--border-neon);
             border-radius: 12px;
             padding: 12px;
             color: #fff;
             font-size: 13px;
-            transition: border-color 0.2s, box-shadow 0.2s;
           "
         />
         <button type="submit" class="btn-buy" style="
@@ -1209,7 +1097,7 @@
       </form>
     </div>
 
-    <!-- SEÇÃO DE REVIEWS -->
+    <!-- REVIEWS -->
     <div class="reviews-section">
       <div class="reviews-title">💬 O que dizem nossos membros VIP</div>
       <div class="reviews-grid">
@@ -1266,33 +1154,30 @@
     </div>
   </div>
 
-  <!-- MODAL PAINEL ADM -->
+  <!-- MODAL ADM -->
   <div class="modal-overlay" id="modalAdmin">
     <div class="modal" style="max-width: 550px; text-align: left;">
       <h3 style="color:#ef4444; font-size:18px; margin-bottom:6px;">⚙️ Painel de Moderação ADM</h3>
       <p class="subtitle">Gerencie as palavras proibidas, banimentos e mensagens:</p>
 
-      <!-- SEÇÃO PALAVRAS PROIBIDAS -->
-      <div style="background:rgba(6,9,16,0.85); border:1px solid var(--border-neon); padding:12px; border-radius:10px; margin-bottom:16px;">
+      <div style="background:#060910; border:1px solid var(--border-neon); padding:12px; border-radius:10px; margin-bottom:16px;">
         <h4 style="font-size:13px; color:#fff; margin-bottom:8px;">🚫 Adicionar Palavra Proibida</h4>
         <div style="display:flex; gap:6px; margin-bottom:10px;">
-          <input type="text" id="inputPalavraProibida" placeholder="Ex: golpe, pessimo, etc." style="flex:1; padding:8px; background:rgba(17,24,39,0.9); border:1px solid var(--border-neon); color:#fff; border-radius:8px; font-size:12px;" />
-          <button onclick="adicionarPalavraProibida()" style="background:linear-gradient(135deg,#22c55e,#16a34a); color:#fff; border:none; padding:8px 14px; border-radius:8px; font-weight:bold; font-size:12px; cursor:pointer; box-shadow:0 0 14px rgba(34,197,94,0.4);">Add</button>
+          <input type="text" id="inputPalavraProibida" placeholder="Ex: golpe, pessimo, etc." style="flex:1; padding:8px; background:#10161f; border:1px solid var(--border-neon); color:#fff; border-radius:8px; font-size:12px;" />
+          <button onclick="adicionarPalavraProibida()" style="background:linear-gradient(135deg,#22c55e,#16a34a); color:#fff; border:none; padding:8px 14px; border-radius:8px; font-weight:bold; font-size:12px; cursor:pointer;">Add</button>
         </div>
         <div id="listaPalavrasProibidas" style="display:flex; flex-wrap:wrap; gap:6px; max-height:80px; overflow-y:auto;">
           <span style="font-size:11px; color:var(--text-sub);">Carregando termos...</span>
         </div>
       </div>
 
-      <!-- SEÇÃO USUÁRIOS BANIDOS -->
-      <div style="background:rgba(6,9,16,0.85); border:1px solid var(--border-neon); padding:12px; border-radius:10px; margin-bottom:16px;">
+      <div style="background:#060910; border:1px solid var(--border-neon); padding:12px; border-radius:10px; margin-bottom:16px;">
         <h4 style="font-size:13px; color:#fff; margin-bottom:8px;">🚫 Lista de Usuários Banidos / Restritos</h4>
         <div id="listaUsuariosBanidos" style="display:flex; flex-direction:column; gap:6px; max-height:100px; overflow-y:auto;">
           <span style="font-size:11px; color:var(--text-sub);">Carregando banidos...</span>
         </div>
       </div>
 
-      <!-- SEÇÃO CHAT DA COMUNIDADE -->
       <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
         <span style="font-size:12px; color:var(--text-sub);"><b>Mensagens Recentes no Chat:</b></span>
         <button onclick="limparChatInteiro()" style="
@@ -1304,14 +1189,13 @@
           font-size: 11px;
           font-weight: bold;
           cursor: pointer;
-          box-shadow: 0 0 14px rgba(239,68,68,0.4);
         ">🧹 Limpar Todo o Chat</button>
       </div>
 
       <div id="admin-lista-msgs" style="
         height: 160px;
         overflow-y: auto;
-        background: rgba(6,9,16,0.85);
+        background: #060910;
         border: 1px solid var(--border-neon);
         padding: 10px;
         border-radius: 10px;
@@ -1326,16 +1210,14 @@
     </div>
   </div>
 
-  <!-- CONTAINER MODAL TELA CHEIA (FOTOS) -->
+  <!-- MODAL FOTO FULLSCREEN -->
   <div id="modalFotoFullscreen" class="modal-foto-fullscreen" onclick="fecharFotoFullscreen()">
     <span class="modal-foto-fechar">&times;</span>
     <img id="imgFullscreenSrc" src="" alt="Foto expandida">
   </div>
 
-  <!-- JS EXTERNO DE LINKS (CAM) -->
   <script src="links-cam.js"></script>
 
-  <!-- SCRIPT TELA CHEIA FOTOS -->
   <script>
     document.addEventListener('click', function (e) {
       if (e.target && e.target.matches('.photo-wrapper img')) {
@@ -1351,7 +1233,6 @@
     }
   </script>
 
-  <!-- SCRIPT POP-UP +18 -->
   <script>
     (function() {
       const popup = document.getElementById("popup-idade");
@@ -1373,29 +1254,37 @@
     })();
   </script>
 
-  <!-- ===== PARTÍCULAS NEON DE FUNDO (GERADAS VIA JS) ===== -->
+  <!-- PARTÍCULAS: SÓ NO DESKTOP -->
   <script>
     (function gerarParticulas() {
+      // Só ativa partículas em telas grandes (desktop)
+      if (window.innerWidth < 900) return;
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
       const container = document.getElementById('particlesBg');
       if (!container) return;
-      const total = 22;
+      container.style.display = 'block';
+
+      const total = 12; // Reduzido de 22 para 12
+      const fragment = document.createDocumentFragment();
+
       for (let i = 0; i < total; i++) {
         const p = document.createElement('div');
         p.className = 'particle';
         p.style.left = Math.random() * 100 + '%';
-        p.style.animationDuration = (8 + Math.random() * 14) + 's';
+        p.style.animationDuration = (12 + Math.random() * 12) + 's';
         p.style.animationDelay = (Math.random() * 12) + 's';
-        p.style.width = p.style.height = (2 + Math.random() * 3) + 'px';
-        const cores = ['#22c55e', '#4ade80', '#f59e0b'];
+        p.style.width = p.style.height = (2 + Math.random() * 2) + 'px';
+        const cores = ['#22c55e', '#4ade80'];
         const cor = cores[Math.floor(Math.random() * cores.length)];
         p.style.background = cor;
-        p.style.boxShadow = `0 0 10px 2px ${cor}`;
-        container.appendChild(p);
+        fragment.appendChild(p);
       }
+      container.appendChild(fragment);
     })();
   </script>
 
-  <!-- SCRIPT SUPABASE, MODERAÇÃO E CHAT REALTIME -->
+  <!-- SUPABASE + CHAT + MODERAÇÃO (INALTERADO) -->
   <script>
     const SUPABASE_URL = 'https://xjvkyofktqojuyequuxe.supabase.co';
     const SUPABASE_ANON_KEY = 'sb_publishable__w-crANhzjiYKJuh2AX39w_Kz1-Rf74';
@@ -1523,7 +1412,7 @@
 
       data.forEach(item => {
         const div = document.createElement('div');
-        div.style.cssText = 'display:flex; justify-content:space-between; align-items:center; background:rgba(17,24,39,0.9); padding:6px 10px; border-radius:8px; font-size:11px; border:1px solid rgba(34,197,94,0.15);';
+        div.style.cssText = 'display:flex; justify-content:space-between; align-items:center; background:#10161f; padding:6px 10px; border-radius:8px; font-size:11px;';
         const status = item.expira_em ? `Restrito até: ${new Date(item.expira_em).toLocaleDateString()}` : 'Banido Permanente';
         div.innerHTML = `
           <span>ID: <b>${item.user_id.substring(0,8)}...</b> (${status})</span>
@@ -1561,7 +1450,7 @@
 
       lista.forEach(item => {
         const badge = document.createElement('span');
-        badge.style.cssText = 'display:inline-flex; align-items:center; gap:4px; background:rgba(239,68,68,0.2); color:#ef4444; border:1px solid rgba(239,68,68,0.4); padding:2px 8px; border-radius:14px; font-size:11px; font-weight:bold; box-shadow:0 0 10px rgba(239,68,68,0.25);';
+        badge.style.cssText = 'display:inline-flex; align-items:center; gap:4px; background:rgba(239,68,68,0.2); color:#ef4444; border:1px solid rgba(239,68,68,0.4); padding:2px 8px; border-radius:14px; font-size:11px; font-weight:bold;';
         badge.innerHTML = `
           ${escaparHTML(item.palavra)}
           <button onclick="removerPalavraProibida(${item.id})" style="background:none; border:none; color:#ef4444; cursor:pointer; font-weight:bold; font-size:12px; margin-left:2px;">&times;</button>
@@ -1856,24 +1745,16 @@
       const div = document.createElement('div');
       div.id = `msg-item-${msgId}`;
       div.style.cssText = `
-        background: rgba(6, 9, 16, 0.55);
+        background: #060910;
         border: 1px solid rgba(34, 197, 94, 0.18);
         padding: 9px 13px;
         border-radius: 11px;
         font-size: 13px;
         line-height: 1.45;
         word-break: break-word;
-        animation: msgIn 0.35s cubic-bezier(0.16, 1, 0.3, 1) both;
       `;
-      div.innerHTML = `${botoesAcao}<b style="color: #4ade80; text-shadow: 0 0 8px rgba(34,197,94,0.4);">${escaparHTML(nome)}</b>${seloTag}: <span style="color: #e5e7eb;">${escaparHTML(texto)}</span>`;
+      div.innerHTML = `${botoesAcao}<b style="color: #4ade80;">${escaparHTML(nome)}</b>${seloTag}: <span style="color: #e5e7eb;">${escaparHTML(texto)}</span>`;
       box.appendChild(div);
-
-      if (!document.getElementById('msgInStyle')) {
-        const style = document.createElement('style');
-        style.id = 'msgInStyle';
-        style.textContent = `@keyframes msgIn { from { opacity: 0; transform: translateY(10px) scale(0.97); } to { opacity: 1; transform: translateY(0) scale(1); } }`;
-        document.head.appendChild(style);
-      }
     }
 
     function promptBanirUsuario(userId) {
@@ -2038,7 +1919,7 @@
 
       mensagens.forEach(m => {
         const item = document.createElement('div');
-        item.style.cssText = 'display:flex; justify-content:space-between; align-items:center; background:rgba(17,24,39,0.9); padding:7px; border-radius:8px; font-size:11px; border:1px solid rgba(34,197,94,0.15);';
+        item.style.cssText = 'display:flex; justify-content:space-between; align-items:center; background:#10161f; padding:7px; border-radius:8px; font-size:11px;';
         item.innerHTML = `
           <div>
             <b style="color:var(--green-pix);">${escaparHTML(m.nome_exibicao)}:</b>
