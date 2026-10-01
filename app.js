@@ -14,7 +14,7 @@ const CHECKOUTS = {
 };
 
 // INICIALIZAÇÃO DA SESSÃO AO CARREGAR A PÁGINA
-window.onload = async () => {
+window.addEventListener('DOMContentLoaded', async () => {
   try {
     const { data: { session } } = await _supabase.auth.getSession();
     if (session) {
@@ -25,7 +25,7 @@ window.onload = async () => {
   } catch (err) {
     console.error("Erro ao verificar sessão inicial:", err);
   }
-};
+});
 
 // ABRIR MODAL DE AUTENTICAÇÃO
 function abrirModal(categoria = null) {
