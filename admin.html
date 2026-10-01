@@ -136,7 +136,7 @@
       btn.classList.add('active');
     }
 
-    // CARREGAR HISTÓRICO DE VENDAS EXIBINDO E-MAIL E USER_ID
+    // CARREGAR HISTÓRICO DE VENDAS (BUSCA PRIORITÁRIA DO E-MAIL DA TABELA E DA VIEW)
     async function carregarVendas() {
       const tbody = document.getElementById('tabela-vendas');
       tbody.innerHTML = '<tr><td colspan="3" style="text-align:center;">Carregando...</td></tr>';
@@ -159,32 +159,32 @@
         return;
       }
 
-      // 2. Extrai os user_ids únicos envolvidos nas compras
+      // 2. Extrai os user_ids válidos presentes nas compras
       const userIds = [...new Set(compras.map(c => c.user_id).filter(Boolean))];
 
-      // 3. Busca os e-mails desses IDs específicos na view vw_usuarios
+      // 3. Mapeia e-mails cadastrados na vw_usuarios (para os casos onde o campo email na compras_usuario for nulo)
       const mapaEmails = {};
       if (userIds.length > 0) {
-        const { data: usuarios, error: erroUsuarios } = await _supabase
+        const { data: usuarios } = await _supabase
           .from('vw_usuarios')
           .select('id, email')
           .in('id', userIds);
 
-        if (erroUsuarios) {
-          console.error("Erro ao buscar e-mails na view vw_usuarios:", erroUsuarios);
-        } else if (usuarios) {
+        if (usuarios) {
           usuarios.forEach(u => {
             mapaEmails[u.id] = u.email;
           });
         }
       }
 
-      // 4. Monta a tabela exibindo E-mail + User ID
+      // 4. Monta a tabela
       tbody.innerHTML = '';
       compras.forEach(item => {
         const dataExp = new Date(item.data_expiracao).toLocaleDateString('pt-BR');
-        const emailCliente = mapaEmails[item.user_id] || 'E-mail não encontrado no Auth';
-        const idExibicao = item.user_id ? item.user_id : 'Sem ID registrado';
+        
+        // Regra inteligente: usa o e-mail gravado na compra, se não tiver usa o da view de Auth
+        const emailCliente = item.email || mapaEmails[item.user_id] || 'E-mail não informado';
+        const idExibicao = item.user_id ? item.user_id : 'Sem ID (Aguardando Cadastro)';
 
         tbody.innerHTML += `
           <tr>
@@ -264,29 +264,26 @@
       const dataExpira = new Date();
       dataExpira.setDate(dataExpira.getDate() + dias);
 
-      const { data: user, error: userError } = await _supabase
+      // Busca ID do usuário se já estiver registrado
+      const { data: user } = await _supabase
         .from('vw_usuarios')
         .select('id')
         .eq('email', email)
         .maybeSingle();
 
-      if (userError || !user?.id) {
-        alert("Atenção: O utilizador precisa de estar registado no site com este e-mail.");
-        return;
-      }
-
       const { error } = await _supabase
         .from('compras_usuario')
         .insert([{
-          user_id: user.id,
+          user_id: user ? user.id : null,
+          email: email,
           categoria_id: categoria,
           data_expiracao: dataExpira.toISOString()
         }]);
 
       if (error) {
-        alert("Erro ao libertar acesso: " + error.message);
+        alert("Erro ao liberar acesso: " + error.message);
       } else {
-        alert(`✅ Categoria [${categoria}] libertada com sucesso para ${email}!`);
+        alert(`✅ Categoria [${categoria}] liberada com sucesso para ${email}!`);
         document.getElementById('adm-email').value = '';
         carregarVendas();
       }
