@@ -144,7 +144,7 @@
         .limit(15);
 
       if (erroCompras) {
-        console.error(erroCompras);
+        console.error("Erro ao buscar compras:", erroCompras);
         tbody.innerHTML = '<tr><td colspan="3" style="text-align:center; color:#ef4444;">Erro ao carregar vendas.</td></tr>';
         return;
       }
@@ -154,10 +154,14 @@
         return;
       }
 
-      // 2. Busca e mapeia os e-mails dos utilizadores através da view
-      const { data: usuarios } = await _supabase
+      // 2. Busca e mapeia os e-mails dos utilizadores através da view vw_usuarios
+      const { data: usuarios, error: erroUsuarios } = await _supabase
         .from('vw_usuarios')
         .select('id, email');
+
+      if (erroUsuarios) {
+        console.error("Erro ao carregar view vw_usuarios:", erroUsuarios);
+      }
 
       const mapaEmails = {};
       if (usuarios) {
@@ -170,7 +174,7 @@
       tbody.innerHTML = '';
       compras.forEach(item => {
         const dataExp = new Date(item.data_expiracao).toLocaleDateString('pt-BR');
-        const emailCliente = mapaEmails[item.user_id] || (item.user_id.substring(0, 8) + '...');
+        const emailCliente = mapaEmails[item.user_id] || (item.user_id ? item.user_id.substring(0, 8) + '...' : 'Desconhecido');
 
         tbody.innerHTML += `
           <tr>
@@ -194,7 +198,7 @@
         .limit(50);
 
       if (error) {
-        console.error(error);
+        console.error("Erro nos logs:", error);
         tbody.innerHTML = '<tr><td colspan="2" style="text-align:center; color:#ef4444;">Erro ao carregar logs. Verifique a view vw_usuarios.</td></tr>';
         return;
       }
@@ -227,7 +231,7 @@
     // FILTRO DE BUSCA NOS LOGS
     function filtrarLogs() {
       const termo = document.getElementById('busca-log').value.toLowerCase();
-      const filtrados = listaLogsCache.filter(item => item.email.toLowerCase().includes(termo));
+      const filtrados = listaLogsCache.filter(item => item.email && item.email.toLowerCase().includes(termo));
       renderizarLogs(filtrados);
     }
 
