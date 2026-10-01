@@ -26,10 +26,15 @@
     button.btn-primary { background: var(--green); color: #000; font-weight: bold; cursor: pointer; border: none; margin-top: 10px; }
     
     table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 12px; }
-    th, td { padding: 10px 6px; text-align: left; border-bottom: 1px solid rgba(255,255,255,0.1); word-break: break-all; }
+    th, td { padding: 10px 6px; text-align: left; border-bottom: 1px solid rgba(255,255,255,0.1); vertical-align: middle; }
     th { color: var(--sub); background: rgba(255,255,255,0.03); }
-    .badge { background: #22c55e22; color: #22c55e; padding: 2px 6px; border-radius: 4px; font-weight: bold; }
-    .date-text { color: var(--sub); font-size: 11px; }
+    .badge { background: #22c55e22; color: #22c55e; padding: 2px 6px; border-radius: 4px; font-weight: bold; white-space: nowrap; }
+    .date-text { color: var(--sub); font-size: 11px; white-space: nowrap; }
+    
+    /* FORMATAÇÃO CLIENTE / USER_ID */
+    .user-info { display: flex; flex-direction: column; gap: 2px; }
+    .user-email { font-weight: 600; color: #fff; font-size: 13px; word-break: break-all; }
+    .user-id { font-size: 10px; color: var(--sub); font-family: monospace; opacity: 0.8; word-break: break-all; }
   </style>
 </head>
 <body>
@@ -62,11 +67,11 @@
 
     <div class="card">
       <h2>🛒 Últimas Vendas / Liberações</h2>
-      <button onclick="carregarVendas()" style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);">🔄 Atualizar Vendas</button>
+      <button onclick="carregarVendas()" style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); cursor: pointer;">🔄 Atualizar Vendas</button>
       <table>
         <thead>
           <tr>
-            <th>E-mail do Cliente</th>
+            <th>Cliente / User ID</th>
             <th>Cat.</th>
             <th>Expiração</th>
           </tr>
@@ -83,7 +88,7 @@
     <div class="card">
       <h2>📋 E-mails Cadastrados no Sistema</h2>
       <input type="text" id="busca-log" placeholder="🔍 Pesquisar e-mail..." onkeyup="filtrarLogs()">
-      <button onclick="carregarLogsUsuarios()" style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);">🔄 Atualizar Logs</button>
+      <button onclick="carregarLogsUsuarios()" style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); cursor: pointer;">🔄 Atualizar Logs</button>
       
       <table>
         <thead>
@@ -131,17 +136,17 @@
       btn.classList.add('active');
     }
 
-    // CARREGAR HISTÓRICO DE VENDAS COM O E-MAIL DO CLIENTE
+    // CARREGAR HISTÓRICO DE VENDAS EXIBINDO E-MAIL E USER_ID
     async function carregarVendas() {
       const tbody = document.getElementById('tabela-vendas');
       tbody.innerHTML = '<tr><td colspan="3" style="text-align:center;">Carregando...</td></tr>';
 
-      // 1. Busca as compras na tabela compras_usuario
+      // 1. Busca as últimas 20 compras
       const { data: compras, error: erroCompras } = await _supabase
         .from('compras_usuario')
         .select('*')
         .order('data_expiracao', { ascending: false })
-        .limit(15);
+        .limit(20);
 
       if (erroCompras) {
         console.error("Erro ao buscar compras:", erroCompras);
@@ -154,33 +159,43 @@
         return;
       }
 
-      // 2. Busca e mapeia os e-mails dos utilizadores através da view vw_usuarios
-      const { data: usuarios, error: erroUsuarios } = await _supabase
-        .from('vw_usuarios')
-        .select('id, email');
+      // 2. Extrai os user_ids únicos envolvidos nas compras
+      const userIds = [...new Set(compras.map(c => c.user_id).filter(Boolean))];
 
-      if (erroUsuarios) {
-        console.error("Erro ao carregar view vw_usuarios:", erroUsuarios);
-      }
-
+      // 3. Busca os e-mails desses IDs específicos na view vw_usuarios
       const mapaEmails = {};
-      if (usuarios) {
-        usuarios.forEach(u => {
-          mapaEmails[u.id] = u.email;
-        });
+      if (userIds.length > 0) {
+        const { data: usuarios, error: erroUsuarios } = await _supabase
+          .from('vw_usuarios')
+          .select('id, email')
+          .in('id', userIds);
+
+        if (erroUsuarios) {
+          console.error("Erro ao buscar e-mails na view vw_usuarios:", erroUsuarios);
+        } else if (usuarios) {
+          usuarios.forEach(u => {
+            mapaEmails[u.id] = u.email;
+          });
+        }
       }
 
-      // 3. Monta a tabela exibindo o e-mail
+      // 4. Monta a tabela exibindo E-mail + User ID
       tbody.innerHTML = '';
       compras.forEach(item => {
         const dataExp = new Date(item.data_expiracao).toLocaleDateString('pt-BR');
-        const emailCliente = mapaEmails[item.user_id] || (item.user_id ? item.user_id.substring(0, 8) + '...' : 'Desconhecido');
+        const emailCliente = mapaEmails[item.user_id] || 'E-mail não encontrado no Auth';
+        const idExibicao = item.user_id ? item.user_id : 'Sem ID registrado';
 
         tbody.innerHTML += `
           <tr>
-            <td style="font-weight: 500;">${emailCliente}</td>
+            <td>
+              <div class="user-info">
+                <span class="user-email">${emailCliente}</span>
+                <span class="user-id">ID: ${idExibicao}</span>
+              </div>
+            </td>
             <td><span class="badge">${item.categoria_id}</span></td>
-            <td>${dataExp}</td>
+            <td class="date-text">${dataExp}</td>
           </tr>
         `;
       });
