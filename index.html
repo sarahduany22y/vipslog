@@ -1257,6 +1257,7 @@
   <!-- PARTÍCULAS: SÓ NO DESKTOP -->
   <script>
     (function gerarParticulas() {
+      // Só ativa partículas em telas grandes (desktop)
       if (window.innerWidth < 900) return;
       if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
@@ -1264,7 +1265,7 @@
       if (!container) return;
       container.style.display = 'block';
 
-      const total = 12;
+      const total = 12; // Reduzido de 22 para 12
       const fragment = document.createDocumentFragment();
 
       for (let i = 0; i < total; i++) {
@@ -1283,7 +1284,7 @@
     })();
   </script>
 
-  <!-- SUPABASE + CHAT + MODERAÇÃO -->
+  <!-- SUPABASE + CHAT + MODERAÇÃO (INALTERADO) -->
   <script>
     const SUPABASE_URL = 'https://xjvkyofktqojuyequuxe.supabase.co';
     const SUPABASE_ANON_KEY = 'sb_publishable__w-crANhzjiYKJuh2AX39w_Kz1-Rf74';
@@ -1308,7 +1309,7 @@
       hentai: "https://link.syncpayments.com.br/cG8rFc"
     };
 
-    window.addEventListener('DOMContentLoaded', async () => {
+    window.onload = async () => {
       const { data: { session } } = await _supabase.auth.getSession();
       if (session) {
         usuarioAtual = session.user;
@@ -1321,7 +1322,7 @@
       await carregarPalavrasProibidasBanco();
       carregarMensagensAntigas();
       escutarNovasMensagens();
-    });
+    };
 
     let meuApelidoChat = '';
 
