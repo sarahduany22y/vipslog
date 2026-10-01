@@ -151,6 +151,23 @@
     }
     .auth-btn:hover { background: rgba(34, 197, 94, 0.22); }
 
+    .user-profile-trigger {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--border-neon);
+      padding: 6px 12px;
+      border-radius: 20px;
+      cursor: pointer;
+      font-size: 12px;
+      color: var(--text-main);
+      transition: background 0.2s ease;
+    }
+    .user-profile-trigger:hover {
+      background: rgba(34, 197, 94, 0.15);
+    }
+
     /* ===== CONTAINER ===== */
     .main-container {
       max-width: 900px;
@@ -662,7 +679,7 @@
       padding: 28px 24px;
       border-radius: 20px;
       width: 90%;
-      max-width: 400px;
+      max-width: 420px;
       text-align: center;
       border: 1px solid var(--border-neon);
       box-shadow: 0 0 35px rgba(34, 197, 94, 0.2), 0 20px 50px rgba(0,0,0,0.7);
@@ -733,7 +750,6 @@
       .btn-paypal { font-size: 12px; padding: 11px; }
       .modal { padding: 24px 18px; }
 
-      /* Desativa efeitos pesados no mobile */
       .card:hover,
       .video-item:hover,
       .review-item:hover,
@@ -747,7 +763,6 @@
       .particles-bg { display: none !important; }
     }
 
-    /* Preferência de redução de movimento (acessibilidade + performance) */
     @media (prefers-reduced-motion: reduce) {
       * {
         animation-duration: 0.01ms !important;
@@ -760,7 +775,7 @@
 </head>
 <body>
 
-  <!-- PARTÍCULAS (só aparecem no desktop via JS) -->
+  <!-- PARTÍCULAS -->
   <div class="particles-bg" id="particlesBg"></div>
 
   <!-- POP-UP +18 -->
@@ -1154,6 +1169,41 @@
     </div>
   </div>
 
+  <!-- MODAL PERFIL DO USUÁRIO -->
+  <div class="modal-overlay" id="modalPerfil">
+    <div class="modal" style="text-align: left; max-width: 440px;">
+      <h3 style="text-align: center; color: #fff; font-size: 20px; margin-bottom: 4px;">👤 Seu Perfil</h3>
+      <p class="subtitle" style="text-align: center; margin-bottom: 20px;">Gerencie suas informações e segurança de login</p>
+
+      <div style="background: #060910; border: 1px solid var(--border-neon); padding: 14px; border-radius: 12px; margin-bottom: 16px;">
+        <div style="font-size: 12px; color: var(--text-sub); margin-bottom: 4px;">Apelido no Chat:</div>
+        <div id="perfil-apelido" style="font-size: 14px; font-weight: bold; color: #4ade80; margin-bottom: 10px;">-</div>
+
+        <div style="font-size: 12px; color: var(--text-sub); margin-bottom: 4px;">E-mail da Conta:</div>
+        <div id="perfil-email" style="font-size: 13px; font-weight: 600; color: #fff; margin-bottom: 10px; word-break: break-all;">-</div>
+
+        <div style="font-size: 12px; color: var(--text-sub); margin-bottom: 4px;">Plano da Conta:</div>
+        <div id="perfil-status-plano" style="font-size: 13px; font-weight: 700;">-</div>
+
+        <div id="perfil-vips-detalhes" style="margin-top: 10px; font-size: 12px; color: #d1d5db; border-top: 1px dashed rgba(255,255,255,0.1); padding-top: 8px;">
+          <!-- Lista de VIPs ativos -->
+        </div>
+      </div>
+
+      <div style="background: #060910; border: 1px solid var(--border-neon); padding: 14px; border-radius: 12px; margin-bottom: 16px;">
+        <h4 style="font-size: 13px; color: #fff; margin-bottom: 10px;">🔑 Alterar Senha</h4>
+        <input type="password" id="pass-atual" placeholder="Sua Senha Atual" style="font-size: 12px; padding: 10px;" />
+        <input type="password" id="pass-nova" placeholder="Nova Senha (mínimo 6 caracteres)" style="font-size: 12px; padding: 10px;" />
+        <button onclick="alterarSenhaPerfil()" class="btn-buy" style="width: 100%; margin-top: 8px; padding: 10px; font-size: 12px;">Salvar Nova Senha</button>
+      </div>
+
+      <div style="display: flex; gap: 10px;">
+        <button class="auth-btn" style="flex: 1; background: rgba(239, 68, 68, 0.15); border-color: rgba(239, 68, 68, 0.4); color: #f87171;" onclick="deslogar()">Sair da Conta</button>
+        <button onclick="fecharModalPerfil()" style="flex: 1; background: none; border: 1px solid var(--border-neon); color: var(--text-sub); border-radius: 20px; cursor: pointer; font-size: 13px;">Fechar</button>
+      </div>
+    </div>
+  </div>
+
   <!-- MODAL ADM -->
   <div class="modal-overlay" id="modalAdmin">
     <div class="modal" style="max-width: 550px; text-align: left;">
@@ -1257,7 +1307,6 @@
   <!-- PARTÍCULAS: SÓ NO DESKTOP -->
   <script>
     (function gerarParticulas() {
-      // Só ativa partículas em telas grandes (desktop)
       if (window.innerWidth < 900) return;
       if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
@@ -1265,7 +1314,7 @@
       if (!container) return;
       container.style.display = 'block';
 
-      const total = 12; // Reduzido de 22 para 12
+      const total = 12;
       const fragment = document.createDocumentFragment();
 
       for (let i = 0; i < total; i++) {
@@ -1284,7 +1333,7 @@
     })();
   </script>
 
-  <!-- SUPABASE + CHAT + MODERAÇÃO (INALTERADO) -->
+  <!-- SUPABASE + CHAT + PERFIL + MODERAÇÃO -->
   <script>
     const SUPABASE_URL = 'https://xjvkyofktqojuyequuxe.supabase.co';
     const SUPABASE_ANON_KEY = 'sb_publishable__w-crANhzjiYKJuh2AX39w_Kz1-Rf74';
@@ -1293,6 +1342,8 @@
     const EMAIL_ADMIN = 'chico@teste.com';
     let usuarioAtual = null;
     let ehAdmin = false;
+    let usuarioPossuiVip = false;
+    let vipsAtivosLista = [];
     let categoriaPendente = null;
 
     const TERMOS_PADRAO = [
@@ -1314,9 +1365,9 @@
       if (session) {
         usuarioAtual = session.user;
         verificarSeEhAdmin();
-        atualizarHeader();
-        await checarPermissoes();
         carregarApelidoDoUsuario();
+        await checarPermissoes();
+        atualizarHeader();
       }
 
       await carregarPalavrasProibidasBanco();
@@ -1523,6 +1574,81 @@
       document.getElementById('modalAuth').style.display = 'none';
     }
 
+    function abrirModalPerfil() {
+      if (!usuarioAtual) return;
+
+      document.getElementById('perfil-apelido').innerText = meuApelidoChat || 'Não definido';
+      document.getElementById('perfil-email').innerText = usuarioAtual.email;
+
+      const divStatus = document.getElementById('perfil-status-plano');
+      const divVips = document.getElementById('perfil-vips-detalhes');
+
+      if (ehAdmin) {
+        divStatus.innerHTML = `<span style="color: #ef4444;">ADMINISTRADOR 🔴</span>`;
+        divVips.innerHTML = `<b>Acessos:</b> Controle total e moderação do sistema.`;
+      } else if (usuarioPossuiVip) {
+        divStatus.innerHTML = `<span style="color: #f59e0b;">MEMBRO VIP 🟨</span>`;
+
+        const nomesFormatados = vipsAtivosLista.map(cat => {
+          if (cat === 'amador') return '⭐ Amador Premium';
+          if (cat === 'cam') return '🔥 Spycam Dark';
+          if (cat === 'hentai') return '✨ Hentai HD';
+          return cat.toUpperCase();
+        });
+
+        divVips.innerHTML = `<b>Galerias VIP Ativas:</b><br>• ` + nomesFormatados.join('<br>• ');
+      } else {
+        divStatus.innerHTML = `<span style="color: var(--text-sub);">MEMBRO COMUM ⚪</span>`;
+        divVips.innerHTML = `Você ainda não possui galerias VIP liberadas. Libere um plano para ter acesso exclusivo!`;
+      }
+
+      document.getElementById('pass-atual').value = '';
+      document.getElementById('pass-nova').value = '';
+      document.getElementById('modalPerfil').style.display = 'flex';
+    }
+
+    function fecharModalPerfil() {
+      document.getElementById('modalPerfil').style.display = 'none';
+    }
+
+    async function alterarSenhaPerfil() {
+      const passAtual = document.getElementById('pass-atual').value;
+      const passNova = document.getElementById('pass-nova').value;
+
+      if (!passAtual || !passNova) {
+        alert("Preencha a senha atual e a nova senha.");
+        return;
+      }
+
+      if (passNova.length < 6) {
+        alert("A nova senha deve ter no mínimo 6 caracteres.");
+        return;
+      }
+
+      // Reautentica para validar a senha atual
+      const { error: errorAuth } = await _supabase.auth.signInWithPassword({
+        email: usuarioAtual.email,
+        password: passAtual
+      });
+
+      if (errorAuth) {
+        alert("A senha atual informada está incorreta.");
+        return;
+      }
+
+      // Atualiza para a nova senha
+      const { error: errorUpdate } = await _supabase.auth.updateUser({
+        password: passNova
+      });
+
+      if (errorUpdate) {
+        alert("Erro ao alterar senha: " + errorUpdate.message);
+      } else {
+        alert("Senha alterada com sucesso!");
+        fecharModalPerfil();
+      }
+    }
+
     function abrirModalAdmin() {
       if (!ehAdmin) return;
       document.getElementById('modalAdmin').style.display = 'flex';
@@ -1581,10 +1707,10 @@
       if (session) {
         usuarioAtual = session.user;
         verificarSeEhAdmin();
-        fecharModal();
-        atualizarHeader();
-        await checarPermissoes();
         carregarApelidoDoUsuario();
+        fecharModal();
+        await checarPermissoes();
+        atualizarHeader();
 
         if (categoriaPendente) {
           irParaCheckout(categoriaPendente, usuarioAtual.email);
@@ -1595,9 +1721,20 @@
     }
 
     function atualizarHeader() {
+      if (!usuarioAtual) return;
+
+      let tagVipHeader = '';
+      if (ehAdmin) {
+        tagVipHeader = `<span class="tag-adm-vermelha">[ADM] 🔴</span>`;
+      } else if (usuarioPossuiVip) {
+        tagVipHeader = `<span class="tag-vip-amarela">[VIP] 🟨</span>`;
+      }
+
       document.getElementById('user-area').innerHTML = `
-        <span style="margin-right:12px; font-size:12px; color:var(--text-sub);">${usuarioAtual.email} ${ehAdmin ? '<b style="color:#ef4444;">[ADMIN]</b>' : ''}</span>
-        <button class="auth-btn" onclick="deslogar()">Sair</button>
+        <div class="user-profile-trigger" onclick="abrirModalPerfil()">
+          <span>${escaparHTML(usuarioAtual.email)}</span>
+          ${tagVipHeader}
+        </div>
       `;
     }
 
@@ -1616,9 +1753,13 @@
           .eq('user_id', usuarioAtual.id)
           .gt('data_expiracao', new Date().toISOString());
 
+        vipsAtivosLista = [];
         if (compras && compras.length > 0 && !error) {
+          usuarioPossuiVip = true;
           compras.forEach(item => {
             const cat = item.categoria_id;
+            vipsAtivosLista.push(cat);
+
             const badge = document.getElementById(`badge-${cat}`);
             const btnBuy = document.getElementById(`buy-${cat}`);
             const btnPaypal = document.getElementById(`paypal-${cat}`);
@@ -1632,6 +1773,8 @@
             if (btnPaypal) btnPaypal.style.setProperty('display', 'none', 'important');
             if (btnAccess) btnAccess.style.display = "block";
           });
+        } else {
+          usuarioPossuiVip = false;
         }
       } catch (err) {
         console.error("Erro ao verificar compras:", err);
@@ -1844,6 +1987,9 @@
         meuApelidoChat = novoNome.trim();
         localStorage.setItem(`chat_apelido_${usuarioAtual.id}`, meuApelidoChat);
         alert("Apelido alterado com sucesso para: " + meuApelidoChat);
+        if (document.getElementById('modalPerfil').style.display === 'flex') {
+          document.getElementById('perfil-apelido').innerText = meuApelidoChat;
+        }
       }
     }
 
