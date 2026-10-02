@@ -50,7 +50,7 @@
   <!-- ================= ABA 1: LIBERAÇÃO MANUAL ================= -->
   <div id="aba-liberacao" class="tab-content active">
     <div class="card">
-      <h2>⚡ Liberação Manual (PayPal / Teste)</h2>
+      <h2>⚡ Liberação Manual (PayPal / PIX)</h2>
       <input type="email" id="adm-email" placeholder="E-mail do Cliente">
       <select id="adm-categoria">
         <option value="amador">Amador VIP</option>
@@ -58,9 +58,9 @@
         <option value="hentai">Hentai VIP</option>
       </select>
       <select id="adm-dias">
-        <option value="365">1 Ano (365 Dias)</option>
         <option value="30">1 Mês (30 Dias)</option>
-        <option value="7">Teste (7 Dias)</option>
+        <option value="90">3 Meses (90 Dias)</option>
+        <option value="365">1 Ano (365 Dias)</option>
       </select>
       <button class="btn-primary" onclick="liberarAcessoManual()">LIBERAR ACESSO AGORA</button>
     </div>
@@ -136,12 +136,11 @@
       btn.classList.add('active');
     }
 
-    // CARREGAR HISTÓRICO DE VENDAS (BUSCA PRIORITÁRIA DO E-MAIL DA TABELA E DA VIEW)
+    // CARREGAR HISTÓRICO DE VENDAS
     async function carregarVendas() {
       const tbody = document.getElementById('tabela-vendas');
       tbody.innerHTML = '<tr><td colspan="3" style="text-align:center;">Carregando...</td></tr>';
 
-      // 1. Busca as últimas 20 compras
       const { data: compras, error: erroCompras } = await _supabase
         .from('compras_usuario')
         .select('*')
@@ -159,10 +158,8 @@
         return;
       }
 
-      // 2. Extrai os user_ids válidos presentes nas compras
       const userIds = [...new Set(compras.map(c => c.user_id).filter(Boolean))];
 
-      // 3. Mapeia e-mails cadastrados na vw_usuarios (para os casos onde o campo email na compras_usuario for nulo)
       const mapaEmails = {};
       if (userIds.length > 0) {
         const { data: usuarios } = await _supabase
@@ -177,12 +174,9 @@
         }
       }
 
-      // 4. Monta a tabela
       tbody.innerHTML = '';
       compras.forEach(item => {
         const dataExp = new Date(item.data_expiracao).toLocaleDateString('pt-BR');
-        
-        // Regra inteligente: usa o e-mail gravado na compra, se não tiver usa o da view de Auth
         const emailCliente = item.email || mapaEmails[item.user_id] || 'E-mail não informado';
         const idExibicao = item.user_id ? item.user_id : 'Sem ID (Aguardando Cadastro)';
 
@@ -264,7 +258,6 @@
       const dataExpira = new Date();
       dataExpira.setDate(dataExpira.getDate() + dias);
 
-      // Busca ID do usuário se já estiver registrado
       const { data: user } = await _supabase
         .from('vw_usuarios')
         .select('id')
@@ -283,7 +276,7 @@
       if (error) {
         alert("Erro ao liberar acesso: " + error.message);
       } else {
-        alert(`✅ Categoria [${categoria}] liberada com sucesso para ${email}!`);
+        alert(`✅ Categoria [${categoria}] liberada por ${dias} dias para ${email}!`);
         document.getElementById('adm-email').value = '';
         carregarVendas();
       }
