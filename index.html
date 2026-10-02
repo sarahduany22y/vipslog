@@ -475,7 +475,13 @@
       flex-shrink: 0;
     }
 
-    /* ===== BOTÕES ===== */
+    /* ===== BOTÕES E SELEÇÃO DE PLANOS ===== */
+    .plan-actions {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
     .btn-buy {
       display: flex !important;
       align-items: center;
@@ -783,7 +789,7 @@
       .hero-banner { padding: 28px 18px 24px; }
       .hero-cta { font-size: 13px; padding: 14px 24px; }
       .card-header h3 { font-size: 16px; }
-      .btn-buy { font-size: 14px; padding: 14px; }
+      .btn-buy { font-size: 13px; padding: 14px; }
       .btn-paypal { font-size: 12px; padding: 11px; }
       .modal { padding: 24px 18px; }
 
@@ -904,9 +910,9 @@
     <!-- HERO BANNER -->
     <div class="hero-banner">
       <span class="badge-promo">🔥 PROMOÇÃO POR TEMPO LIMITADO</span>
-      <h2>GALERIA VIP PRIVADA – 365 DIAS DE AMADOR EXCLUSIVO</h2>
+      <h2>GALERIA VIP PRIVADA – ACESSO A CONTEÚDOS EXCLUSIVOS</h2>
       <p>Vídeos amadores reais, vazados e exclusivos. Sem censura. Sem mensalidade. Acesso imediato.</p>
-      <a href="#card-amador" class="hero-cta">⚡ ENTRAR NA GALERIA VIP AGORA – R$ 19,90</a>
+      <a href="#card-amador" class="hero-cta">⚡ ENTRAR NA GALERIA VIP AGORA – A PARTIR DE R$ 19,90</a>
     </div>
 
     <!-- VÍDEO DE DEMONSTRAÇÃO -->
@@ -927,7 +933,7 @@
         <div class="card-header">
           <h3>⭐ Amador Premium ⭐</h3>
           <div class="card-badges">
-            <span class="plan-badge">ACESSO 1 ANO</span>
+            <span class="plan-badge">PLANOS 30 E 90 DIAS</span>
             <span class="status-badge bloqueado" id="badge-amador">🔒 Bloqueado</span>
           </div>
         </div>
@@ -945,7 +951,7 @@
           <div class="vip-description">
             <p>Assista online todo o acervo caseiro e amador sem censura:</p>
             <ul class="benefits-list">
-              <li><span class="check">✓</span> <b>Acesso VIP completo por 1 Ano (365 Dias)</b></li>
+              <li><span class="check">✓</span> <b>Escolha seu plano: 30 dias ou 90 dias de acesso VIP</b></li>
               <li><span class="check">✓</span> Vídeos amadores exclusivos & vazados</li>
               <li><span class="check">✓</span> Faveladas / Baixa Renda</li>
               <li><span class="check">✓</span> incesto / tio e sobrinha / etc...</li>
@@ -959,11 +965,14 @@
             </ul>
           </div>
 
-          <button id="buy-amador" class="btn-buy" onclick="iniciarCompra('amador')">⚡ LIBERAR ACESSO AMADOR • R$ 19,90</button>
+          <div class="plan-actions" id="actions-amador">
+            <button id="buy-amador-30" class="btn-buy" onclick="iniciarCompra('amador_30')">⚡ LIBERAR AMADOR • 30 DIAS (R$ 19,90)</button>
+            <button id="buy-amador-90" class="btn-buy" onclick="iniciarCompra('amador_90')">⚡ LIBERAR AMADOR • 90 DIAS (R$ 29,90)</button>
 
-          <a href="https://t.me/hksuporte" target="_blank" class="btn-paypal" id="paypal-amador">
-            🌐 Pay via PayPal / Foreigners (Telegram Support)
-          </a>
+            <a href="https://t.me/hksuporte" target="_blank" class="btn-paypal" id="paypal-amador">
+              🌐 Pay via PayPal / Foreigners (Telegram Support)
+            </a>
+          </div>
 
           <a href="amador.html" id="access-amador" class="btn-access" style="display:none;">ENTRAR NA GALERIA AMADOR</a>
           <div class="texto-seguranca">🔒 Liberação Automática via PIX • Pagamento 100% Discreto</div>
@@ -975,7 +984,7 @@
         <div class="card-header">
           <h3>🔥 SPYCAM VIP DARK 🔥</h3>
           <div class="card-badges">
-            <span class="plan-badge">ACESSO 1 ANO</span>
+            <span class="plan-badge">PLANOS 30 E 90 DIAS</span>
             <span class="status-badge bloqueado" id="badge-cam">🔒 Bloqueado</span>
           </div>
         </div>
@@ -993,7 +1002,7 @@
           <div class="vip-description">
             <p>Acesso exclusivo ao canal de câmeras e flagras:</p>
             <ul class="benefits-list">
-              <li><span class="check">✓</span> <b>Acesso VIP completo por 1 Ano (365 Dias)</b></li>
+              <li><span class="check">✓</span> <b>Escolha seu plano: 30 dias ou 90 dias de acesso VIP</b></li>
               <li><span class="check">✓</span> Câmeras escondidas e flagras reais</li>
               <li><span class="check">✓</span> flagras reais / CASAL</li>
               <li><span class="check">✓</span> +50 Videos do QUARTO DA BRUNA</li>
@@ -1005,18 +1014,20 @@
               <li><span class="check">✓</span> Câmeras escondidas no MOTEL</li>
               <li><span class="check">✓</span> Mãe E Filho</li>
               <li><span class="check">✓</span> CÂMERAS ESCONDIDAS, SURUBINHA ENTRE PRIMOS, ETC...</li>
-              <li><span class="check">✓</span> FAMILIARES FLAGRADOS</li>
               <li><span class="check">✓</span> Gravações em alta definição sem cortes</li>
               <li><span class="check">✓</span> Mídias adicionadas diariamente</li>
               <li><span class="check">✓</span> Sem anúncios ou interrupções</li>
             </ul>
           </div>
 
-          <button id="buy-cam" class="btn-buy" onclick="iniciarCompra('cam')">⚡ LIBERAR ACESSO CÂMERAS • R$ 19,91</button>
+          <div class="plan-actions" id="actions-cam">
+            <button id="buy-cam-30" class="btn-buy" onclick="iniciarCompra('cam_30')">⚡ LIBERAR CÂMERAS • 30 DIAS (R$ 19,91)</button>
+            <button id="buy-cam-90" class="btn-buy" onclick="iniciarCompra('cam_90')">⚡ LIBERAR CÂMERAS • 90 DIAS (R$ 29,91)</button>
 
-          <a href="https://t.me/hksuporte" target="_blank" class="btn-paypal" id="paypal-cam">
-            🌐 Pay via PayPal / Foreigners (Telegram Support)
-          </a>
+            <a href="https://t.me/hksuporte" target="_blank" class="btn-paypal" id="paypal-cam">
+              🌐 Pay via PayPal / Foreigners (Telegram Support)
+            </a>
+          </div>
 
           <a href="cam.html" id="access-cam" class="btn-access" style="display:none;">ENTRAR NA GALERIA CÂMERAS</a>
           <div class="texto-seguranca">🔒 Liberação Automática via PIX • Pagamento 100% Discreto</div>
@@ -1155,7 +1166,7 @@
         <b>Aviso Legal:</b> Este site não hospeda nem armazena nenhum arquivo de vídeo em seus próprios servidores. Todo o conteúdo exibido é incorporado através de players de terceiros cadastrados no sistema. Dúvidas ou suporte? Fale conosco via Telegram: <a href="https://t.me/hksuporte" target="_blank" class="footer-link">@hksuporte</a>.
       </div>
       <div class="footer-keywords">
-        Termos mais buscados: videos amadores vazados, spycam dark, flagras reais motel, vip de amadores, famosinhas vip, Porno+18, telegram vip vazados, videos caseiros hd, VIP Amadores, Hidden Cam Teen (+18), galeria privada +18, CAMERAS ESCONDIDAS / HIDDEN CAMERAS (+18), Voyeur.
+        Termos mais buscados: videos amadores vazados, spycam dark, flagras reais motel, vip de amadores, Porno+18, telegram vip vazados, videos caseiros hd, VIP Amadores, Hidden Cam Teen (+18), galeria privada +18, CAMERAS ESCONDIDAS / HIDDEN CAMERAS (+18), Voyeur.
       </div>
     </div>
   </footer>
@@ -1415,9 +1426,12 @@
 
     let palavrasProibidasBanco = [];
 
+    // LINKS DE CHECKOUT ATUALIZADOS POR CATEGORIA E DURAÇÃO
     const CHECKOUTS = {
-      amador: "https://link.syncpayments.com.br/MicvMz",
-      cam: "https://link.syncpayments.com.br/SEl2IQ"
+      amador_30: "https://link.syncpayments.com.br/MicvMz",
+      amador_90: "https://link.syncpayments.com.br/dmpxmp", // Insira o link do checkout de 90 dias caso seja diferente
+      cam_30: "https://link.syncpayments.com.br/SEl2IQ",
+      cam_90: "https://link.syncpayments.com.br/zXDVl7"     // Insira o link do checkout de 90 dias caso seja diferente
     };
 
     window.onload = async () => {
@@ -1650,12 +1664,12 @@
         divStatus.innerHTML = `<span style="color: #facc15;">MEMBRO VIP 🟨</span>`;
 
         const nomesFormatados = vipsAtivosLista.map(cat => {
-          if (cat === 'amador') return '⭐ Amador Premium';
-          if (cat === 'cam') return '🔥 Spycam Dark';
+          if (cat.startsWith('amador')) return '⭐ Amador Premium';
+          if (cat.startsWith('cam')) return '🔥 Spycam Dark';
           return cat.toUpperCase();
         });
 
-        divVips.innerHTML = `<b>Galerias VIP Ativas:</b><br>• ` + nomesFormatados.join('<br>• ');
+        divVips.innerHTML = `<b>Galerias VIP Ativas:</b><br>• ` + Array.from(new Set(nomesFormatados)).join('<br>• ');
       } else {
         divStatus.innerHTML = `<span style="color: var(--text-sub);">MEMBRO COMUM ⚪</span>`;
         divVips.innerHTML = `Você ainda não possui galerias VIP liberadas. Libere um plano para ter acesso exclusivo!`;
@@ -1684,7 +1698,6 @@
         return;
       }
 
-      // Reautentica para validar a senha atual
       const { error: errorAuth } = await _supabase.auth.signInWithPassword({
         email: usuarioAtual.email,
         password: passAtual
@@ -1695,7 +1708,6 @@
         return;
       }
 
-      // Atualiza para a nova senha
       const { error: errorUpdate } = await _supabase.auth.updateUser({
         password: passNova
       });
@@ -1816,20 +1828,19 @@
         if (compras && compras.length > 0 && !error) {
           usuarioPossuiVip = true;
           compras.forEach(item => {
-            const cat = item.categoria_id;
-            vipsAtivosLista.push(cat);
+            const catFull = item.categoria_id;
+            const catBase = catFull.split('_')[0];
+            vipsAtivosLista.push(catFull);
 
-            const badge = document.getElementById(`badge-${cat}`);
-            const btnBuy = document.getElementById(`buy-${cat}`);
-            const btnPaypal = document.getElementById(`paypal-${cat}`);
-            const btnAccess = document.getElementById(`access-${cat}`);
+            const badge = document.getElementById(`badge-${catBase}`);
+            const actions = document.getElementById(`actions-${catBase}`);
+            const btnAccess = document.getElementById(`access-${catBase}`);
 
             if (badge) {
               badge.innerHTML = "🔓 Liberado";
               badge.className = "status-badge liberado";
             }
-            if (btnBuy) btnBuy.style.setProperty('display', 'none', 'important');
-            if (btnPaypal) btnPaypal.style.setProperty('display', 'none', 'important');
+            if (actions) actions.style.setProperty('display', 'none', 'important');
             if (btnAccess) btnAccess.style.display = "block";
           });
         } else {
