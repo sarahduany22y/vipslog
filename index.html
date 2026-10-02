@@ -38,10 +38,6 @@
       box-sizing: border-box;
       margin: 0;
       padding: 0;
-      -webkit-user-select: none;
-      -moz-user-select: none;
-      -ms-user-select: none;
-      user-select: none;
     }
 
     /* Permite seleção apenas nos campos editáveis */
@@ -68,28 +64,6 @@
       color: var(--text-main);
       min-height: 100vh;
       -webkit-font-smoothing: antialiased;
-    }
-
-    /* PROTEÇÃO CONTRA PRINT SCREEN E CAPTURA */
-    @media print {
-      html, body {
-        display: none !important;
-      }
-    }
-
-    #protection-overlay {
-      display: none;
-      position: fixed;
-      inset: 0;
-      background: #060910;
-      z-index: 9999999;
-      justify-content: center;
-      align-items: center;
-      color: #ef4444;
-      font-weight: 900;
-      font-size: 20px;
-      text-align: center;
-      padding: 20px;
     }
 
     /* ===== PARTÍCULAS (SOMENTE DESKTOP) ===== */
@@ -818,11 +792,6 @@
 </head>
 <body>
 
-  <!-- TELA DE PROTEÇÃO (CAPTURA) -->
-  <div id="protection-overlay">
-    ⚠️ CAPTURA OU PRINT SCREEN DESATIVADO NESTA PÁGINA ⚠️️
-  </div>
-
   <!-- PARTÍCULAS -->
   <div class="particles-bg" id="particlesBg"></div>
 
@@ -1282,65 +1251,7 @@
 
   <script src="links-cam.js"></script>
 
-  <!-- PROTEÇÃO DE PRINT E ATALHOS DE TECLADO -->
   <script>
-    // Bloqueia o clique direito
-    document.addEventListener('contextmenu', e => e.preventDefault());
-
-    // Bloqueia atalhos de captura e inspeção
-    document.addEventListener('keydown', function (e) {
-      if (
-        e.key === 'PrintScreen' ||
-        e.keyCode === 44 ||
-        (e.ctrlKey && e.key === 'p') ||
-        (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'i' || e.key === 'J' || e.key === 'j' || e.key === 'C' || e.key === 'c')) ||
-        (e.ctrlKey && (e.key === 'u' || e.key === 'U')) ||
-        e.key === 'F12'
-      ) {
-        e.preventDefault();
-        e.stopPropagation();
-        if (navigator.clipboard && navigator.clipboard.writeText) {
-          navigator.clipboard.writeText('');
-        }
-        exibirOverlayProtecao();
-        return false;
-      }
-    });
-
-    // Limpa a área de transferência caso aperte PrintScreen
-    document.addEventListener('keyup', function (e) {
-      if (e.key === 'PrintScreen' || e.keyCode === 44) {
-        if (navigator.clipboard && navigator.clipboard.writeText) {
-          navigator.clipboard.writeText('');
-        }
-        exibirOverlayProtecao();
-      }
-    });
-
-    // Oculta tela se perder o foco (ex: gravadores / printscreen externos)
-    window.addEventListener('blur', function() {
-      document.body.style.filter = 'blur(15px)';
-    });
-    window.addEventListener('focus', function() {
-      document.body.style.filter = 'none';
-      ocultarOverlayProtecao();
-    });
-
-    function exibirOverlayProtecao() {
-      const overlay = document.getElementById('protection-overlay');
-      if (overlay) {
-        overlay.style.display = 'flex';
-        setTimeout(() => {
-          overlay.style.display = 'none';
-        }, 2000);
-      }
-    }
-
-    function ocultarOverlayProtecao() {
-      const overlay = document.getElementById('protection-overlay');
-      if (overlay) overlay.style.display = 'none';
-    }
-
     document.addEventListener('click', function (e) {
       if (e.target && e.target.matches('.photo-wrapper img')) {
         const modal = document.getElementById('modalFotoFullscreen');
