@@ -1429,9 +1429,9 @@
     // LINKS DE CHECKOUT ATUALIZADOS POR CATEGORIA E DURAÇÃO
     const CHECKOUTS = {
       amador_30: "https://link.syncpayments.com.br/MicvMz",
-      amador_90: "https://link.syncpayments.com.br/dmpxmp", // Insira o link do checkout de 90 dias caso seja diferente
+      amador_90: "https://link.syncpayments.com.br/dmpxmp",
       cam_30: "https://link.syncpayments.com.br/SEl2IQ",
-      cam_90: "https://link.syncpayments.com.br/zXDVl7"     // Insira o link do checkout de 90 dias caso seja diferente
+      cam_90: "https://link.syncpayments.com.br/zXDVl7"
     };
 
     window.onload = async () => {
@@ -1503,6 +1503,19 @@
       } else {
         alert(dias === 0 ? "Usuário Banido PERMANENTEMENTE!" : `Usuário suspenso por ${dias} dia(s)!`);
         carregarListaBanidosAdmin();
+      }
+    }
+
+    async function promptBanirUsuario(userId) {
+      if (!ehAdmin) return;
+      const diasStr = prompt("Quantos dias de banimento? (Digite 0 para banimento permanente):", "1");
+      if (diasStr !== null) {
+        const dias = parseInt(diasStr, 10);
+        if (!isNaN(dias) && dias >= 0) {
+          await banirUsuario(userId, dias);
+        } else {
+          alert("Valor de dias inválido.");
+        }
       }
     }
 
@@ -1966,46 +1979,26 @@
         line-height: 1.45;
         word-break: break-word;
       `;
-      div.innerHTML = `${botoesAcao}<b style="color: #facc15;">${escaparHTML(nome)}</b>${seloTag}: <span style="color: #e5e7eb;">${escaparHTML(texto)}</span>`;
-      box.appendChild(div);
-    }
 
-    function promptBanirUsuario(userId) {
-      const opcao = prompt("Escolha a duração do banimento:\n1 = 1 dia\n3 = 3 dias\n7 = 7 dias\n15 = 15 dias\n0 = BAN PERMANENTE");
-      if (opcao === null) return;
-      const dias = parseInt(opcao);
-      if (!isNaN(dias)) {
-        banirUsuario(userId, dias);
-      }
+      div.innerHTML = `
+        ${botoesAcao}
+        <strong style="color: #facc15;">${escaparHTML(nome)}</strong>${seloTag}: 
+        <span style="color: #e5e7eb;">${escaparHTML(texto)}</span>
+      `;
+
+      box.appendChild(div);
     }
 
     async function enviarMensagemChat() {
       if (!usuarioAtual) {
-        alert("Você precisa criar uma conta ou entrar para participar do chat!");
         abrirModal();
         return;
       }
 
       const estaBanido = await verificarSeUsuarioEstaBanido(usuarioAtual.id);
       if (estaBanido) {
-        alert("Sua conta está impossibilitada de enviar mensagens no chat no momento.");
+        alert("Sua conta está temporariamente ou permanentemente proibida de enviar mensagens no chat.");
         return;
-      }
-
-      if (!meuApelidoChat) {
-        carregarApelidoDoUsuario();
-        if (!meuApelidoChat) {
-          const nomeDigitado = prompt("Escolha o seu apelido para o chat:");
-          if (!nomeDigitado || !nomeDigitado.trim()) return;
-
-          if (contemPalavrasProibidasOuLinks(nomeDigitado)) {
-            alert("Apelido inválido ou com caracteres/termos proibidos.");
-            return;
-          }
-
-          meuApelidoChat = nomeDigitado.trim();
-          localStorage.setItem(`chat_apelido_${usuarioAtual.id}`, meuApelidoChat);
-        }
       }
 
       const input = document.getElementById('chat-input-texto');
@@ -2013,78 +2006,28 @@
 
       if (!texto) return;
 
-      if (texto.length > 150) {
-        alert("Sua mensagem ultrapassou o limite de 150 caracteres.");
-        return;
-      }
-
       if (contemPalavrasProibidasOuLinks(texto)) {
-        alert("Proibido o envio de links, redes sociais (@) ou palavras não permitidas.");
+        alert("Sua mensagem contém links, divulgações ou termos não permitidos.");
         return;
       }
 
-      input.value = '';
-
       const { error } = await _supabase
         .from('chat_mensagens')
-        .insert([
-          {
-            user_id: usuarioAtual.id,
-            nome_exibicao: meuApelidoChat,
-            mensagem: texto
-          }
-        ]);
+        .insert([{
+          user_id: usuarioAtual.id,
+          nome_exibicao: meuApelidoChat,
+          mensagem: texto
+        }]);
 
       if (error) {
-        console.error("Erro no envio:", error);
-        alert("Erro ao enviar mensagem no chat.");
-      }
-    }
-
-    function alterarNomeChat() {
-      if (!usuarioAtual) {
-        alert("Você precisa estar logado para alterar seu apelido.");
-        abrirModal();
-        return;
-      }
-
-      const novoNome = prompt("Digite seu novo apelido:", meuApelidoChat);
-      if (novoNome && novoNome.trim()) {
-        if (contemPalavrasProibidasOuLinks(novoNome)) {
-          alert("Apelido contém termos ou símbolos não permitidos!");
-          return;
-        }
-        meuApelidoChat = novoNome.trim();
-        localStorage.setItem(`chat_apelido_${usuarioAtual.id}`, meuApelidoChat);
-        alert("Apelido alterado com sucesso para: " + meuApelidoChat);
-        if (document.getElementById('modalPerfil').style.display === 'flex') {
-          document.getElementById('perfil-apelido').innerText = meuApelidoChat;
-        }
-      }
-    }
-
-    async function deletarMinhaMensagem(msgId) {
-      if (!usuarioAtual) return;
-      if (!confirm("Deseja apagar sua mensagem?")) return;
-
-      const { error } = await _supabase
-        .from('chat_mensagens')
-        .delete()
-        .eq('id', msgId)
-        .eq('user_id', usuarioAtual.id);
-
-      if (error) {
-        alert("Erro ao apagar mensagem.");
+        alert("Erro ao enviar mensagem: " + error.message);
       } else {
-        const el = document.getElementById(`msg-item-${msgId}`);
-        if (el) el.remove();
+        input.value = '';
       }
     }
 
     async function deletarMensagem(msgId) {
       if (!ehAdmin) return;
-      if (!confirm("Deseja apagar esta mensagem como Administrador?")) return;
-
       const { error } = await _supabase
         .from('chat_mensagens')
         .delete()
@@ -2092,68 +2035,93 @@
 
       if (error) {
         alert("Erro ao excluir mensagem.");
-      } else {
-        const el = document.getElementById(`msg-item-${msgId}`);
-        if (el) el.remove();
-        carregarListaAdmin();
+      }
+    }
+
+    async function deletarMinhaMensagem(msgId) {
+      if (!usuarioAtual) return;
+      const { error } = await _supabase
+        .from('chat_mensagens')
+        .delete()
+        .eq('id', msgId)
+        .eq('user_id', usuarioAtual.id);
+
+      if (error) {
+        alert("Erro ao apagar sua mensagem.");
       }
     }
 
     async function limparChatInteiro() {
       if (!ehAdmin) return;
-      if (!confirm("⚠️ ATENÇÃO: Tem certeza que deseja APAGAR TODAS as mensagens do chat? Esta ação não pode ser desfeita!")) return;
+      if (!confirm("Tem certeza que deseja apagar TODAS as mensagens do chat?")) return;
 
       const { error } = await _supabase
         .from('chat_mensagens')
         .delete()
-        .gt('id', 0);
+        .neq('id', '00000000-0000-0000-0000-000000000000');
 
       if (error) {
-        alert("Erro ao limpar chat: " + error.message);
+        alert("Erro ao limpar chat.");
       } else {
-        alert("Chat limpo com sucesso!");
-        carregarMensagensAntigas();
         carregarListaAdmin();
+        carregarMensagensAntigas();
       }
     }
 
     async function carregarListaAdmin() {
-      const box = document.getElementById('admin-lista-msgs');
-      if (!box) return;
+      const container = document.getElementById('admin-lista-msgs');
+      if (!container) return;
 
-      const { data: mensagens } = await _supabase
+      const { data, error } = await _supabase
         .from('chat_mensagens')
         .select('*')
         .order('created_at', { ascending: false })
-        .limit(30);
+        .limit(20);
 
-      box.innerHTML = '';
-      if (!mensagens || mensagens.length === 0) {
-        box.innerHTML = '<div style="font-size:12px; color:var(--text-sub); text-align:center;">Nenhuma mensagem enviada.</div>';
+      container.innerHTML = '';
+      if (error || !data || data.length === 0) {
+        container.innerHTML = '<div style="font-size:12px; color:var(--text-sub); text-align:center;">Nenhuma mensagem encontrada.</div>';
         return;
       }
 
-      mensagens.forEach(m => {
-        const item = document.createElement('div');
-        item.style.cssText = 'display:flex; justify-content:space-between; align-items:center; background:#10161f; padding:7px; border-radius:8px; font-size:11px;';
-        item.innerHTML = `
-          <div>
-            <b style="color:var(--yellow-pix);">${escaparHTML(m.nome_exibicao)}:</b>
-            <span style="color:#fff;">${escaparHTML(m.mensagem)}</span>
+      data.forEach(m => {
+        const div = document.createElement('div');
+        div.style.cssText = 'display:flex; justify-content:space-between; align-items:center; background:#10161f; padding:6px 10px; border-radius:8px; font-size:12px;';
+        div.innerHTML = `
+          <div style="overflow:hidden; text-overflow:ellipsis; white-space:nowrap; max-width:75%;">
+            <b style="color:#facc15;">${escaparHTML(m.nome_exibicao)}:</b> <span style="color:#ccc;">${escaparHTML(m.mensagem)}</span>
           </div>
-          <div style="display:flex; gap:4px;">
-            <button onclick="promptBanirUsuario('${m.user_id}')" style="background:linear-gradient(135deg,#7c3aed,#6d28d9); color:#fff; border:none; padding:3px 8px; border-radius:6px; font-weight:bold; cursor:pointer;">Banir</button>
-            <button onclick="deletarMensagem('${m.id}')" style="background:linear-gradient(135deg,#ef4444,#dc2626); color:#fff; border:none; padding:3px 8px; border-radius:6px; font-weight:bold; cursor:pointer;">Apagar</button>
-          </div>
+          <button onclick="deletarMensagem('${m.id}')" style="background:#ef4444; color:#fff; border:none; padding:2px 8px; border-radius:6px; cursor:pointer; font-size:10px; font-weight:bold;">Excluir</button>
         `;
-        box.appendChild(item);
+        container.appendChild(div);
       });
     }
 
+    function alterarNomeChat() {
+      if (!usuarioAtual) {
+        abrirModal();
+        return;
+      }
+
+      const novoNome = prompt("Digite seu novo apelido para o chat:", meuApelidoChat);
+      if (novoNome && novoNome.trim() !== "") {
+        meuApelidoChat = novoNome.trim().substring(0, 20);
+        localStorage.setItem(`chat_apelido_${usuarioAtual.id}`, meuApelidoChat);
+        alert("Apelido alterado com sucesso para: " + meuApelidoChat);
+      }
+    }
+
     function escaparHTML(str) {
-      return str.replace(/[&<>'"]/g,
-        tag => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[tag] || tag)
-      );
+      if (!str) return '';
+      return str.replace(/[&<>"']/g, function(m) {
+        return {
+          '&': '&amp;',
+          '<': '&lt;',
+          '>': '&gt;',
+          '"': '&quot;',
+          "'": '&#039;'
+        }[m];
+      });
     }
   </script>
 </body>
