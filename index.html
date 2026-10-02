@@ -14,7 +14,7 @@
     gtag('config', 'G-Q7KTN7GPTN');
   </script>
 
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><circle cx=%2250%22 cy=%2250%22 r=%2250%22 fill=%22%2322c55e%22/><text y=%22.9em%22 x=%2220%22 font-size=%2270%22 fill=%22white%22>🔞</text></svg>">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><circle cx=%2250%22 cy=%2250%22 r=%2250%22 fill=%22%23eab308%22/><text y=%22.9em%22 x=%2220%22 font-size=%2270%22 fill=%22black%22>🔞</text></svg>">
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
@@ -24,15 +24,14 @@
       --bg-deep: #060910;
       --card-bg: #10161f;
       --card-header: #1a2332;
-      --green-pix: #22c55e;
-      --green-neon: #22c55e;
-      --green-glow: rgba(34, 197, 94, 0.55);
+      --yellow-pix: #eab308;
+      --yellow-neon: #facc15;
+      --yellow-glow: rgba(234, 179, 8, 0.55);
       --red-neon: #ef4444;
-      --yellow-vip: #f59e0b;
       --text-main: #f9fafb;
       --text-sub: #9ca3af;
       --border-color: rgba(255, 255, 255, 0.08);
-      --border-neon: rgba(34, 197, 94, 0.35);
+      --border-neon: rgba(234, 179, 8, 0.35);
     }
 
     * {
@@ -63,7 +62,7 @@
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
       background-color: var(--bg-deep);
       background-image:
-        radial-gradient(circle at 15% 10%, rgba(34, 197, 94, 0.08) 0%, transparent 45%),
+        radial-gradient(circle at 15% 10%, rgba(234, 179, 8, 0.08) 0%, transparent 45%),
         radial-gradient(circle at 85% 20%, rgba(239, 68, 68, 0.05) 0%, transparent 40%);
       background-attachment: fixed;
       color: var(--text-main);
@@ -107,7 +106,7 @@
       width: 3px;
       height: 3px;
       border-radius: 50%;
-      background: var(--green-neon);
+      background: var(--yellow-neon);
       opacity: 0;
       animation: floatUp linear infinite;
       will-change: transform, opacity;
@@ -148,14 +147,14 @@
       width: 44px;
       height: 44px;
       border-radius: 50%;
-      background: linear-gradient(135deg, #22c55e, #10b981);
+      background: linear-gradient(135deg, #eab308, #ca8a04);
       display: flex;
       align-items: center;
       justify-content: center;
       font-size: 16px;
       font-weight: 800;
-      color: #fff;
-      box-shadow: 0 0 14px rgba(34, 197, 94, 0.5);
+      color: #000;
+      box-shadow: 0 0 14px rgba(234, 179, 8, 0.5);
     }
 
     .channel-details h1 {
@@ -167,7 +166,7 @@
     }
 
     .verified-badge {
-      color: var(--green-pix);
+      color: var(--yellow-pix);
       font-size: 15px;
     }
 
@@ -177,7 +176,7 @@
     }
 
     .auth-btn {
-      background: rgba(34, 197, 94, 0.10);
+      background: rgba(234, 179, 8, 0.10);
       color: #fff;
       border: 1px solid var(--border-neon);
       padding: 8px 16px;
@@ -187,7 +186,7 @@
       cursor: pointer;
       transition: background 0.2s ease;
     }
-    .auth-btn:hover { background: rgba(34, 197, 94, 0.22); }
+    .auth-btn:hover { background: rgba(234, 179, 8, 0.22); }
 
     .user-profile-trigger {
       display: inline-flex;
@@ -203,7 +202,7 @@
       transition: background 0.2s ease;
     }
     .user-profile-trigger:hover {
-      background: rgba(34, 197, 94, 0.15);
+      background: rgba(234, 179, 8, 0.15);
     }
 
     /* ===== CONTAINER ===== */
@@ -219,22 +218,22 @@
     .hero-banner {
       position: relative;
       background:
-        linear-gradient(180deg, rgba(34, 197, 94, 0.16) 0%, rgba(10, 15, 26, 0.85) 100%),
-        radial-gradient(circle at 50% 0%, rgba(34, 197, 94, 0.18) 0%, transparent 60%);
+        linear-gradient(180deg, rgba(234, 179, 8, 0.16) 0%, rgba(10, 15, 26, 0.85) 100%),
+        radial-gradient(circle at 50% 0%, rgba(234, 179, 8, 0.18) 0%, transparent 60%);
       border: 1px solid var(--border-neon);
       border-radius: 22px;
       padding: 36px 22px 30px;
       margin-bottom: 28px;
       text-align: center;
       overflow: hidden;
-      box-shadow: 0 0 30px rgba(34, 197, 94, 0.12), 0 16px 40px rgba(0, 0, 0, 0.4);
+      box-shadow: 0 0 30px rgba(234, 179, 8, 0.12), 0 16px 40px rgba(0, 0, 0, 0.4);
     }
 
     .badge-promo {
       display: inline-block;
-      background: rgba(34, 197, 94, 0.18);
-      color: #4ade80;
-      border: 1px solid rgba(34, 197, 94, 0.55);
+      background: rgba(234, 179, 8, 0.18);
+      color: #facc15;
+      border: 1px solid rgba(234, 179, 8, 0.55);
       font-size: 11px;
       font-weight: 800;
       padding: 5px 16px;
@@ -251,7 +250,7 @@
       margin-bottom: 12px;
       line-height: 1.25;
       letter-spacing: -0.5px;
-      text-shadow: 0 0 18px rgba(34, 197, 94, 0.4);
+      text-shadow: 0 0 18px rgba(234, 179, 8, 0.4);
     }
 
     .hero-banner p {
@@ -267,8 +266,8 @@
       align-items: center;
       justify-content: center;
       gap: 8px;
-      background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
-      color: #ffffff;
+      background: linear-gradient(135deg, #facc15 0%, #eab308 100%);
+      color: #000000;
       border: none;
       padding: 16px 32px;
       border-radius: 14px;
@@ -277,14 +276,14 @@
       cursor: pointer;
       text-transform: uppercase;
       letter-spacing: 0.8px;
-      box-shadow: 0 0 22px rgba(34, 197, 94, 0.45), 0 8px 20px rgba(0, 0, 0, 0.4);
+      box-shadow: 0 0 22px rgba(234, 179, 8, 0.45), 0 8px 20px rgba(0, 0, 0, 0.4);
       transition: transform 0.2s ease, box-shadow 0.2s ease;
       text-decoration: none;
       transform: translateZ(0);
     }
     .hero-cta:hover {
       transform: translate3d(0, -3px, 0);
-      box-shadow: 0 0 38px rgba(34, 197, 94, 0.75), 0 10px 24px rgba(0, 0, 0, 0.5);
+      box-shadow: 0 0 38px rgba(234, 179, 8, 0.75), 0 10px 24px rgba(0, 0, 0, 0.5);
     }
 
     /* ===== DEMO ===== */
@@ -347,8 +346,8 @@
 
     .card:hover {
       transform: translate3d(0, -4px, 0);
-      border-color: rgba(34, 197, 94, 0.6);
-      box-shadow: 0 0 40px rgba(34, 197, 94, 0.25), 0 16px 40px rgba(0,0,0,0.5);
+      border-color: rgba(234, 179, 8, 0.6);
+      box-shadow: 0 0 40px rgba(234, 179, 8, 0.25), 0 16px 40px rgba(0,0,0,0.5);
     }
 
     .card-header {
@@ -403,9 +402,9 @@
       border: 1px solid rgba(255,255,255,0.08);
     }
     .liberado {
-      background: var(--green-pix);
-      color: #fff;
-      box-shadow: 0 0 14px rgba(34, 197, 94, 0.55);
+      background: var(--yellow-pix);
+      color: #000;
+      box-shadow: 0 0 14px rgba(234, 179, 8, 0.55);
     }
 
     .card-body { padding: 20px; }
@@ -427,13 +426,13 @@
       background: #111;
       border-radius: 12px;
       overflow: hidden;
-      border: 1px solid rgba(34, 197, 94, 0.25);
+      border: 1px solid rgba(234, 179, 8, 0.25);
       transition: transform 0.3s ease, border-color 0.3s ease;
       transform: translateZ(0);
     }
     .video-item:hover {
       transform: scale(1.02);
-      border-color: rgba(34, 197, 94, 0.8);
+      border-color: rgba(234, 179, 8, 0.8);
     }
 
     .preview-box iframe {
@@ -471,7 +470,7 @@
     }
 
     .benefits-list li span.check {
-      color: var(--green-pix);
+      color: var(--yellow-pix);
       font-weight: 900;
       flex-shrink: 0;
     }
@@ -483,8 +482,8 @@
       justify-content: center;
       gap: 8px;
       width: 100%;
-      background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
-      color: #ffffff;
+      background: linear-gradient(135deg, #facc15 0%, #eab308 100%);
+      color: #000000;
       border: none;
       padding: 16px 20px;
       border-radius: 13px;
@@ -494,13 +493,13 @@
       cursor: pointer;
       text-transform: uppercase;
       letter-spacing: 0.6px;
-      box-shadow: 0 0 20px rgba(34, 197, 94, 0.4), 0 6px 18px rgba(0,0,0,0.4);
+      box-shadow: 0 0 20px rgba(234, 179, 8, 0.4), 0 6px 18px rgba(0,0,0,0.4);
       transition: transform 0.2s ease, box-shadow 0.25s ease;
       transform: translateZ(0);
     }
     .btn-buy:hover {
       transform: translate3d(0, -2px, 0);
-      box-shadow: 0 0 34px rgba(34, 197, 94, 0.75), 0 10px 24px rgba(0,0,0,0.5);
+      box-shadow: 0 0 34px rgba(234, 179, 8, 0.75), 0 10px 24px rgba(0,0,0,0.5);
     }
 
     .btn-paypal {
@@ -529,8 +528,8 @@
     .btn-access {
       display: block;
       width: 100%;
-      background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
-      color: #fff;
+      background: linear-gradient(135deg, #facc15 0%, #eab308 100%);
+      color: #000;
       text-decoration: none;
       padding: 16px;
       border-radius: 13px;
@@ -539,7 +538,7 @@
       font-size: 15px;
       text-transform: uppercase;
       letter-spacing: 0.6px;
-      box-shadow: 0 0 20px rgba(34, 197, 94, 0.5);
+      box-shadow: 0 0 20px rgba(234, 179, 8, 0.5);
       transition: transform 0.2s ease;
     }
     .btn-access:hover { transform: translate3d(0, -2px, 0); }
@@ -557,7 +556,7 @@
 
     /* ===== TAGS CHAT ===== */
     .tag-vip-amarela {
-      background: linear-gradient(135deg, #f59e0b, #d97706);
+      background: linear-gradient(135deg, #facc15, #ca8a04);
       color: #000;
       font-weight: 900;
       font-size: 10px;
@@ -628,14 +627,14 @@
 
     .review-item {
       background: #060910;
-      border: 1px solid rgba(34, 197, 94, 0.18);
+      border: 1px solid rgba(234, 179, 8, 0.18);
       border-radius: 14px;
       padding: 14px 16px;
       transition: transform 0.25s ease, border-color 0.25s ease;
     }
     .review-item:hover {
       transform: translate3d(0, -2px, 0);
-      border-color: rgba(34, 197, 94, 0.5);
+      border-color: rgba(234, 179, 8, 0.5);
     }
 
     .review-header {
@@ -652,7 +651,7 @@
     }
 
     .review-stars {
-      color: #f59e0b;
+      color: #facc15;
       font-size: 12px;
     }
 
@@ -688,10 +687,10 @@
     }
 
     .footer-link {
-      color: #4ade80;
+      color: #facc15;
       text-decoration: underline;
     }
-    .footer-link:hover { color: #22c55e; }
+    .footer-link:hover { color: #eab308; }
 
     .footer-keywords {
       font-size: 11px;
@@ -720,7 +719,7 @@
       max-width: 420px;
       text-align: center;
       border: 1px solid var(--border-neon);
-      box-shadow: 0 0 35px rgba(34, 197, 94, 0.2), 0 20px 50px rgba(0,0,0,0.7);
+      box-shadow: 0 0 35px rgba(234, 179, 8, 0.2), 0 20px 50px rgba(0,0,0,0.7);
     }
 
     .modal h3 {
@@ -748,7 +747,7 @@
 
     .modal input:focus, .modal select:focus {
       outline: none;
-      border-color: var(--green-pix);
+      border-color: var(--yellow-pix);
     }
 
     .modal-foto-fullscreen {
@@ -854,8 +853,8 @@
       </p>
       <div style="display: flex; gap: 10px; justify-content: center;">
         <button id="btn-pop-sim" style="
-          background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
-          color: #ffffff;
+          background: linear-gradient(135deg, #facc15 0%, #eab308 100%);
+          color: #000000;
           border: none;
           padding: 14px;
           border-radius: 12px;
@@ -863,7 +862,7 @@
           font-size: 13px;
           cursor: pointer;
           flex: 1;
-          box-shadow: 0 0 20px rgba(34, 197, 94, 0.5);
+          box-shadow: 0 0 20px rgba(234, 179, 8, 0.5);
         ">
           SIM, SOU MAIOR
         </button>
@@ -1044,7 +1043,7 @@
         border-bottom: 1px solid var(--border-neon);
       ">
         <h3 style="font-size: 16px; font-weight: 800; color: #fff; display: flex; align-items: center; gap: 8px; margin: 0;">
-          💬 Chat Aberto 🟢
+          💬 Chat Aberto 🟡
         </h3>
         <div style="display: flex; gap: 8px;">
           <button id="btn-painel-adm" onclick="abrirModalAdmin()" style="
@@ -1059,8 +1058,8 @@
             cursor: pointer;
           ">Painel ADM ⚙️</button>
           <button onclick="alterarNomeChat()" style="
-            background: rgba(34, 197, 94, 0.10);
-            color: #4ade80;
+            background: rgba(234, 179, 8, 0.10);
+            color: #facc15;
             border: 1px solid var(--border-neon);
             padding: 6px 14px;
             border-radius: 8px;
@@ -1181,7 +1180,7 @@
 
       <div style="background: #060910; border: 1px solid var(--border-neon); padding: 14px; border-radius: 12px; margin-bottom: 16px;">
         <div style="font-size: 12px; color: var(--text-sub); margin-bottom: 4px;">Apelido no Chat:</div>
-        <div id="perfil-apelido" style="font-size: 14px; font-weight: bold; color: #4ade80; margin-bottom: 10px;">-</div>
+        <div id="perfil-apelido" style="font-size: 14px; font-weight: bold; color: #facc15; margin-bottom: 10px;">-</div>
 
         <div style="font-size: 12px; color: var(--text-sub); margin-bottom: 4px;">E-mail da Conta:</div>
         <div id="perfil-email" style="font-size: 13px; font-weight: 600; color: #fff; margin-bottom: 10px; word-break: break-all;">-</div>
@@ -1218,7 +1217,7 @@
         <h4 style="font-size:13px; color:#fff; margin-bottom:8px;">🚫 Adicionar Palavra Proibida</h4>
         <div style="display:flex; gap:6px; margin-bottom:10px;">
           <input type="text" id="inputPalavraProibida" placeholder="Ex: golpe, pessimo, etc." style="flex:1; padding:8px; background:#10161f; border:1px solid var(--border-neon); color:#fff; border-radius:8px; font-size:12px;" />
-          <button onclick="adicionarPalavraProibida()" style="background:linear-gradient(135deg,#22c55e,#16a34a); color:#fff; border:none; padding:8px 14px; border-radius:8px; font-weight:bold; font-size:12px; cursor:pointer;">Add</button>
+          <button onclick="adicionarPalavraProibida()" style="background:linear-gradient(135deg,#facc15,#eab308); color:#000; border:none; padding:8px 14px; border-radius:8px; font-weight:bold; font-size:12px; cursor:pointer;">Add</button>
         </div>
         <div id="listaPalavrasProibidas" style="display:flex; flex-wrap:wrap; gap:6px; max-height:80px; overflow-y:auto;">
           <span style="font-size:11px; color:var(--text-sub);">Carregando termos...</span>
@@ -1386,7 +1385,7 @@
         p.style.animationDuration = (12 + Math.random() * 12) + 's';
         p.style.animationDelay = (Math.random() * 12) + 's';
         p.style.width = p.style.height = (2 + Math.random() * 2) + 'px';
-        const cores = ['#22c55e', '#4ade80'];
+        const cores = ['#eab308', '#facc15'];
         const cor = cores[Math.floor(Math.random() * cores.length)];
         p.style.background = cor;
         fragment.appendChild(p);
@@ -1528,7 +1527,7 @@
         const status = item.expira_em ? `Restrito até: ${new Date(item.expira_em).toLocaleDateString()}` : 'Banido Permanente';
         div.innerHTML = `
           <span>ID: <b>${item.user_id.substring(0,8)}...</b> (${status})</span>
-          <button onclick="removerBanimento(${item.id})" style="background:linear-gradient(135deg,#22c55e,#16a34a); color:#fff; border:none; padding:2px 8px; border-radius:6px; cursor:pointer; font-weight:bold;">Desbanir</button>
+          <button onclick="removerBanimento(${item.id})" style="background:linear-gradient(135deg,#facc15,#eab308); color:#000; border:none; padding:2px 8px; border-radius:6px; cursor:pointer; font-weight:bold;">Desbanir</button>
         `;
         container.appendChild(div);
       });
@@ -1648,7 +1647,7 @@
         divStatus.innerHTML = `<span style="color: #ef4444;">ADMINISTRADOR 🔴</span>`;
         divVips.innerHTML = `<b>Acessos:</b> Controle total e moderação do sistema.`;
       } else if (usuarioPossuiVip) {
-        divStatus.innerHTML = `<span style="color: #f59e0b;">MEMBRO VIP 🟨</span>`;
+        divStatus.innerHTML = `<span style="color: #facc15;">MEMBRO VIP 🟨</span>`;
 
         const nomesFormatados = vipsAtivosLista.map(cat => {
           if (cat === 'amador') return '⭐ Amador Premium';
@@ -1949,14 +1948,14 @@
       div.id = `msg-item-${msgId}`;
       div.style.cssText = `
         background: #060910;
-        border: 1px solid rgba(34, 197, 94, 0.18);
+        border: 1px solid rgba(234, 179, 8, 0.18);
         padding: 9px 13px;
         border-radius: 11px;
         font-size: 13px;
         line-height: 1.45;
         word-break: break-word;
       `;
-      div.innerHTML = `${botoesAcao}<b style="color: #4ade80;">${escaparHTML(nome)}</b>${seloTag}: <span style="color: #e5e7eb;">${escaparHTML(texto)}</span>`;
+      div.innerHTML = `${botoesAcao}<b style="color: #facc15;">${escaparHTML(nome)}</b>${seloTag}: <span style="color: #e5e7eb;">${escaparHTML(texto)}</span>`;
       box.appendChild(div);
     }
 
@@ -2128,7 +2127,7 @@
         item.style.cssText = 'display:flex; justify-content:space-between; align-items:center; background:#10161f; padding:7px; border-radius:8px; font-size:11px;';
         item.innerHTML = `
           <div>
-            <b style="color:var(--green-pix);">${escaparHTML(m.nome_exibicao)}:</b>
+            <b style="color:var(--yellow-pix);">${escaparHTML(m.nome_exibicao)}:</b>
             <span style="color:#fff;">${escaparHTML(m.mensagem)}</span>
           </div>
           <div style="display:flex; gap:4px;">
