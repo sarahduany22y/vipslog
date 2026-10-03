@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Acesso Liberado!</title>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    @keyframes pulseGlow {
+      0%, 100% { opacity: 0.4; transform: scale(1); }
+      50% { opacity: 0.8; transform: scale(1.05); }
+    }
+    .animate-glow {
+      animation: pulseGlow 4s infinite ease-in-out;
+    }
+  </style>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen flex items-center justify-center p-4 relative overflow-hidden font-sans">
+
+  <!-- Efeito Visual de Fundo -->
+  <div class="absolute -top-32 -left-32 w-96 h-96 bg-emerald-500/20 rounded-full blur-3xl animate-glow"></div>
+  <div class="absolute -bottom-32 -right-32 w-96 h-96 bg-cyan-500/20 rounded-full blur-3xl animate-glow" style="animation-delay: 2s;"></div>
+
+  <!-- Cartão Principal -->
+  <main class="relative z-10 w-full max-w-md bg-slate-900/80 backdrop-blur-xl border border-slate-800 rounded-3xl p-8 sm:p-10 text-center shadow-2xl shadow-emerald-950/30">
+    
+    <!-- Ícone de Sucesso -->
+    <div class="mx-auto w-20 h-20 bg-emerald-500/10 border border-emerald-500/30 rounded-2xl flex items-center justify-center mb-6 text-emerald-400 shadow-lg shadow-emerald-500/10">
+      <i data-lucide="check-circle-2" class="w-10 h-10"></i>
+    </div>
+
+    <!-- Título e Subtítulo -->
+    <h1 class="text-3xl font-bold tracking-tight text-white mb-3">
+      Tudo pronto!
+    </h1>
+    <p class="text-slate-400 text-sm sm:text-base leading-relaxed mb-8">
+      Seu pagamento/cadastro foi confirmado. Clique no botão abaixo para desbloquear o seu acesso VIP exclusivo.
+    </p>
+
+    <!-- Botão Principal -->
+    <a href="https://meuvip.primeglobalfinds.com/" 
+       target="_blank" 
+       rel="noopener noreferrer" 
+       class="group relative inline-flex items-center justify-center w-full py-4 px-6 text-base font-semibold text-slate-950 bg-gradient-to-r from-emerald-400 to-teal-300 rounded-2xl shadow-lg shadow-emerald-500/25 hover:shadow-emerald-500/40 hover:scale-[1.02] active:scale-[0.98] transition-all duration-200">
+      <span>Liberar Acesso VIP</span>
+      <i data-lucide="arrow-right" class="w-5 h-5 ml-2 transition-transform duration-200 group-hover:translate-x-1"></i>
+    </a>
+
+    <!-- Mensagem Auxiliar -->
+    <p class="text-xs text-slate-500 mt-6 flex items-center justify-center gap-1.5">
+      <i data-lucide="lock" class="w-3.5 h-3.5"></i>
+      Link seguro e com acesso imediato.
+    </p>
+  </main>
+
+  <script>
+    lucide.createIcons();
+  </script>
+</body>
+</html>
