@@ -28,6 +28,7 @@
       --yellow-neon: #facc15;
       --yellow-glow: rgba(234, 179, 8, 0.55);
       --red-neon: #ef4444;
+      --green-neon: #22c55e;
       --text-main: #f9fafb;
       --text-sub: #9ca3af;
       --border-color: rgba(255, 255, 255, 0.08);
@@ -40,7 +41,6 @@
       padding: 0;
     }
 
-    /* Permite seleção apenas nos campos editáveis */
     input, textarea {
       -webkit-user-select: text;
       -moz-user-select: text;
@@ -66,7 +66,6 @@
       -webkit-font-smoothing: antialiased;
     }
 
-    /* ===== PARTÍCULAS (SOMENTE DESKTOP) ===== */
     .particles-bg {
       position: fixed;
       inset: 0;
@@ -92,7 +91,6 @@
       100% { transform: translate3d(0, -10vh, 0) scale(1); opacity: 0; }
     }
 
-    /* ===== HEADER ===== */
     header {
       background: rgba(10, 15, 26, 0.92);
       border-bottom: 1px solid var(--border-neon);
@@ -179,7 +177,6 @@
       background: rgba(234, 179, 8, 0.15);
     }
 
-    /* ===== CONTAINER ===== */
     .main-container {
       max-width: 900px;
       margin: 20px auto;
@@ -188,7 +185,7 @@
       z-index: 1;
     }
 
-    /* ===== HERO BANNER ===== */
+    /* HERO BANNER */
     .hero-banner {
       position: relative;
       background:
@@ -197,7 +194,7 @@
       border: 1px solid var(--border-neon);
       border-radius: 22px;
       padding: 36px 22px 30px;
-      margin-bottom: 28px;
+      margin-bottom: 24px;
       text-align: center;
       overflow: hidden;
       box-shadow: 0 0 30px rgba(234, 179, 8, 0.12), 0 16px 40px rgba(0, 0, 0, 0.4);
@@ -260,7 +257,7 @@
       box-shadow: 0 0 38px rgba(234, 179, 8, 0.75), 0 10px 24px rgba(0, 0, 0, 0.5);
     }
 
-    /* ===== DEMO ===== */
+    /* DEMO */
     .demo-section {
       background: var(--card-bg);
       border: 1px solid var(--border-neon);
@@ -300,7 +297,7 @@
       border: none;
     }
 
-    /* ===== GRID ===== */
+    /* GRID DE CARDS */
     .grid {
       display: grid;
       grid-template-columns: 1fr;
@@ -316,6 +313,11 @@
       box-shadow: 0 12px 30px rgba(0,0,0,0.45);
       transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
       transform: translateZ(0);
+    }
+
+    .card-promo-dupla {
+      border: 2px solid var(--yellow-neon);
+      box-shadow: 0 0 30px rgba(234, 179, 8, 0.3), 0 12px 30px rgba(0,0,0,0.45);
     }
 
     .card:hover {
@@ -383,7 +385,7 @@
 
     .card-body { padding: 20px; }
 
-    /* ===== PREVIEW ===== */
+    /* PREVIEW */
     .preview-box {
       width: 100%;
       display: grid;
@@ -417,7 +419,7 @@
       background: #000;
     }
 
-    /* ===== BENEFÍCIOS ===== */
+    /* BENEFÍCIOS */
     .vip-description { margin-bottom: 22px; }
 
     .vip-description p {
@@ -449,7 +451,34 @@
       flex-shrink: 0;
     }
 
-    /* ===== BOTÕES E SELEÇÃO DE PLANOS ===== */
+    /* PREÇO COMBO */
+    .combo-price-box {
+      display: flex;
+      align-items: baseline;
+      gap: 10px;
+      margin: 16px 0;
+    }
+    .combo-price-de {
+      font-size: 14px;
+      color: var(--text-sub);
+      text-decoration: line-through;
+    }
+    .combo-price-por {
+      font-size: 24px;
+      font-weight: 900;
+      color: #facc15;
+    }
+    .combo-badge-discount {
+      background: rgba(34, 197, 94, 0.2);
+      color: #4ade80;
+      border: 1px solid rgba(34, 197, 94, 0.4);
+      padding: 3px 8px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    /* BOTÕES */
     .plan-actions {
       display: flex;
       flex-direction: column;
@@ -480,6 +509,15 @@
     .btn-buy:hover {
       transform: translate3d(0, -2px, 0);
       box-shadow: 0 0 34px rgba(234, 179, 8, 0.75), 0 10px 24px rgba(0,0,0,0.5);
+    }
+
+    .btn-buy-promo {
+      background: linear-gradient(135deg, #22c55e 0%, #15803d 100%) !important;
+      color: #ffffff !important;
+      box-shadow: 0 0 20px rgba(34, 197, 94, 0.4), 0 6px 18px rgba(0,0,0,0.4) !important;
+    }
+    .btn-buy-promo:hover {
+      box-shadow: 0 0 34px rgba(34, 197, 94, 0.75), 0 10px 24px rgba(0,0,0,0.5) !important;
     }
 
     .btn-paypal {
@@ -534,7 +572,7 @@
       gap: 6px;
     }
 
-    /* ===== TAGS CHAT ===== */
+    /* TAGS CHAT */
     .tag-vip-amarela {
       background: linear-gradient(135deg, #facc15, #ca8a04);
       color: #000;
@@ -581,7 +619,7 @@
     .btn-ban-user { background: #7c3aed; }
     .btn-ban-user:hover { background: #6d28d9; }
 
-    /* ===== REVIEWS ===== */
+    /* REVIEWS */
     .reviews-section {
       margin-top: 44px;
       background: var(--card-bg);
@@ -641,7 +679,7 @@
       line-height: 1.5;
     }
 
-    /* ===== RODAPÉ ===== */
+    /* RODAPÉ */
     footer {
       margin-top: 50px;
       background: rgba(10, 15, 26, 0.92);
@@ -679,7 +717,7 @@
       padding-top: 14px;
     }
 
-    /* ===== MODAIS ===== */
+    /* MODAIS */
     .modal-overlay {
       display: none;
       position: fixed;
@@ -757,7 +795,6 @@
       font-weight: bold;
     }
 
-    /* ===== AJUSTES MOBILE ===== */
     @media (max-width: 768px) {
       .hero-banner h2 { font-size: 20px; }
       .hero-banner { padding: 28px 18px 24px; }
@@ -880,8 +917,8 @@
     <div class="hero-banner">
       <span class="badge-promo">🔥 PROMOÇÃO POR TEMPO LIMITADO</span>
       <h2>GALERIA VIP PRIVADA – ACESSO A CONTEÚDOS EXCLUSIVOS</h2>
-      <p>Vídeos amadores reais, vazados e exclusivos. Sem censura. Sem mensalidade. Acesso imediato.</p>
-      <a href="#card-amador" class="hero-cta">⚡ ENTRAR NA GALERIA VIP AGORA – A PARTIR DE R$ 19,90</a>
+      <p>Vídeos amadores reais, vazados e exclusivos. Sem censura. SPYCAM VIP DARK e flagras reais, Videos do QUARTO DA BRUNA, QUARTO DO NETO, etc... Acesso imediato.</p>
+      <a href="#card-promo-dupla" class="hero-cta">⚡ APROVEITAR OFERTA LEVE 2 PAGUE 1 (30 DIAS)</a>
     </div>
 
     <!-- VÍDEO DE DEMONSTRAÇÃO -->
@@ -894,10 +931,10 @@
       </div>
     </div>
 
-    <!-- LISTA DE CATEGORIAS VIP -->
+    <!-- LISTA DE PLANOS / OFERTAS VIP -->
     <div class="grid">
 
-      <!-- Categoria 1: Amador -->
+      <!-- 1. VIP AMADOR -->
       <div class="card" id="card-amador">
         <div class="card-header">
           <h3>⭐ Amador Premium ⭐</h3>
@@ -948,7 +985,49 @@
         </div>
       </div>
 
-      <!-- Categoria 2: Cam -->
+      <!-- 2. PROMOÇÃO DUPLA (POSICIONADA ENTRE AMADOR E CAM) -->
+      <div class="card card-promo-dupla" id="card-promo-dupla">
+        <div class="card-header" style="background: linear-gradient(180deg, rgba(234, 179, 8, 0.2) 0%, #131a24 100%);">
+          <h3>💥 PROMOÇÃO DUPLA • LEVE 2 PAGUE 1 (30 DIAS) 💥</h3>
+          <div class="card-badges">
+            <span class="plan-badge" style="background: rgba(34, 197, 94, 0.2); color: #4ade80; border-color: rgba(34, 197, 94, 0.4);">OFERTA ESPECIAL</span>
+            <span class="status-badge bloqueado" id="badge-promo_30">🔒 Bloqueado</span>
+          </div>
+        </div>
+
+        <div class="card-body">
+          <div class="vip-description">
+            <p>Garanta acesso total e simultâneo às 2 Galerias VIPs pelo preço de apenas 1:</p>
+            <ul class="benefits-list">
+              <li><span class="check">✓</span> <b>Acesso ilimitado à Galeria Amador Premium (30 Dias)</b></li>
+              <li><span class="check">✓</span> <b>Acesso ilimitado à Galeria Spycam VIP Dark (30 Dias)</b></li>
+              <li><span class="check">✓</span> Economize instantaneamente no pacote duplo promocional</li>
+              <li><span class="check">✓</span> Assista online conteúdos amadores vazados, flagras e câmeras escondidas</li>
+              <li><span class="check">✓</span> Atualizações diárias em ambos os VIPs com streaming rápido</li>
+            </ul>
+          </div>
+
+          <div class="combo-price-box">
+            <span class="combo-price-de">De R$ 39,80</span>
+            <span class="combo-price-por">Por R$ 29,65</span>
+            <span class="combo-badge-discount">LEVE 2 PAGUE 1</span>
+          </div>
+
+          <div class="plan-actions" id="actions-promo_30">
+            <button id="buy-promo-30" class="btn-buy btn-buy-promo" onclick="iniciarCompra('promo_30')">
+              🚀 APROVEITAR PROMOÇÃO DUPLA (R$ 29,65)
+            </button>
+            <a href="https://t.me/hksuporte" target="_blank" class="btn-paypal" id="paypal-promo">
+              🌐 Pay via PayPal / Foreigners (Telegram Support)
+            </a>
+          </div>
+
+          <a href="amador.html" id="access-promo_30" class="btn-access" style="display:none;">ACESSAR TODAS AS GALERIAS VIP</a>
+          <div class="texto-seguranca">🔒 Liberação Automática via PIX • Pagamento 100% Discreto</div>
+        </div>
+      </div>
+
+      <!-- 3. VIP CAM -->
       <div class="card" id="card-cam">
         <div class="card-header">
           <h3>🔥 SPYCAM VIP DARK 🔥</h3>
@@ -1104,7 +1183,7 @@
             <span class="review-user">M***o S.</span>
             <span class="review-stars">★★★★★</span>
           </div>
-          <div class="review-text">Paguei no PIX e liberou no mesmo minuto aqui no site. Galeria top demais, vale muito a pena!</div>
+          <div class="review-text">Paguei no PIX a oferta combo e liberou ambos os VIPs na hora. Galeria top demais, vale muito a pena!</div>
         </div>
         <div class="review-item">
           <div class="review-header">
@@ -1169,7 +1248,6 @@
         <div id="perfil-status-plano" style="font-size: 13px; font-weight: 700;">-</div>
 
         <div id="perfil-vips-detalhes" style="margin-top: 10px; font-size: 12px; color: #d1d5db; border-top: 1px dashed rgba(255,255,255,0.1); padding-top: 8px;">
-          <!-- Lista de VIPs ativos -->
         </div>
       </div>
 
@@ -1337,8 +1415,9 @@
 
     let palavrasProibidasBanco = [];
 
-    // LINKS DE CHECKOUT ATUALIZADOS POR CATEGORIA E DURAÇÃO
+    // LINKS DE CHECKOUT ATUALIZADOS COM O LINK SOLICITADO
     const CHECKOUTS = {
+      promo_30: "https://link.syncpayments.com.br/ronwrZ",
       amador_30: "https://link.syncpayments.com.br/MicvMz",
       amador_90: "https://link.syncpayments.com.br/dmpxmp",
       cam_30: "https://link.syncpayments.com.br/SEl2IQ",
@@ -1590,6 +1669,7 @@
         const nomesFormatados = vipsAtivosLista.map(cat => {
           if (cat.startsWith('amador')) return '⭐ Amador Premium';
           if (cat.startsWith('cam')) return '🔥 Spycam Dark';
+          if (cat.includes('promo')) return '💥 Oferta Dupla (Amador + Spycam)';
           return cat.toUpperCase();
         });
 
@@ -1752,20 +1832,18 @@
         if (compras && compras.length > 0 && !error) {
           usuarioPossuiVip = true;
           compras.forEach(item => {
-            const catFull = item.categoria_id;
-            const catBase = catFull.split('_')[0];
+            const catFull = item.categoria_id.toLowerCase();
             vipsAtivosLista.push(catFull);
 
-            const badge = document.getElementById(`badge-${catBase}`);
-            const actions = document.getElementById(`actions-${catBase}`);
-            const btnAccess = document.getElementById(`access-${catBase}`);
-
-            if (badge) {
-              badge.innerHTML = "🔓 Liberado";
-              badge.className = "status-badge liberado";
+            // SE A COMPRA FOR DA PROMOÇÃO OU COMBO DUPLO LIBERA OS CARDS CORRESPONDENTES
+            if (catFull.includes('promo') || catFull.includes('combo') || catFull.includes('amador_e_cam')) {
+              liberarCardVisual('amador');
+              liberarCardVisual('cam');
+              liberarCardVisual('promo_30');
+            } else {
+              const catBase = catFull.split('_')[0];
+              liberarCardVisual(catBase);
             }
-            if (actions) actions.style.setProperty('display', 'none', 'important');
-            if (btnAccess) btnAccess.style.display = "block";
           });
         } else {
           usuarioPossuiVip = false;
@@ -1773,6 +1851,19 @@
       } catch (err) {
         console.error("Erro ao verificar compras:", err);
       }
+    }
+
+    function liberarCardVisual(catBase) {
+      const badge = document.getElementById(`badge-${catBase}`);
+      const actions = document.getElementById(`actions-${catBase}`);
+      const btnAccess = document.getElementById(`access-${catBase}`);
+
+      if (badge) {
+        badge.innerHTML = "🔓 Liberado";
+        badge.className = "status-badge liberado";
+      }
+      if (actions) actions.style.setProperty('display', 'none', 'important');
+      if (btnAccess) btnAccess.style.display = "block";
     }
 
     async function verificarSeUserEhVip(userId) {
