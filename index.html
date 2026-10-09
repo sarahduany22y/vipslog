@@ -385,20 +385,59 @@
 
     .card-body { padding: 20px; }
 
-    /* PREVIEW */
-    .preview-box {
-      width: 100%;
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 12px;
+    /* PREVIEW CARROSSEL NETFLIX STYLE */
+    .preview-carousel-wrapper {
+      position: relative;
       margin-bottom: 22px;
+    }
+
+    .carousel-hint {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 12px;
+      color: var(--text-sub);
+      margin-bottom: 8px;
+      padding: 0 4px;
+      font-weight: 600;
+    }
+
+    .carousel-hint span {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      color: #facc15;
+    }
+
+    .preview-carousel {
+      display: flex;
+      gap: 12px;
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      -webkit-overflow-scrolling: touch;
       padding: 10px;
       background: #060910;
       border-radius: 16px;
       border: 1px solid var(--border-neon);
+      scrollbar-width: thin;
+      scrollbar-color: var(--yellow-pix) #060910;
+    }
+
+    .preview-carousel::-webkit-scrollbar {
+      height: 6px;
+    }
+    .preview-carousel::-webkit-scrollbar-track {
+      background: #060910;
+      border-radius: 10px;
+    }
+    .preview-carousel::-webkit-scrollbar-thumb {
+      background: var(--yellow-pix);
+      border-radius: 10px;
     }
 
     .video-item {
+      flex: 0 0 170px;
+      scroll-snap-align: start;
       background: #111;
       border-radius: 12px;
       overflow: hidden;
@@ -411,7 +450,7 @@
       border-color: rgba(234, 179, 8, 0.8);
     }
 
-    .preview-box iframe {
+    .preview-carousel iframe {
       width: 100%;
       aspect-ratio: 9/16;
       border: none;
@@ -815,6 +854,10 @@
       }
 
       .particles-bg { display: none !important; }
+
+      .video-item {
+        flex: 0 0 145px;
+      }
     }
 
     @media (prefers-reduced-motion: reduce) {
@@ -927,7 +970,7 @@
         <span>🎬</span> PRÉVIA AO VIVO – VEJA COMO É A NOSSA GALERIA POR DENTRO
       </div>
       <div class="demo-video-wrapper">
-        <iframe src="https://player.mediadelivery.net/embed/756775/24206add-f024-4795-b71f-c102bcd541ea?autoplay=false&preload=false" loading="lazy" allow="autoplay; encrypted-media" allowfullscreen="true"></iframe>
+        <iframe src="https://player.mediadelivery.net/embed/756775/?autoplay=false&preload=false" loading="lazy" allow="autoplay; encrypted-media" allowfullscreen="true"></iframe>
       </div>
     </div>
 
@@ -945,12 +988,28 @@
         </div>
 
         <div class="card-body">
-          <div class="preview-box">
-            <div class="video-item">
-              <iframe src="https://player.mediadelivery.net/embed/756775/f8c68f57-9c99-47ec-ba85-361d76f3c9f7?autoplay=false&preload=false" loading="lazy" allow="gyroscope; encrypted-media" allowfullscreen="true"></iframe>
+          <!-- CARROSSEL DE PRÉVIAS (AMADOR) -->
+          <div class="preview-carousel-wrapper">
+            <div class="carousel-hint">
+              <span>🎬 PRÉVIAS AMADOR</span>
+              <span>Deslize para o lado ➔</span>
             </div>
-            <div class="video-item">
-              <iframe src="https://player.mediadelivery.net/embed/756775/7a3351fb-8c11-4c04-9841-dfce33693b73?autoplay=false&preload=false" loading="lazy" allow="gyroscope; encrypted-media" allowfullscreen="true"></iframe>
+            <div class="preview-carousel">
+              <div class="video-item">
+                <iframe src="https://player.mediadelivery.net/embed/756775/c2c23422-5a8a-4fb1-904d-47a9713012f1?autoplay=false&preload=false" loading="lazy" allow="gyroscope; encrypted-media" allowfullscreen="true"></iframe>
+              </div>
+              <div class="video-item">
+                <iframe src="https://player.mediadelivery.net/embed/756775/7a3351fb-8c11-4c04-9841-dfce33693b73?autoplay=false&preload=false" loading="lazy" allow="gyroscope; encrypted-media" allowfullscreen="true"></iframe>
+              </div>
+              <div class="video-item">
+                <iframe src="https://player.mediadelivery.net/embed/756775/925ff627-08c3-4221-b9b2-20e09ce2e98d?autoplay=false&preload=false" loading="lazy" allow="gyroscope; encrypted-media" allowfullscreen="true"></iframe>
+              </div>
+              <div class="video-item">
+                <iframe src="https://player.mediadelivery.net/embed/756775/58c23450-326a-4d20-9647-bf468ec0ed48?autoplay=false&preload=false" loading="lazy" allow="gyroscope; encrypted-media" allowfullscreen="true"></iframe>
+              </div>
+              <div class="video-item">
+                <iframe src="https://player.mediadelivery.net/embed/756775/27b80fd0-d1e0-4c53-8ad6-e0b19fb102d2?autoplay=false&preload=false" loading="lazy" allow="gyroscope; encrypted-media" allowfullscreen="true"></iframe>
+              </div>
             </div>
           </div>
 
@@ -1039,12 +1098,28 @@
         </div>
 
         <div class="card-body">
-          <div class="preview-box">
-            <div class="video-item">
-              <iframe src="https://player.mediadelivery.net/embed/756775/f0d20e79-73dd-4cac-83a6-68cfee459b41?autoplay=false&preload=false" loading="lazy" allow="gyroscope; encrypted-media" allowfullscreen="true"></iframe>
+          <!-- CARROSSEL DE PRÉVIAS (SPYCAM DARK) -->
+          <div class="preview-carousel-wrapper">
+            <div class="carousel-hint">
+              <span>🎬 PRÉVIAS SPYCAM DARK</span>
+              <span>Deslize para o lado ➔</span>
             </div>
-            <div class="video-item">
-              <iframe src="https://player.mediadelivery.net/embed/756775/c3a254f4-71ae-4208-9f23-3ed67f425969?autoplay=false&preload=false" loading="lazy" allow="gyroscope; encrypted-media" allowfullscreen="true"></iframe>
+            <div class="preview-carousel">
+              <div class="video-item">
+                <iframe src="https://player.mediadelivery.net/embed/756775/f0d20e79-73dd-4cac-83a6-68cfee459b41?autoplay=false&preload=false" loading="lazy" allow="gyroscope; encrypted-media" allowfullscreen="true"></iframe>
+              </div>
+              <div class="video-item">
+                <iframe src="https://player.mediadelivery.net/embed/756775/16dbeb7c-e951-404a-adfe-75ff3dfff051?autoplay=false&preload=false" loading="lazy" allow="gyroscope; encrypted-media" allowfullscreen="true"></iframe>
+              </div>
+              <div class="video-item">
+                <iframe src="https://player.mediadelivery.net/embed/756775/397dda6c-d3f6-4959-a8af-bbbcbc583e6b?autoplay=false&preload=false" loading="lazy" allow="gyroscope; encrypted-media" allowfullscreen="true"></iframe>
+              </div>
+              <div class="video-item">
+                <iframe src="https://player.mediadelivery.net/embed/756775/0e10ec0b-c077-4f2c-ad18-efa0d1033fb5?autoplay=false&preload=false" loading="lazy" allow="gyroscope; encrypted-media" allowfullscreen="true"></iframe>
+              </div>
+              <div class="video-item">
+                <iframe src="https://player.mediadelivery.net/embed/756775/90fa3850-98e1-4741-8940-3c25588a7b78?autoplay=false&preload=false" loading="lazy" allow="gyroscope; encrypted-media" allowfullscreen="true"></iframe>
+              </div>
             </div>
           </div>
 
