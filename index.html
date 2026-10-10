@@ -66,6 +66,93 @@
       -webkit-font-smoothing: antialiased;
     }
 
+    /* BARRA FIXA DE MUDANÇA DE DOMÍNIO (ESTILO F95ZONE) */
+    .top-domain-bar {
+      position: sticky;
+      top: 0;
+      left: 0;
+      width: 100%;
+      background: linear-gradient(90deg, #450a0a 0%, #7f1d1d 50%, #450a0a 100%);
+      border-bottom: 1px solid rgba(239, 68, 68, 0.6);
+      padding: 8px 16px;
+      z-index: 10000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.6);
+    }
+
+    .top-domain-content {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      font-size: 13px;
+      color: #ffffff;
+      font-weight: 600;
+      text-align: center;
+      flex-wrap: wrap;
+    }
+
+    .top-domain-badge {
+      background: #ef4444;
+      color: #ffffff;
+      font-size: 10px;
+      font-weight: 900;
+      padding: 3px 8px;
+      border-radius: 4px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      animation: pulseAlert 1.5s infinite;
+    }
+
+    @keyframes pulseAlert {
+      0% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.8; transform: scale(1.05); }
+      100% { opacity: 1; transform: scale(1); }
+    }
+
+    .top-domain-btn {
+      background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+      color: #ffffff;
+      font-size: 12px;
+      font-weight: 800;
+      padding: 6px 14px;
+      border-radius: 6px;
+      text-decoration: none;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.4);
+      transition: all 0.2s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .top-domain-btn:hover {
+      background: #f87171;
+      color: #000;
+      transform: translateY(-1px);
+    }
+
+    .top-domain-close {
+      position: absolute;
+      right: 12px;
+      background: none;
+      border: none;
+      color: rgba(255, 255, 255, 0.6);
+      font-size: 16px;
+      cursor: pointer;
+      padding: 4px 8px;
+      font-weight: bold;
+    }
+
+    .top-domain-close:hover {
+      color: #ffffff;
+    }
+
     .particles-bg {
       position: fixed;
       inset: 0;
@@ -92,11 +179,11 @@
     }
 
     header {
-      background: rgba(10, 15, 26, 0.92);
+      background: rgba(10, 15, 26, 0.95);
       border-bottom: 1px solid var(--border-neon);
       padding: 12px 16px;
       position: sticky;
-      top: 0;
+      top: 37px;
       z-index: 90;
       transform: translateZ(0);
     }
@@ -183,64 +270,6 @@
       padding: 0 14px;
       position: relative;
       z-index: 1;
-    }
-
-    /* AVISO DE MUDANÇA DE DOMÍNIO */
-    .domain-notice-banner {
-      background: linear-gradient(135deg, rgba(239, 68, 68, 0.18) 0%, rgba(234, 179, 8, 0.15) 100%);
-      border: 1px solid rgba(239, 68, 68, 0.5);
-      border-radius: 16px;
-      padding: 14px 18px;
-      margin-bottom: 20px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 14px;
-      box-shadow: 0 0 20px rgba(239, 68, 68, 0.2);
-      flex-wrap: wrap;
-    }
-
-    .domain-notice-info {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      flex: 1;
-      min-width: 250px;
-    }
-
-    .domain-notice-icon {
-      font-size: 22px;
-      flex-shrink: 0;
-    }
-
-    .domain-notice-text {
-      font-size: 13px;
-      color: #f3f4f6;
-      line-height: 1.4;
-    }
-
-    .domain-notice-text strong {
-      color: #facc15;
-    }
-
-    .domain-notice-btn {
-      background: linear-gradient(135deg, #facc15 0%, #eab308 100%);
-      color: #000;
-      font-weight: 900;
-      font-size: 13px;
-      padding: 10px 18px;
-      border-radius: 10px;
-      text-decoration: none;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      white-space: nowrap;
-      box-shadow: 0 0 12px rgba(234, 179, 8, 0.4);
-      transition: transform 0.2s ease, box-shadow 0.2s ease;
-    }
-
-    .domain-notice-btn:hover {
-      transform: scale(1.03);
-      box-shadow: 0 0 20px rgba(234, 179, 8, 0.7);
     }
 
     /* HERO BANNER */
@@ -995,18 +1024,17 @@
         padding: 10px 14px;
       }
 
-      .domain-notice-banner {
-        flex-direction: column;
-        text-align: center;
+      .top-domain-content {
+        font-size: 11px;
       }
 
-      .domain-notice-info {
-        flex-direction: column;
+      .top-domain-btn {
+        padding: 5px 10px;
+        font-size: 11px;
       }
 
-      .domain-notice-btn {
-        width: 100%;
-        text-align: center;
+      header {
+        top: 36px;
       }
     }
 
@@ -1021,6 +1049,16 @@
   </style>
 </head>
 <body>
+
+  <!-- BARRA FIXA DE MUDANÇA DE DOMÍNIO (ESTILO F95ZONE FIXA NO TOPO) -->
+  <div class="top-domain-bar" id="topDomainBar">
+    <div class="top-domain-content">
+      <span class="top-domain-badge">⚠️ NOVO DOMÍNIO</span>
+      <span>Mudamos de endereço oficial! Acesse pelo novo domínio:</span>
+      <a href="https://midiasprivadas.com/" class="top-domain-btn">midiasprivadas.com 🚀</a>
+    </div>
+    <button class="top-domain-close" onclick="fecharBarraTopDomain()">&times;</button>
+  </div>
 
   <!-- PARTÍCULAS -->
   <div class="particles-bg" id="particlesBg"></div>
@@ -1116,17 +1154,6 @@
 
   <main class="main-container">
 
-    <!-- BANNER DE MUDANÇA DE DOMÍNIO -->
-    <div class="domain-notice-banner">
-      <div class="domain-notice-info">
-        <span class="domain-notice-icon">⚠️</span>
-        <div class="domain-notice-text">
-          <b>MUDAMOS DE DOMÍNIO!</b> Acesse nosso novo endereço oficial para continuar assistindo sem interrupções: <strong>midiasprivadas.com</strong>
-        </div>
-      </div>
-      <a href="https://midiasprivadas.com/" class="domain-notice-btn">IR PARA NOVO SITE ➔</a>
-    </div>
-
     <!-- HERO BANNER -->
     <div class="hero-banner">
       <span class="badge-promo">🔥 PROMOÇÃO POR TEMPO LIMITADO</span>
@@ -1197,7 +1224,7 @@
               <li><span class="check">✓</span> videos Omegle</li>
               <li><span class="check">✓</span> Entre agora no maior e mais exclusivo vip de amadores/vazados da web</li>
               <li><span class="check">✓</span> Seleções especiais e mídias daquelas que não pode ser vistas!</li>
-              <li><span class="check">✓</span> Atualizações diárias na plataforma</li>
+              <li><span class="check">✓</span> Atualizaciones diárias na plataforma</li>
               <li><span class="check">✓</span> Streaming rápido direto no seu celular ou PC</li>
             </ul>
           </div>
@@ -1576,6 +1603,18 @@
 
   <script src="links-cam.js"></script>
 
+  <!-- FUNÇÃO PARA FECHAR A BARRA SUPERIOR -->
+  <script>
+    function fecharBarraTopDomain() {
+      const bar = document.getElementById('topDomainBar');
+      if (bar) {
+        bar.style.display = 'none';
+        const header = document.querySelector('header');
+        if (header) header.style.top = '0';
+      }
+    }
+  </script>
+
   <!-- SISTEMA DE SOCIAL PROOF (COMPRAS FICTÍCIAS NO CANTO INFERIOR ESQUERDO) -->
   <script>
     (function iniciarNotificacoesCompras() {
@@ -1608,7 +1647,6 @@
 
         toast.classList.add('visible');
 
-        // Esconde a notificação após 5 segundos
         setTimeout(() => {
           toast.classList.remove('visible');
           agendarProxima();
@@ -1616,12 +1654,10 @@
       }
 
       function agendarProxima() {
-        // Tempo randômico entre 10 e 60 segundos (10000ms a 60000ms)
         const tempoProximo = Math.floor(Math.random() * (60000 - 10000 + 1)) + 10000;
         setTimeout(dispararNotificacao, tempoProximo);
       }
 
-      // Primeiro disparo ocorre após 8 segundos da página carregar
       setTimeout(dispararNotificacao, 8000);
     })();
   </script>
@@ -1712,7 +1748,6 @@
 
     let palavrasProibidasBanco = [];
 
-    // LINKS DE CHECKOUT ATUALIZADOS COM O LINK SOLICITADO
     const CHECKOUTS = {
       promo_30: "https://link.syncpayments.com.br/ronwrZ",
       amador_30: "https://link.syncpayments.com.br/MicvMz",
@@ -2132,7 +2167,6 @@
             const catFull = item.categoria_id.toLowerCase();
             vipsAtivosLista.push(catFull);
 
-            // SE A COMPRA FOR DA PROMOÇÃO OU COMBO DUPLO LIBERA OS CARDS CORRESPONDENTES
             if (catFull.includes('promo') || catFull.includes('combo') || catFull.includes('amador_e_cam')) {
               liberarCardVisual('amador');
               liberarCardVisual('cam');
