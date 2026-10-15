@@ -162,15 +162,15 @@
 </head>
 <body>
 
-  <!-- POP-UP +18 -->
+  <!-- POP-UP +18 CORRIGIDO -->
   <div id="popup-idade" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.96); display: flex; justify-content: center; align-items: center; z-index: 999999; backdrop-filter: blur(8px);">
     <div style="background: #131a24; border: 1px solid #ef4444; border-radius: 16px; padding: 26px 20px; text-align: center; max-width: 400px; width: 90%;">
       <h2 style="color: #ef4444; font-size: 20px; margin-bottom: 10px;">🔞 CONTEÚDO EXCLUSIVO (+18)</h2>
       <p style="font-size: 14px; color: #9ca3af; margin-bottom: 12px;">Este site contém material restrito para maiores de idade.</p>
       <p style="font-size: 15px; font-weight: 600; margin-bottom: 22px;">Você declara ter 18 anos ou mais?</p>
-      <div style="display: flex; gap: 10px;">
-        <button id="btn-pop-sim" style="flex:1; background:#eab308; color:#000; border:none; padding:14px; border-radius:10px; font-weight:900;">SIM, SOU MAIOR</button>
-        <button id="btn-pop-nao" style="flex:1; background:rgba(255,255,255,0.08); color:#9ca3af; border:1px solid rgba(255,255,255,0.1); padding:14px; border-radius:10px;">SAIR</button>
+      <div style="display: flex; gap: 12px; justify-content: center;">
+        <button id="btn-pop-sim" style="flex:1; background:#eab308; color:#000; border:none; padding:14px; border-radius:10px; font-weight:900; cursor:pointer;">SIM, SOU MAIOR</button>
+        <button id="btn-pop-nao" style="flex:1; background:rgba(255,255,255,0.08); color:#9ca3af; border:1px solid rgba(255,255,255,0.1); padding:14px; border-radius:10px; font-weight:600; cursor:pointer;">SAIR</button>
       </div>
     </div>
   </div>
@@ -244,7 +244,7 @@
 
   </main>
 
-  <!-- SEU SCRIPT COMPLETO (funcional) -->
+  <!-- SEU SCRIPT COMPLETO (corrigido e funcional) -->
   <script>
     const _supabase = window.supabase.createClient(
       'https://seu-project.supabase.co',
@@ -524,7 +524,7 @@
 
       const { error } = await _supabase
         .from('palavras_proibidas')
-        .insert([{ palavra }]);
+          .insert([{ palavra }]);
 
       if (error) alert('Erro ao adicionar palavra.');
       else {
@@ -822,6 +822,14 @@
         tag => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[tag] || tag)
       );
     }
+
+    // Pop-up corrigido
+    document.getElementById('btn-pop-sim').addEventListener('click', () => {
+      document.getElementById('popup-idade').style.display = 'none';
+    });
+    document.getElementById('btn-pop-nao').addEventListener('click', () => {
+      window.location.href = 'https://google.com';
+    });
   </script>
 
 </body>
