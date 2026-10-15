@@ -10,7 +10,9 @@ let categoriaPendente = null;
 const CHECKOUTS = {
   amador: "https://link.syncpayments.com.br/MicvMz",
   cam: "https://link.syncpayments.com.br/SEl2IQ",
-  hentai: "https://link.syncpayments.com.br/cG8rFc"
+  hentai: "https://link.syncpayments.com.br/cG8rFc",
+  famosinhas: "https://link.syncpayments.com.br/YqNmqp",
+  promo_30: "https://link.syncpayments.com.br/ronwrZ"
 };
 
 // INICIALIZAÇÃO DA SESSÃO AO CARREGAR A PÁGINA
@@ -89,7 +91,6 @@ async function fazerAuth() {
     let { data, error } = await _supabase.auth.signInWithPassword({ email, password });
     
     if (error) {
-      // Se não conseguiu logar, tenta criar a conta
       const create = await _supabase.auth.signUp({ email, password });
       
       if (create.error) {
@@ -160,31 +161,50 @@ async function checarPermissoes() {
       return;
     }
 
+    // 1. VERIFICAÇÃO PARA A PÁGINA PRINCIPAL (INDEX)
     if (compras && compras.length > 0) {
       compras.forEach(item => {
-        const cat = item.categoria_id;
-        
-        const badge = document.getElementById(`badge-${cat}`);
-        const btnBuy = document.getElementById(`buy-${cat}`);
-        const btnPaypal = document.getElementById(`paypal-${cat}`);
-        const btnAccess = document.getElementById(`access-${cat}`);
+        const catCompleta = item.categoria_id.toLowerCase();
+        const catBase = catCompleta.split('_')[0];
 
-        // Só altera os estilos dos elementos se eles realmente existirem no HTML da página atual
-        if (badge) { 
-          badge.innerHTML = "🔓 Liberado"; 
-          badge.className = "status-badge liberado"; 
-        }
-        if (btnBuy) {
-          btnBuy.style.setProperty('display', 'none', 'important');
-        }
-        if (btnPaypal) {
-          btnPaypal.style.setProperty('display', 'none', 'important');
-        }
-        if (btnAccess) {
-          btnAccess.style.display = "block";
-        }
+        // Libera elementos visuais correspondentes ao plano na página index
+        [catCompleta, catBase].forEach(c => {
+          const badge = document.getElementById(`badge-${c}`);
+          const btnBuy = document.getElementById(`buy-${c}`);
+          const btnPaypal = document.getElementById(`paypal-${c}`);
+          const btnAccess = document.getElementById(`access-${c}`);
+
+          if (badge) { 
+            badge.innerHTML = "🔓 Liberado"; 
+            badge.className = "status-badge liberado"; 
+          }
+          if (btnBuy) btnBuy.style.setProperty('display', 'none', 'important');
+          if (btnPaypal) btnPaypal.style.setProperty('display', 'none', 'important');
+          if (btnAccess) btnAccess.style.display = "block";
+        });
       });
     }
+
+    // 2. VERIFICAÇÃO PARA AS PÁGINAS INTERNAS (EX: amador.html, cam.html, famosinhas.html)
+    if (window.categoriaId) {
+      const temAcessoPermitido = compras && compras.some(item => {
+        const idBanco = item.categoria_id.toLowerCase();
+        const catPagina = window.categoriaId.toLowerCase();
+        return idBanco === catPagina || idBanco.startsWith(catPagina + '_') || idBanco.includes('promo');
+      });
+
+      const elLiberado = document.getElementById('conteudo-liberado');
+      const elBloqueado = document.getElementById('conteudo-bloqueado');
+
+      if (temAcessoPermitido) {
+        if (elLiberado) elLiberado.style.display = 'block';
+        if (elBloqueado) elBloqueado.style.display = 'none';
+      } else {
+        if (elLiberado) elLiberado.style.display = 'none';
+        if (elBloqueado) elBloqueado.style.display = 'block';
+      }
+    }
+
   } catch (err) {
     console.error("Exceção na checagem de permissões:", err);
   }
