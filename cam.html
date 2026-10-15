@@ -182,8 +182,8 @@
       <button id="btn-flagras" class="btn-subcategoria" onclick="alterarSubcategoria('flagras')">👀 Flagras Ruas</button>
     </div>
 
-    <!-- CONTAINER DE CONTEÚDO LIBERADO -->
-    <div id="conteudo-liberado">
+    <!-- CONTAINER DE CONTEÚDO LIBERADO (GERENCIADO PELO APP.JS) -->
+    <div id="conteudo-liberado" style="display: none;">
       <div id="feed-container" class="video-grid"></div>
       <div id="pagination-controls" class="pagination-container"></div>
     </div>
@@ -205,7 +205,7 @@
     window.categoriaId = 'cam';
   </script>
 
-  <!-- CARREGA O APP.JS COM SUPABASE -->
+  <!-- CARREGA O APP.JS COM SUPABASE (FAZ A VERIFICAÇÃO DE SEGURANÇA) -->
   <script src="app.js"></script>
 
   <!-- SCRIPT DE EXIBIÇÃO E NAVEGAÇÃO -->
