@@ -14,180 +14,39 @@
     gtag('config', 'G-Q7KTN7GPTN');
   </script>
 
+  <!-- FAVICON -->
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><circle cx=%2250%22 cy=%2250%22 r=%2250%22 fill=%22%23eab308%22/><text y=%22.9em%22 x=%2220%22 font-size=%2270%22 fill=%22black%22>🔞</text></svg>">
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
+  
   <style>
     :root {
       --bg-dark: #0a0f1a;
-      --bg-deep: #060910;
       --card-bg: #10161f;
-      --card-header: #1a2332;
       --yellow-pix: #eab308;
-      --yellow-neon: #facc15;
       --yellow-glow: rgba(234, 179, 8, 0.55);
-      --red-neon: #ef4444;
-      --green-neon: #22c55e;
       --text-main: #f9fafb;
       --text-sub: #9ca3af;
-      --border-color: rgba(255, 255, 255, 0.08);
-      --border-neon: rgba(234, 179, 8, 0.35);
+      --border: rgba(234, 179, 8, 0.25);
     }
 
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-
-    input, textarea {
-      -webkit-user-select: text;
-      -moz-user-select: text;
-      -ms-user-select: text;
-      user-select: text;
-    }
-
-    html, body {
-      overflow-x: hidden;
-      touch-action: manipulation;
-      scroll-behavior: smooth;
-    }
-
+    * { box-sizing: border-box; margin:0; padding:0; }
+    html, body { overflow-x: hidden; touch-action: manipulation; }
     body {
+      background: #0a0f1a;
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-      background-color: var(--bg-deep);
-      background-image:
-        radial-gradient(circle at 15% 10%, rgba(234, 179, 8, 0.08) 0%, transparent 45%),
-        radial-gradient(circle at 85% 20%, rgba(239, 68, 68, 0.05) 0%, transparent 40%);
-      background-attachment: fixed;
       color: var(--text-main);
-      min-height: 100vh;
-      -webkit-font-smoothing: antialiased;
     }
 
-    /* BARRA FIXA DE MUDANÇA DE DOMÍNIO (ESTILO F95ZONE) */
-    .top-domain-bar {
-      position: sticky;
-      top: 0;
-      left: 0;
-      width: 100%;
-      background: linear-gradient(90deg, #450a0a 0%, #7f1d1d 50%, #450a0a 100%);
-      border-bottom: 1px solid rgba(239, 68, 68, 0.6);
-      padding: 8px 16px;
-      z-index: 10000;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 12px;
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.6);
-    }
-
-    .top-domain-content {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 10px;
-      font-size: 13px;
-      color: #ffffff;
-      font-weight: 600;
-      text-align: center;
-      flex-wrap: wrap;
-    }
-
-    .top-domain-badge {
-      background: #ef4444;
-      color: #ffffff;
-      font-size: 10px;
-      font-weight: 900;
-      padding: 3px 8px;
-      border-radius: 4px;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      animation: pulseAlert 1.5s infinite;
-    }
-
-    @keyframes pulseAlert {
-      0% { opacity: 1; transform: scale(1); }
-      50% { opacity: 0.8; transform: scale(1.05); }
-      100% { opacity: 1; transform: scale(1); }
-    }
-
-    .top-domain-btn {
-      background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
-      color: #ffffff;
-      font-size: 12px;
-      font-weight: 800;
-      padding: 6px 14px;
-      border-radius: 6px;
-      text-decoration: none;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      border: 1px solid rgba(255, 255, 255, 0.3);
-      box-shadow: 0 2px 8px rgba(0,0,0,0.4);
-      transition: all 0.2s ease;
-      display: inline-flex;
-      align-items: center;
-      gap: 4px;
-    }
-
-    .top-domain-btn:hover {
-      background: #f87171;
-      color: #000;
-      transform: translateY(-1px);
-    }
-
-    .top-domain-close {
-      position: absolute;
-      right: 12px;
-      background: none;
-      border: none;
-      color: rgba(255, 255, 255, 0.6);
-      font-size: 16px;
-      cursor: pointer;
-      padding: 4px 8px;
-      font-weight: bold;
-    }
-
-    .top-domain-close:hover {
-      color: #ffffff;
-    }
-
-    .particles-bg {
-      position: fixed;
-      inset: 0;
-      pointer-events: none;
-      z-index: 0;
-      overflow: hidden;
-      display: none;
-    }
-    .particle {
-      position: absolute;
-      width: 3px;
-      height: 3px;
-      border-radius: 50%;
-      background: var(--yellow-neon);
-      opacity: 0;
-      animation: floatUp linear infinite;
-      will-change: transform, opacity;
-    }
-    @keyframes floatUp {
-      0% { transform: translate3d(0, 100vh, 0) scale(0.5); opacity: 0; }
-      15% { opacity: 0.7; }
-      85% { opacity: 0.45; }
-      100% { transform: translate3d(0, -10vh, 0) scale(1); opacity: 0; }
-    }
-
+    /* HEADER */
     header {
       background: rgba(10, 15, 26, 0.95);
-      border-bottom: 1px solid var(--border-neon);
-      padding: 12px 16px;
+      border-bottom: 1px solid var(--border);
+      padding: 14px 20px;
       position: sticky;
-      top: 37px;
-      z-index: 90;
-      transform: translateZ(0);
+      top: 0;
+      z-index: 100;
     }
-
     .header-container {
       max-width: 900px;
       margin: 0 auto;
@@ -195,943 +54,123 @@
       justify-content: space-between;
       align-items: center;
     }
-
-    .channel-info {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-
     .channel-avatar {
-      width: 44px;
-      height: 44px;
+      width: 48px; height: 48px;
       border-radius: 50%;
       background: linear-gradient(135deg, #eab308, #ca8a04);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 16px;
-      font-weight: 800;
-      color: #000;
-      box-shadow: 0 0 14px rgba(234, 179, 8, 0.5);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 20px; font-weight: 900; color: #000;
+      box-shadow: 0 0 18px rgba(234, 179, 8, 0.6);
     }
 
-    .channel-details h1 {
-      font-size: 16px;
-      font-weight: 700;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-
-    .verified-badge {
-      color: var(--yellow-pix);
-      font-size: 15px;
-    }
-
-    .channel-stats {
-      font-size: 12px;
-      color: var(--text-sub);
-    }
-
-    .auth-btn {
-      background: rgba(234, 179, 8, 0.10);
-      color: #fff;
-      border: 1px solid var(--border-neon);
-      padding: 8px 16px;
-      border-radius: 20px;
-      font-weight: 600;
-      font-size: 13px;
-      cursor: pointer;
-      transition: background 0.2s ease;
-    }
-    .auth-btn:hover { background: rgba(234, 179, 8, 0.22); }
-
-    .user-profile-trigger {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      background: rgba(255, 255, 255, 0.05);
-      border: 1px solid var(--border-neon);
-      padding: 6px 12px;
-      border-radius: 20px;
-      cursor: pointer;
-      font-size: 12px;
-      color: var(--text-main);
-      transition: background 0.2s ease;
-    }
-    .user-profile-trigger:hover {
-      background: rgba(234, 179, 8, 0.15);
-    }
-
-    .main-container {
-      max-width: 900px;
-      margin: 20px auto;
-      padding: 0 14px;
-      position: relative;
-      z-index: 1;
-    }
-
-    /* HERO BANNER */
-    .hero-banner {
-      position: relative;
-      background:
-        linear-gradient(180deg, rgba(234, 179, 8, 0.16) 0%, rgba(10, 15, 26, 0.85) 100%),
-        radial-gradient(circle at 50% 0%, rgba(234, 179, 8, 0.18) 0%, transparent 60%);
-      border: 1px solid var(--border-neon);
-      border-radius: 22px;
-      padding: 36px 22px 30px;
-      margin-bottom: 24px;
-      text-align: center;
-      overflow: hidden;
-      box-shadow: 0 0 30px rgba(234, 179, 8, 0.12), 0 16px 40px rgba(0, 0, 0, 0.4);
-    }
-
-    .badge-promo {
-      display: inline-block;
-      background: rgba(234, 179, 8, 0.18);
-      color: #facc15;
-      border: 1px solid rgba(234, 179, 8, 0.55);
-      font-size: 11px;
-      font-weight: 800;
-      padding: 5px 16px;
-      border-radius: 50px;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      margin-bottom: 14px;
-    }
-
-    .hero-banner h2 {
-      font-size: 26px;
-      font-weight: 900;
-      color: #ffffff;
-      margin-bottom: 12px;
-      line-height: 1.25;
-      letter-spacing: -0.5px;
-      text-shadow: 0 0 18px rgba(234, 179, 8, 0.4);
-    }
-
-    .hero-banner p {
-      font-size: 14px;
-      color: #d1d5db;
-      line-height: 1.55;
-      max-width: 560px;
-      margin: 0 auto 22px;
-    }
-
-    .hero-cta {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      background: linear-gradient(135deg, #facc15 0%, #eab308 100%);
-      color: #000000;
-      border: none;
-      padding: 16px 32px;
-      border-radius: 14px;
-      font-weight: 900;
-      font-size: 15px;
-      cursor: pointer;
-      text-transform: uppercase;
-      letter-spacing: 0.8px;
-      box-shadow: 0 0 22px rgba(234, 179, 8, 0.45), 0 8px 20px rgba(0, 0, 0, 0.4);
-      transition: transform 0.2s ease, box-shadow 0.2s ease;
-      text-decoration: none;
-      transform: translateZ(0);
-    }
-    .hero-cta:hover {
-      transform: translate3d(0, -3px, 0);
-      box-shadow: 0 0 38px rgba(234, 179, 8, 0.75), 0 10px 24px rgba(0, 0, 0, 0.5);
-    }
-
-    /* DEMO */
-    .demo-section {
-      background: var(--card-bg);
-      border: 1px solid var(--border-neon);
-      border-radius: 18px;
-      padding: 18px;
-      margin-bottom: 30px;
-      text-align: center;
-      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.4);
-    }
-
-    .demo-title {
-      font-size: 15px;
-      font-weight: 800;
-      color: #fff;
-      margin-bottom: 14px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      letter-spacing: 0.3px;
-    }
-
-    .demo-video-wrapper {
-      position: relative;
-      width: 100%;
-      padding-top: 56.25%;
-      border-radius: 14px;
-      overflow: hidden;
-      background: #000;
-      border: 1px solid var(--border-neon);
-    }
-
-    .demo-video-wrapper iframe {
-      position: absolute;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-      border: none;
-    }
-
-    /* GRID DE CARDS */
+    /* GRID VENDAS */
     .grid {
       display: grid;
       grid-template-columns: 1fr;
-      gap: 26px;
+      gap: 28px;
+      max-width: 900px;
+      margin: 30px auto;
+      padding: 0 20px;
     }
-
     .card {
-      position: relative;
       background: var(--card-bg);
-      border: 1px solid var(--border-neon);
-      border-radius: 22px;
+      border: 1px solid var(--border);
+      border-radius: 18px;
       overflow: hidden;
-      box-shadow: 0 12px 30px rgba(0,0,0,0.45);
-      transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
-      transform: translateZ(0);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.4);
     }
-
-    .card-promo-dupla {
-      border: 2px solid var(--yellow-neon);
-      box-shadow: 0 0 30px rgba(234, 179, 8, 0.3), 0 12px 30px rgba(0,0,0,0.45);
-    }
-
     .card:hover {
-      transform: translate3d(0, -4px, 0);
-      border-color: rgba(234, 179, 8, 0.6);
-      box-shadow: 0 0 40px rgba(234, 179, 8, 0.25), 0 16px 40px rgba(0,0,0,0.5);
+      transform: translateY(-8px);
+      box-shadow: 0 20px 35px rgba(234, 179, 8, 0.25);
     }
 
     .card-header {
-      background: linear-gradient(180deg, #1a2332 0%, #131a24 100%);
+      background: rgba(10, 15, 26, 0.95);
       padding: 18px 20px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      flex-wrap: wrap;
-      gap: 10px;
-      border-bottom: 1px solid var(--border-neon);
+      display: flex; justify-content: space-between; align-items: center;
+      border-bottom: 1px solid var(--border);
     }
 
-    .card-header h3 {
-      font-size: 19px;
-      font-weight: 800;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      margin: 0;
-      letter-spacing: -0.3px;
-    }
-
-    .card-badges {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .plan-badge {
-      background: rgba(239, 68, 68, 0.18);
-      color: #f87171;
-      border: 1px solid rgba(239, 68, 68, 0.45);
-      padding: 4px 11px;
-      border-radius: 8px;
-      font-size: 11px;
-      font-weight: 800;
-      letter-spacing: 0.5px;
-    }
-
-    .status-badge {
-      padding: 4px 12px;
-      border-radius: 8px;
-      font-size: 11px;
-      font-weight: 800;
-      display: inline-block;
-    }
-
-    .bloqueado {
-      background: rgba(255,255,255,0.06);
-      color: var(--text-sub);
-      border: 1px solid rgba(255,255,255,0.08);
-    }
-    .liberado {
-      background: var(--yellow-pix);
-      color: #000;
-      box-shadow: 0 0 14px rgba(234, 179, 8, 0.55);
-    }
-
-    .card-body { padding: 20px; }
-
-    /* PREVIEW CARROSSEL NETFLIX STYLE */
-    .preview-carousel-wrapper {
-      position: relative;
-      margin-bottom: 22px;
-    }
-
-    .carousel-hint {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      font-size: 12px;
-      color: var(--text-sub);
-      margin-bottom: 8px;
-      padding: 0 4px;
-      font-weight: 600;
-    }
-
-    .carousel-hint span {
-      display: flex;
-      align-items: center;
-      gap: 4px;
-      color: #facc15;
-    }
-
-    .preview-carousel {
-      display: flex;
-      gap: 12px;
-      overflow-x: auto;
-      scroll-snap-type: x mandatory;
-      -webkit-overflow-scrolling: touch;
-      padding: 10px;
-      background: #060910;
-      border-radius: 16px;
-      border: 1px solid var(--border-neon);
-      scrollbar-width: thin;
-      scrollbar-color: var(--yellow-pix) #060910;
-    }
-
-    .preview-carousel::-webkit-scrollbar {
-      height: 6px;
-    }
-    .preview-carousel::-webkit-scrollbar-track {
-      background: #060910;
-      border-radius: 10px;
-    }
-    .preview-carousel::-webkit-scrollbar-thumb {
-      background: var(--yellow-pix);
-      border-radius: 10px;
-    }
-
-    .video-item {
-      flex: 0 0 170px;
-      scroll-snap-align: start;
-      background: #111;
-      border-radius: 12px;
-      overflow: hidden;
-      border: 1px solid rgba(234, 179, 8, 0.25);
-      transition: transform 0.3s ease, border-color 0.3s ease;
-      transform: translateZ(0);
-    }
-    .video-item:hover {
-      transform: scale(1.02);
-      border-color: rgba(234, 179, 8, 0.8);
-    }
-
-    .preview-carousel iframe {
-      width: 100%;
-      aspect-ratio: 9/16;
-      border: none;
-      display: block;
-      background: #000;
-    }
-
-    /* BENEFÍCIOS */
-    .vip-description { margin-bottom: 22px; }
-
-    .vip-description p {
-      font-size: 14px;
-      color: #e5e7eb;
-      font-weight: 700;
-      margin-bottom: 14px;
-    }
-
-    .benefits-list {
-      list-style: none;
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-    }
-
-    .benefits-list li {
-      font-size: 13px;
-      color: #b8c0cc;
-      display: flex;
-      align-items: flex-start;
-      gap: 9px;
-      line-height: 1.45;
-    }
-
-    .benefits-list li span.check {
-      color: var(--yellow-pix);
-      font-weight: 900;
-      flex-shrink: 0;
-    }
-
-    /* PREÇO COMBO */
-    .combo-price-box {
-      display: flex;
-      align-items: baseline;
-      gap: 10px;
-      margin: 16px 0;
-    }
-    .combo-price-de {
-      font-size: 14px;
-      color: var(--text-sub);
-      text-decoration: line-through;
-    }
-    .combo-price-por {
-      font-size: 24px;
-      font-weight: 900;
-      color: #facc15;
-    }
-    .combo-badge-discount {
-      background: rgba(34, 197, 94, 0.2);
-      color: #4ade80;
-      border: 1px solid rgba(34, 197, 94, 0.4);
-      padding: 3px 8px;
-      border-radius: 6px;
-      font-size: 12px;
-      font-weight: 800;
-    }
-
-    /* BOTÕES */
-    .plan-actions {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-    }
-
+    /* BOTÕES QUE VENDAM */
     .btn-buy {
-      display: flex !important;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
       width: 100%;
-      background: linear-gradient(135deg, #facc15 0%, #eab308 100%);
-      color: #000000;
-      border: none;
-      padding: 16px 20px;
-      border-radius: 13px;
+      background: linear-gradient(135deg, #eab308 0%, #ca8a04 100%);
+      color: #000;
       font-weight: 900;
-      text-align: center;
-      font-size: 15px;
-      cursor: pointer;
       text-transform: uppercase;
       letter-spacing: 0.6px;
-      box-shadow: 0 0 20px rgba(234, 179, 8, 0.4), 0 6px 18px rgba(0,0,0,0.4);
-      transition: transform 0.2s ease, box-shadow 0.25s ease;
-      transform: translateZ(0);
-    }
-    .btn-buy:hover {
-      transform: translate3d(0, -2px, 0);
-      box-shadow: 0 0 34px rgba(234, 179, 8, 0.75), 0 10px 24px rgba(0,0,0,0.5);
-    }
-
-    .btn-buy-promo {
-      background: linear-gradient(135deg, #22c55e 0%, #15803d 100%) !important;
-      color: #ffffff !important;
-      box-shadow: 0 0 20px rgba(34, 197, 94, 0.4), 0 6px 18px rgba(0,0,0,0.4) !important;
-    }
-    .btn-buy-promo:hover {
-      box-shadow: 0 0 34px rgba(34, 197, 94, 0.75), 0 10px 24px rgba(0,0,0,0.5) !important;
-    }
-
-    .btn-paypal {
-      display: flex !important;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      width: 100%;
-      margin-top: 10px;
-      background: linear-gradient(135deg, #0070ba 0%, #005ea6 100%);
-      color: #ffffff;
-      border: none;
-      padding: 12px 18px;
-      border-radius: 13px;
-      font-weight: 700;
-      text-align: center;
-      font-size: 13px;
-      cursor: pointer;
-      text-decoration: none;
-      box-shadow: 0 4px 12px rgba(0, 112, 186, 0.35);
-      transition: transform 0.2s ease;
-      transform: translateZ(0);
-    }
-    .btn-paypal:hover { transform: translate3d(0, -2px, 0); }
-
-    .btn-access {
-      display: block;
-      width: 100%;
-      background: linear-gradient(135deg, #facc15 0%, #eab308 100%);
-      color: #000;
-      text-decoration: none;
       padding: 16px;
-      border-radius: 13px;
-      font-weight: 900;
-      text-align: center;
+      border-radius: 12px;
       font-size: 15px;
-      text-transform: uppercase;
-      letter-spacing: 0.6px;
-      box-shadow: 0 0 20px rgba(234, 179, 8, 0.5);
-      transition: transform 0.2s ease;
+      box-shadow: 0 4px 20px rgba(234, 179, 8, 0.4);
+      transition: all 0.2s;
     }
-    .btn-access:hover { transform: translate3d(0, -2px, 0); }
+    .btn-buy:hover { transform: translateY(-3px); box-shadow: 0 8px 25px rgba(234, 179, 8, 0.7); }
 
-    .texto-seguranca {
-      font-size: 11px;
-      color: var(--text-sub);
+    /* PREVIEW SIMPLES */
+    .preview-box {
+      padding: 12px;
+      background: #060910;
+      border-radius: 12px;
+      margin: 16px;
+      border: 1px solid var(--border);
+    }
+    .video-item iframe { width: 100%; aspect-ratio: 9/16; border: none; }
+
+    /* HERO – HOOK DE VENDAS */
+    .hero-banner {
+      background: linear-gradient(180deg, rgba(234, 179, 8, 0.12) 0%, rgba(10,15,26,0.9) 100%);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 30px 20px;
+      margin-bottom: 30px;
       text-align: center;
-      margin-top: 12px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 6px;
+      box-shadow: 0 0 30px rgba(234, 179, 8, 0.15);
     }
-
-    /* TAGS CHAT */
-    .tag-vip-amarela {
-      background: linear-gradient(135deg, #facc15, #ca8a04);
-      color: #000;
+    .hero-banner h2 {
+      font-size: 26px;
       font-weight: 900;
-      font-size: 10px;
-      padding: 2px 7px;
-      border-radius: 5px;
-      margin-left: 5px;
-      display: inline-block;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-    }
-
-    .tag-adm-vermelha {
-      background: linear-gradient(135deg, #ef4444, #dc2626);
       color: #fff;
-      font-weight: 900;
-      font-size: 10px;
-      padding: 2px 7px;
-      border-radius: 5px;
-      margin-left: 5px;
-      display: inline-block;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-    }
-
-    .btn-adm-actions {
-      float: right;
-      display: flex;
-      gap: 4px;
-    }
-
-    .btn-del-msg, .btn-ban-user {
-      color: #fff;
-      border: none;
-      font-size: 10px;
-      font-weight: bold;
-      padding: 2px 7px;
-      border-radius: 5px;
-      cursor: pointer;
-    }
-    .btn-del-msg { background: #ef4444; }
-    .btn-del-msg:hover { background: #dc2626; }
-    .btn-ban-user { background: #7c3aed; }
-    .btn-ban-user:hover { background: #6d28d9; }
-
-    /* NOTIFICAÇÃO SOCIAL PROOF (COMPRAS NO CANTO INFERIOR ESQUERDO) */
-    .social-proof-toast {
-      position: fixed;
-      bottom: 20px;
-      left: 20px;
-      background: #10161f;
-      border: 1px solid var(--border-neon);
-      border-left: 4px solid var(--yellow-neon);
-      border-radius: 14px;
-      padding: 12px 16px;
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      z-index: 9999;
-      box-shadow: 0 10px 25px rgba(0,0,0,0.7), 0 0 15px rgba(234, 179, 8, 0.25);
-      opacity: 0;
-      transform: translateY(30px);
-      pointer-events: none;
-      transition: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-      max-width: 310px;
-    }
-
-    .social-proof-toast.visible {
-      opacity: 1;
-      transform: translateY(0);
-      pointer-events: auto;
-    }
-
-    .social-proof-icon {
-      width: 38px;
-      height: 38px;
-      border-radius: 50%;
-      background: rgba(234, 179, 8, 0.15);
-      border: 1px solid var(--border-neon);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 18px;
-      flex-shrink: 0;
-    }
-
-    .social-proof-content {
-      display: flex;
-      flex-direction: column;
-      gap: 2px;
-    }
-
-    .social-proof-title {
-      font-size: 13px;
-      font-weight: 800;
-      color: #fff;
-      line-height: 1.2;
-    }
-
-    .social-proof-desc {
-      font-size: 11px;
-      color: var(--text-sub);
+      margin-bottom: 10px;
       line-height: 1.3;
     }
-
-    .social-proof-desc b {
-      color: #facc15;
+    .hero-banner p {
+      font-size: 15px;
+      color: #d1d5db;
+      margin-bottom: 20px;
     }
-
-    .social-proof-time {
-      font-size: 10px;
-      color: #22c55e;
-      font-weight: 700;
-      margin-top: 2px;
-    }
-
-    /* REVIEWS */
-    .reviews-section {
-      margin-top: 44px;
-      background: var(--card-bg);
-      border: 1px solid var(--border-neon);
-      border-radius: 22px;
-      padding: 26px 18px;
-      box-shadow: 0 12px 30px rgba(0,0,0,0.4);
-    }
-
-    .reviews-title {
-      font-size: 17px;
-      font-weight: 800;
-      color: #fff;
-      text-align: center;
-      margin-bottom: 22px;
-    }
-
-    .reviews-grid {
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-    }
-
-    .review-item {
-      background: #060910;
-      border: 1px solid rgba(234, 179, 8, 0.18);
+    .hero-cta {
+      background: linear-gradient(135deg, #eab308 0%, #ca8a04 100%);
+      color: #000;
+      padding: 16px 40px;
       border-radius: 14px;
-      padding: 14px 16px;
-      transition: transform 0.25s ease, border-color 0.25s ease;
+      font-size: 16px;
+      font-weight: 900;
+      box-shadow: 0 0 30px rgba(234, 179, 8, 0.5);
+      display: inline-block;
+      text-decoration: none;
+      transition: transform 0.2s;
     }
-    .review-item:hover {
-      transform: translate3d(0, -2px, 0);
-      border-color: rgba(234, 179, 8, 0.5);
-    }
+    .hero-cta:hover { transform: scale(1.05); }
 
-    .review-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 7px;
-    }
-
-    .review-user {
-      font-size: 13px;
-      font-weight: 800;
-      color: #f3f4f6;
-    }
-
-    .review-stars {
-      color: #facc15;
-      font-size: 12px;
-    }
-
-    .review-text {
-      font-size: 12px;
-      color: #9ca3af;
-      line-height: 1.5;
-    }
-
-    /* RODAPÉ */
-    footer {
-      margin-top: 50px;
-      background: rgba(10, 15, 26, 0.92);
-      border-top: 1px solid var(--border-neon);
-      padding: 32px 16px;
-      text-align: center;
-      position: relative;
-      z-index: 1;
-    }
-
-    .footer-container {
-      max-width: 800px;
-      margin: 0 auto;
-      display: flex;
-      flex-direction: column;
-      gap: 16px;
-    }
-
-    .footer-disclaimer, .footer-copy, .footer-keywords {
-      font-size: 12px;
-      color: var(--text-sub);
-      line-height: 1.6;
-    }
-
-    .footer-link {
-      color: #facc15;
-      text-decoration: underline;
-    }
-    .footer-link:hover { color: #eab308; }
-
-    .footer-keywords {
-      font-size: 11px;
-      color: #6b7280;
-      border-top: 1px solid rgba(255, 255, 255, 0.05);
-      padding-top: 14px;
-    }
-
-    /* MODAIS */
-    .modal-overlay {
-      display: none;
-      position: fixed;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-      background: rgba(0,0,0,0.9);
-      justify-content: center;
-      align-items: center;
-      z-index: 1000;
-    }
-
-    .modal {
-      background: #10161f;
-      padding: 28px 24px;
-      border-radius: 20px;
-      width: 90%;
-      max-width: 420px;
-      text-align: center;
-      border: 1px solid var(--border-neon);
-      box-shadow: 0 0 35px rgba(234, 179, 8, 0.2), 0 20px 50px rgba(0,0,0,0.7);
-    }
-
-    .modal h3 {
-      margin-bottom: 8px;
-      font-size: 19px;
-      color: #fff;
-      font-weight: 800;
-    }
-    .modal p.subtitle {
-      font-size: 12px;
-      color: var(--text-sub);
-      margin-bottom: 16px;
-    }
-
-    .modal input, .modal select {
-      width: 100%;
-      padding: 12px;
-      margin: 6px 0;
-      border-radius: 10px;
-      border: 1px solid var(--border-neon);
-      background: #060910;
-      color: #fff;
-      font-size: 13px;
-    }
-
-    .modal input:focus, .modal select:focus {
-      outline: none;
-      border-color: var(--yellow-pix);
-    }
-
-    .modal-foto-fullscreen {
-      display: none;
-      position: fixed;
-      z-index: 999999;
-      top: 0; left: 0;
-      width: 100vw; height: 100vh;
-      background-color: rgba(0, 0, 0, 0.96);
-      justify-content: center;
-      align-items: center;
-      cursor: pointer;
-    }
-
-    .modal-foto-fullscreen img {
-      max-width: 95%;
-      max-height: 95%;
-      object-fit: contain;
-      border-radius: 10px;
-    }
-
-    .modal-foto-fechar {
-      position: absolute;
-      top: 15px; right: 20px;
-      color: #ffffff;
-      font-size: 30px;
-      font-weight: bold;
-    }
-
-    @media (max-width: 768px) {
-      .hero-banner h2 { font-size: 20px; }
-      .hero-banner { padding: 28px 18px 24px; }
-      .hero-cta { font-size: 13px; padding: 14px 24px; }
-      .card-header h3 { font-size: 16px; }
-      .btn-buy { font-size: 13px; padding: 14px; }
-      .btn-paypal { font-size: 12px; padding: 11px; }
-      .modal { padding: 24px 18px; }
-
-      .card:hover,
-      .video-item:hover,
-      .review-item:hover,
-      .hero-cta:hover,
-      .btn-buy:hover,
-      .btn-paypal:hover,
-      .btn-access:hover {
-        transform: none !important;
-      }
-
-      .particles-bg { display: none !important; }
-
-      .video-item {
-        flex: 0 0 145px;
-      }
-
-      .social-proof-toast {
-        bottom: 15px;
-        left: 15px;
-        max-width: 280px;
-        padding: 10px 14px;
-      }
-
-      .top-domain-content {
-        font-size: 11px;
-      }
-
-      .top-domain-btn {
-        padding: 5px 10px;
-        font-size: 11px;
-      }
-
-      header {
-        top: 36px;
-      }
-    }
-
-    @media (prefers-reduced-motion: reduce) {
-      * {
-        animation-duration: 0.01ms !important;
-        animation-iteration-count: 1 !important;
-        transition-duration: 0.01ms !important;
-      }
-      .particles-bg { display: none !important; }
+    /* RESPONSIVO */
+    @media (max-width: 600px) {
+      .grid { grid-template-columns: 1fr; }
     }
   </style>
 </head>
 <body>
 
-  <!-- BARRA FIXA DE MUDANÇA DE DOMÍNIO (ESTILO F95ZONE FIXA NO TOPO) -->
-  <div class="top-domain-bar" id="topDomainBar">
-    <div class="top-domain-content">
-      <span class="top-domain-badge">⚠️ NOVO DOMÍNIO</span>
-      <span>Mudamos de endereço oficial! Acesse pelo novo domínio:</span>
-      <a href="https://midiasprivadas.com/" class="top-domain-btn">midiasprivadas.com 🚀</a>
-    </div>
-    <button class="top-domain-close" onclick="fecharBarraTopDomain()">&times;</button>
-  </div>
-
-  <!-- PARTÍCULAS -->
-  <div class="particles-bg" id="particlesBg"></div>
-
-  <!-- TOAST DE COMPRAS (SOCIAL PROOF) - CANTO INFERIOR ESQUERDO -->
-  <div id="socialProofToast" class="social-proof-toast">
-    <div class="social-proof-icon">⚡</div>
-    <div class="social-proof-content">
-      <div class="social-proof-title" id="socialProofName">J***o</div>
-      <div class="social-proof-desc">Comprou o <b id="socialProofPlan">PROMOÇÃO DUPLA</b></div>
-      <div class="social-proof-time">● Acesso liberado via PIX</div>
-    </div>
-  </div>
-
   <!-- POP-UP +18 -->
-  <div id="popup-idade" style="
-    position: fixed;
-    top: 0; left: 0;
-    width: 100vw; height: 100vh;
-    background-color: rgba(0, 0, 0, 0.97);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 999999;
-  ">
-    <div style="
-      background: #10161f;
-      border: 1px solid rgba(239, 68, 68, 0.6);
-      border-radius: 20px;
-      padding: 30px 22px;
-      text-align: center;
-      max-width: 400px;
-      width: 90%;
-      box-shadow: 0 0 40px rgba(239, 68, 68, 0.3), 0 20px 50px rgba(0,0,0,0.8);
-      color: #ffffff;
-    ">
-      <h2 style="color: #ef4444; margin-top: 0; margin-bottom: 10px; font-size: 22px; font-weight: 900;">
-        🔞 CONTEÚDO EXCLUSIVO (+18)
-      </h2>
-      <p style="font-size: 14px; color: #9ca3af; margin-bottom: 12px; line-height: 1.5;">
-        Este site contém material restrito para maiores de idade.
-      </p>
-      <p style="font-size: 15px; color: #ffffff; margin-bottom: 24px; font-weight: 700;">
-        Você declara ter 18 anos ou mais?
-      </p>
-      <div style="display: flex; gap: 10px; justify-content: center;">
-        <button id="btn-pop-sim" style="
-          background: linear-gradient(135deg, #facc15 0%, #eab308 100%);
-          color: #000000;
-          border: none;
-          padding: 14px;
-          border-radius: 12px;
-          font-weight: 900;
-          font-size: 13px;
-          cursor: pointer;
-          flex: 1;
-          box-shadow: 0 0 20px rgba(234, 179, 8, 0.5);
-        ">
-          SIM, SOU MAIOR
-        </button>
-        <button id="btn-pop-nao" style="
-          background-color: rgba(255,255,255,0.06);
-          color: #9ca3af;
-          border: 1px solid rgba(255,255,255,0.1);
-          padding: 14px;
-          border-radius: 12px;
-          font-weight: 600;
-          font-size: 13px;
-          cursor: pointer;
-          flex: 1;
-        ">
-          SAIR
-        </button>
+  <div id="popup-idade" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.96); display: flex; justify-content: center; align-items: center; z-index: 999999; backdrop-filter: blur(8px);">
+    <div style="background: #131a24; border: 1px solid #ef4444; border-radius: 16px; padding: 26px 20px; text-align: center; max-width: 400px; width: 90%;">
+      <h2 style="color: #ef4444; font-size: 20px; margin-bottom: 10px;">🔞 CONTEÚDO EXCLUSIVO (+18)</h2>
+      <p style="font-size: 14px; color: #9ca3af; margin-bottom: 12px;">Este site contém material restrito para maiores de idade.</p>
+      <p style="font-size: 15px; font-weight: 600; margin-bottom: 22px;">Você declara ter 18 anos ou mais?</p>
+      <div style="display: flex; gap: 10px;">
+        <button id="btn-pop-sim" style="flex:1; background:#eab308; color:#000; border:none; padding:14px; border-radius:10px; font-weight:900;">SIM, SOU MAIOR</button>
+        <button id="btn-pop-nao" style="flex:1; background:rgba(255,255,255,0.08); color:#9ca3af; border:1px solid rgba(255,255,255,0.1); padding:14px; border-radius:10px;">SAIR</button>
       </div>
     </div>
   </div>
@@ -1154,616 +193,87 @@
 
   <main class="main-container">
 
-    <!-- HERO BANNER -->
+    <!-- HERO – HOOK DE VENDAS -->
     <div class="hero-banner">
-      <span class="badge-promo">🔥 PROMOÇÃO POR TEMPO LIMITADO</span>
-      <h2>GALERIA VIP PRIVADA – ACESSO A CONTEÚDOS EXCLUSIVOS</h2>
-      <p>Vídeos amadores reais, vazados e exclusivos. Sem censura. SPYCAM VIP DARK e flagras reais, Videos do QUARTO DA BRUNA, QUARTO DO NETO, etc... Acesso imediato.</p>
-      <a href="#card-promo-dupla" class="hero-cta">⚡ APROVEITAR OFERTA LEVE 2 PAGUE 1 (30 DIAS)</a>
+      <span style="color:#facc15; font-size:13px; font-weight:800; letter-spacing:1px;">🔥 PROMOÇÃO POR TEMPO LIMITADO</span>
+      <h2>365 DIAS DE ACESSO VIP PRIVADO</h2>
+      <p>Amador real, vazado, sem censura e sem cobrança recorrente.<br>Libere agora e acesse tudo!</p>
+      <button class="hero-cta" onclick="iniciarCompra('amador')">ENTRAR NA GALERIA VIP – R$ 19,90</button>
     </div>
 
-    <!-- VÍDEO DE DEMONSTRAÇÃO -->
-    <div class="demo-section">
-      <div class="demo-title">
-        <span>🎬</span> PRÉVIA AO VIVO – VEJA COMO É A NOSSA GALERIA POR DENTRO
-      </div>
-      <div class="demo-video-wrapper">
-        <iframe src="https://player.mediadelivery.net/embed/756775/24206add-f024-4795-b71f-c102bcd541ea?autoplay=false&preload=false" loading="lazy" allow="autoplay; encrypted-media" allowfullscreen="true"></iframe>
-      </div>
-    </div>
-
-    <!-- LISTA DE PLANOS / OFERTAS VIP -->
+    <!-- GRID DE PLANOS -->
     <div class="grid">
-
-      <!-- 1. VIP AMADOR -->
-      <div class="card" id="card-amador">
+      <!-- Card Amador -->
+      <div class="card">
         <div class="card-header">
           <h3>⭐ Amador Premium ⭐</h3>
-          <div class="card-badges">
-            <span class="plan-badge">PLANOS 30 E 90 DIAS</span>
-            <span class="status-badge bloqueado" id="badge-amador">🔒 Bloqueado</span>
-          </div>
+          <span class="status-badge bloqueado" id="badge-amador">🔒 Bloqueado</span>
         </div>
-
         <div class="card-body">
-          <!-- CARROSSEL DE PRÉVIAS (AMADOR) -->
-          <div class="preview-carousel-wrapper">
-            <div class="carousel-hint">
-              <span>🎬 PRÉVIAS AMADOR</span>
-              <span>Deslize para o lado ➔</span>
-            </div>
-            <div class="preview-carousel">
-              <div class="video-item">
-                <iframe src="https://player.mediadelivery.net/embed/756775/c2c23422-5a8a-4fb1-904d-47a9713012f1?autoplay=false&preload=false" loading="lazy" allow="gyroscope; encrypted-media" allowfullscreen="true"></iframe>
-              </div>
-              <div class="video-item">
-                <iframe src="https://player.mediadelivery.net/embed/756775/7a3351fb-8c11-4c04-9841-dfce33693b73?autoplay=false&preload=false" loading="lazy" allow="gyroscope; encrypted-media" allowfullscreen="true"></iframe>
-              </div>
-              <div class="video-item">
-                <iframe src="https://player.mediadelivery.net/embed/756775/05d2dc25-b40f-4962-9daf-0071d9f9646c?autoplay=false&preload=false" loading="lazy" allow="gyroscope; encrypted-media" allowfullscreen="true"></iframe>
-              </div>
-              <div class="video-item">
-                <iframe src="https://player.mediadelivery.net/embed/756775/58c23450-326a-4d20-9647-bf468ec0ed48?autoplay=false&preload=false" loading="lazy" allow="gyroscope; encrypted-media" allowfullscreen="true"></iframe>
-              </div>
-              <div class="video-item">
-                <iframe src="https://player.mediadelivery.net/embed/756775/27b80fd0-d1e0-4c53-8ad6-e0b19fb102d2?autoplay=false&preload=false" loading="lazy" allow="gyroscope; encrypted-media" allowfullscreen="true"></iframe>
-              </div>
-            </div>
+          <div class="preview-box">
+            <div class="video-item"><iframe src="https://player.mediadelivery.net/play/756775/d18113bf-1faa-4ac2-ac48-6f61a68bd762?autoplay=false" loading="lazy" allow="autoplay" allowfullscreen></iframe></div>
+            <div class="video-item"><iframe src="https://player.mediadelivery.net/play/756775/d4eb8689-f422-40a4-bd4b-d866dff9b25b?autoplay=false" loading="lazy" allow="autoplay" allowfullscreen></iframe></div>
           </div>
-
-          <div class="vip-description">
-            <p>Veja Agora Nossa Vip Amadores Premium acervo caseiro e amador (TUDO LIBERADO!):</p>
-            <ul class="benefits-list">
-              <li><span class="check">✓</span> <b>Escolha seu plano: 30 dias ou 90 dias de acesso VIP</b></li>
-              <li><span class="check">✓</span> Vídeos amadores exclusivos & vazados</li>
-              <li><span class="check">✓</span> Novinhas safadas 🔞</li>
-              <li><span class="check">✓</span> Faveladas / Baixa Renda</li>
-              <li><span class="check">✓</span> incesto / tio e sobrinha / etc...</li>
-              <li><span class="check">✓</span> Mulher Dançando pelada</li>
-              <li><span class="check">✓</span> videos Tiktok+18</li>
-              <li><span class="check">✓</span> videos Omegle</li>
-              <li><span class="check">✓</span> Entre agora no maior e mais exclusivo vip de amadores/vazados da web</li>
-              <li><span class="check">✓</span> Seleções especiais e mídias daquelas que não pode ser vistas!</li>
-              <li><span class="check">✓</span> Atualizaciones diárias na plataforma</li>
-              <li><span class="check">✓</span> Streaming rápido direto no seu celular ou PC</li>
-            </ul>
-          </div>
-
-          <div class="plan-actions" id="actions-amador">
-            <button id="buy-amador-30" class="btn-buy" onclick="iniciarCompra('amador_30')">⚡ LIBERAR AMADOR • 30 DIAS (R$ 19,90)</button>
-            <button id="buy-amador-90" class="btn-buy" onclick="iniciarCompra('amador_90')">⚡ LIBERAR AMADOR • 90 DIAS (R$ 29,90)</button>
-
-            <a href="https://t.me/hksuporte" target="_blank" class="btn-paypal" id="paypal-amador">
-              🌐 Pay via PayPal / Foreigners (Telegram Support)
-            </a>
-          </div>
-
+          <p><strong>Acesso 365 dias</strong> – Vídeos amadores exclusivos</p>
+          <button id="buy-amador" class="btn-buy" onclick="iniciarCompra('amador')">LIBERAR ACESSO AMADOR – R$ 19,90</button>
+          <a href="https://t.me/hksuporte" target="_blank" class="btn-paypal">Pay via PayPal / Telegram</a>
           <a href="amador.html" id="access-amador" class="btn-access" style="display:none;">ENTRAR NA GALERIA AMADOR</a>
-          <div class="texto-seguranca">🔒 Liberação Automática via PIX • Pagamento 100% Discreto</div>
+          <div class="texto-seguranca">🔒 Liberação automática via PIX</div>
         </div>
       </div>
 
-      <!-- 2. PROMOÇÃO DUPLA (POSICIONADA ENTRE AMADOR E CAM) -->
-      <div class="card card-promo-dupla" id="card-promo-dupla">
-        <div class="card-header" style="background: linear-gradient(180deg, rgba(234, 179, 8, 0.2) 0%, #131a24 100%);">
-          <h3>💥 PROMOÇÃO DUPLA • LEVE 2 PAGUE 1 (30 DIAS) 💥</h3>
-          <div class="card-badges">
-            <span class="plan-badge" style="background: rgba(34, 197, 94, 0.2); color: #4ade80; border-color: rgba(34, 197, 94, 0.4);">OFERTA ESPECIAL</span>
-            <span class="status-badge bloqueado" id="badge-promo_30">🔒 Bloqueado</span>
-          </div>
-        </div>
-
-        <div class="card-body">
-          <div class="vip-description">
-            <p>Garanta acesso total e simultâneo às 2 Galerias VIPs pelo preço de apenas 1:</p>
-            <ul class="benefits-list">
-              <li><span class="check">✓</span> <b>Acesso ilimitado à Galeria Amador Premium (30 Dias)</b></li>
-              <li><span class="check">✓</span> <b>Acesso ilimitado à Galeria Spycam VIP Dark (30 Dias)</b></li>
-              <li><span class="check">✓</span> Economize instantaneamente no pacote duplo promocional</li>
-              <li><span class="check">✓</span> Assista online conteúdos amadores vazados, flagras e câmeras escondidas</li>
-              <li><span class="check">✓</span> Atualizações diárias em ambos os VIPs com streaming rápido</li>
-            </ul>
-          </div>
-
-          <div class="combo-price-box">
-            <span class="combo-price-de">De R$ 39,80</span>
-            <span class="combo-price-por">Por R$ 29,65</span>
-            <span class="combo-badge-discount">LEVE 2 PAGUE 1</span>
-          </div>
-
-          <div class="plan-actions" id="actions-promo_30">
-            <button id="buy-promo-30" class="btn-buy btn-buy-promo" onclick="iniciarCompra('promo_30')">
-              🚀 APROVEITAR PROMOÇÃO DUPLA (R$ 29,65)
-            </button>
-            <a href="https://t.me/hksuporte" target="_blank" class="btn-paypal" id="paypal-promo">
-              🌐 Pay via PayPal / Foreigners (Telegram Support)
-            </a>
-          </div>
-
-          <a href="amador.html" id="access-promo_30" class="btn-access" style="display:none;">ACESSAR TODAS AS GALERIAS VIP</a>
-          <div class="texto-seguranca">🔒 Liberação Automática via PIX • Pagamento 100% Discreto</div>
-        </div>
-      </div>
-
-      <!-- 3. VIP CAM -->
-      <div class="card" id="card-cam">
+      <!-- Card Cam -->
+      <div class="card">
         <div class="card-header">
           <h3>🔥 SPYCAM VIP DARK 🔥</h3>
-          <div class="card-badges">
-            <span class="plan-badge">PLANOS 30 E 90 DIAS</span>
-            <span class="status-badge bloqueado" id="badge-cam">🔒 Bloqueado</span>
-          </div>
+          <span class="status-badge bloqueado" id="badge-cam">🔒 Bloqueado</span>
         </div>
-
         <div class="card-body">
-          <!-- CARROSSEL DE PRÉVIAS (SPYCAM DARK) -->
-          <div class="preview-carousel-wrapper">
-            <div class="carousel-hint">
-              <span>🎬 PRÉVIAS SPYCAM DARK</span>
-              <span>Deslize para o lado ➔</span>
-            </div>
-            <div class="preview-carousel">
-              <div class="video-item">
-                <iframe src="https://player.mediadelivery.net/embed/756775/f0d20e79-73dd-4cac-83a6-68cfee459b41?autoplay=false&preload=false" loading="lazy" allow="gyroscope; encrypted-media" allowfullscreen="true"></iframe>
-              </div>
-              <div class="video-item">
-                <iframe src="https://player.mediadelivery.net/embed/756775/16dbeb7c-e951-404a-adfe-75ff3dfff051?autoplay=false&preload=false" loading="lazy" allow="gyroscope; encrypted-media" allowfullscreen="true"></iframe>
-              </div>
-              <div class="video-item">
-                <iframe src="https://player.mediadelivery.net/embed/756775/397dda6c-d3f6-4959-a8af-bbbcbc583e6b?autoplay=false&preload=false" loading="lazy" allow="gyroscope; encrypted-media" allowfullscreen="true"></iframe>
-              </div>
-              <div class="video-item">
-                <iframe src="https://player.mediadelivery.net/embed/756775/925ff627-08c3-4221-b9b2-20e09ce2e98d?autoplay=false&preload=false" loading="lazy" allow="gyroscope; encrypted-media" allowfullscreen="true"></iframe>
-              </div>
-              <div class="video-item">
-                <iframe src="https://player.mediadelivery.net/embed/756775/90fa3850-98e1-4741-8940-3c25588a7b78?autoplay=false&preload=false" loading="lazy" allow="gyroscope; encrypted-media" allowfullscreen="true"></iframe>
-              </div>
-            </div>
+          <div class="preview-box">
+            <div class="video-item"><iframe src="https://player.mediadelivery.net/play/756775/0e10ec0b-c077-4f2c-ad18-efa0d1033fb5?autoplay=false" loading="lazy" allow="autoplay" allowfullscreen></iframe></div>
+            <div class="video-item"><iframe src="https://player.mediadelivery.net/play/756775/c3a254f4-71ae-4208-9f23-3ed67f425969?autoplay=false" loading="lazy" allow="autoplay" allowfullscreen></iframe></div>
           </div>
-
-          <div class="vip-description">
-            <p>Acesso exclusivo ao canal de câmeras e flagras:</p>
-            <ul class="benefits-list">
-              <li><span class="check">✓</span> <b>Escolha seu plano: 30 dias ou 90 dias de acesso VIP</b></li>
-              <li><span class="check">✓</span> Câmeras escondidas e flagras reais</li>
-              <li><span class="check">✓</span> flagras reais / CASAL</li>
-              <li><span class="check">✓</span> +50 Videos do QUARTO DA BRUNA</li>
-              <li><span class="check">✓</span> QUARTO DO NETO</li>
-              <li><span class="check">✓</span> Câmeras escondidas / RESIDENCIAs</li>
-              <li><span class="check">✓</span> Câmeras escondidas BANHEIROS</li>
-              <li><span class="check">✓</span> FLAGRAS REAIS</li>
-              <li><span class="check">✓</span> FAMILIARES FLAGRADOS</li>
-              <li><span class="check">✓</span> Câmeras escondidas no MOTEL</li>
-              <li><span class="check">✓</span> Mãe E Filho</li>
-              <li><span class="check">✓</span> CÂMERAS ESCONDIDAS, SURUBINHA ENTRE PRIMOS, ETC...</li>
-              <li><span class="check">✓</span> Gravações em alta definição sem cortes</li>
-              <li><span class="check">✓</span> Mídias adicionadas diariamente</li>
-              <li><span class="check">✓</span> Sem anúncios ou interrupções</li>
-            </ul>
-          </div>
-
-          <div class="plan-actions" id="actions-cam">
-            <button id="buy-cam-30" class="btn-buy" onclick="iniciarCompra('cam_30')">⚡ LIBERAR CÂMERAS • 30 DIAS (R$ 19,91)</button>
-            <button id="buy-cam-90" class="btn-buy" onclick="iniciarCompra('cam_90')">⚡ LIBERAR CÂMERAS • 90 DIAS (R$ 29,91)</button>
-
-            <a href="https://t.me/hksuporte" target="_blank" class="btn-paypal" id="paypal-cam">
-              🌐 Pay via PayPal / Foreigners (Telegram Support)
-            </a>
-          </div>
-
-          <a href="cam.html" id="access-cam" class="btn-access" style="display:none;">ENTRAR NA GALERIA CÂMERAS</a>
-          <div class="texto-seguranca">🔒 Liberação Automática via PIX • Pagamento 100% Discreto</div>
-        </div>
-      </div>
-
-    </div>
-
-    <!-- CHAT -->
-    <div style="
-      background: var(--card-bg);
-      border: 1px solid var(--border-neon);
-      border-radius: 22px;
-      padding: 20px;
-      margin-top: 36px;
-      box-shadow: 0 12px 30px rgba(0,0,0,0.4);
-    ">
-      <div style="
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 14px;
-        padding-bottom: 12px;
-        border-bottom: 1px solid var(--border-neon);
-      ">
-        <h3 style="font-size: 16px; font-weight: 800; color: #fff; display: flex; align-items: center; gap: 8px; margin: 0;">
-          💬 Chat Aberto 🟡
-        </h3>
-        <div style="display: flex; gap: 8px;">
-          <button id="btn-painel-adm" onclick="abrirModalAdmin()" style="
-            display: none;
-            background: linear-gradient(135deg, #ef4444, #dc2626);
-            color: #fff;
-            border: none;
-            padding: 6px 14px;
-            border-radius: 8px;
-            font-size: 11px;
-            font-weight: bold;
-            cursor: pointer;
-          ">Painel ADM ⚙️</button>
-          <button onclick="alterarNomeChat()" style="
-            background: rgba(234, 179, 8, 0.10);
-            color: #facc15;
-            border: 1px solid var(--border-neon);
-            padding: 6px 14px;
-            border-radius: 8px;
-            font-size: 11px;
-            cursor: pointer;
-          ">Mudar Apelido</button>
-        </div>
-      </div>
-
-      <div id="chat-mensagens" style="
-        height: 260px;
-        overflow-y: auto;
-        display: flex;
-        flex-direction: column;
-        gap: 10px;
-        padding-right: 6px;
-        margin-bottom: 14px;
-      ">
-        <div style="font-size: 12px; color: var(--text-sub); text-align: center; margin-top: 20px;">
-          Carregando mensagens do bate-papo...
-        </div>
-      </div>
-
-      <form id="form-chat-envio" onsubmit="event.preventDefault(); enviarMensagemChat();" autocomplete="off" style="display: flex; gap: 8px;">
-        <input type="password" style="display:none;" tabindex="-1">
-
-        <input
-          type="text"
-          id="chat-input-texto"
-          name="chat_msg_input_no_autofill_val"
-          autocomplete="off"
-          autocorrect="off"
-          capitalize="off"
-          spellcheck="false"
-          placeholder="Digite sua mensagem no chat (máx. 150 caracteres)..."
-          maxlength="150"
-          style="
-            flex: 1;
-            background: #060910;
-            border: 1px solid var(--border-neon);
-            border-radius: 12px;
-            padding: 12px;
-            color: #fff;
-            font-size: 13px;
-          "
-        />
-        <button type="submit" class="btn-buy" style="
-          width: auto;
-          padding: 0 22px;
-          border-radius: 12px;
-          font-size: 13px;
-        ">Enviar</button>
-      </form>
-    </div>
-
-    <!-- REVIEWS -->
-    <div class="reviews-section">
-      <div class="reviews-title">💬 O que dizem nossos membros VIP</div>
-      <div class="reviews-grid">
-        <div class="review-item">
-          <div class="review-header">
-            <span class="review-user">M***o S.</span>
-            <span class="review-stars">★★★★★</span>
-          </div>
-          <div class="review-text">Paguei no PIX a oferta combo e liberou ambos os VIPs na hora. Galeria top demais, vale muito a pena!</div>
-        </div>
-        <div class="review-item">
-          <div class="review-header">
-            <span class="review-user">R***al</span>
-            <span class="review-stars">★★★★★</span>
-          </div>
-          <div class="review-text">Qualidade dos vídeos é impressionante e roda direto sem travar. Recomendo!</div>
-        </div>
-        <div class="review-item">
-          <div class="review-header">
-            <span class="review-user">F***pe C.</span>
-            <span class="review-stars">★★★★★</span>
-          </div>
-          <div class="review-text">Muito melhor que os grupos de Telegram que caem toda hora. Esse site tá perfeito.</div>
+          <p><strong>Acesso 365 dias</strong> – Câmeras escondidas e flagras reais</p>
+          <button id="buy-cam" class="btn-buy" onclick="iniciarCompra('cam')">LIBERAR ACESSO SPYCAM – R$ 24,90</button>
+          <a href="https://t.me/hksuporte" target="_blank" class="btn-paypal">Pay via PayPal / Telegram</a>
+          <a href="cam.html" id="access-cam" class="btn-access" style="display:none;">ENTRAR NA GALERIA SPYCAM</a>
+          <div class="texto-seguranca">🔒 Liberação automática via PIX</div>
         </div>
       </div>
     </div>
 
   </main>
 
-  <!-- RODAPÉ -->
-  <footer>
-    <div class="footer-container">
-      <div class="footer-copy">
-        © 2026 Galeria VIP Oficial. Todos os direitos reservados.
-      </div>
-      <div class="footer-disclaimer">
-        <b>Aviso Legal:</b> Este site não hospeda nem armazena nenhum arquivo de vídeo em seus próprios servidores. Todo o conteúdo exibido é incorporado através de players de terceiros cadastrados no sistema. Dúvidas ou suporte? Fale conosco via Telegram: <a href="https://t.me/hksuporte" target="_blank" class="footer-link">@hksuporte</a>.
-      </div>
-      <div class="footer-keywords">
-        Termos mais buscados: videos amadores vazados, spycam dark, flagras reais motel, vip de amadores, Porno+18, telegram vip vazados, videos caseiros hd, VIP Amadores, Hidden Cam Teen (+18), galeria privada +18, CAMERAS ESCONDIDAS / HIDDEN CAMERAS (+18), Voyeur.
-      </div>
-    </div>
-  </footer>
-
-  <!-- MODAL AUTH -->
-  <div class="modal-overlay" id="modalAuth">
-    <div class="modal">
-      <h3 id="modal-title">Criar Conta / Entrar</h3>
-      <p class="subtitle" id="modal-subtitle">Digite seu e-mail para vincular seu acesso VIP automaticamente após o pagamento.</p>
-      <input type="email" id="auth-email" placeholder="Seu E-mail principal" />
-      <input type="password" id="auth-pass" placeholder="Sua Senha (mín. 6 caracteres)" />
-      <button class="btn-buy" style="width:100%; margin-top:14px; padding: 14px;" onclick="fazerAuth()">CONTINUAR PARA PAGAMENTO</button>
-      <button onclick="fecharModal()" style="background:none; border:none; color:var(--text-sub); margin-top:15px; cursor:pointer; font-size: 13px;">Cancelar</button>
-    </div>
-  </div>
-
-  <!-- MODAL PERFIL DO USUÁRIO -->
-  <div class="modal-overlay" id="modalPerfil">
-    <div class="modal" style="text-align: left; max-width: 440px;">
-      <h3 style="text-align: center; color: #fff; font-size: 20px; margin-bottom: 4px;">👤 Seu Perfil</h3>
-      <p class="subtitle" style="text-align: center; margin-bottom: 20px;">Gerencie suas informações e segurança de login</p>
-
-      <div style="background: #060910; border: 1px solid var(--border-neon); padding: 14px; border-radius: 12px; margin-bottom: 16px;">
-        <div style="font-size: 12px; color: var(--text-sub); margin-bottom: 4px;">Apelido no Chat:</div>
-        <div id="perfil-apelido" style="font-size: 14px; font-weight: bold; color: #facc15; margin-bottom: 10px;">-</div>
-
-        <div style="font-size: 12px; color: var(--text-sub); margin-bottom: 4px;">E-mail da Conta:</div>
-        <div id="perfil-email" style="font-size: 13px; font-weight: 600; color: #fff; margin-bottom: 10px; word-break: break-all;">-</div>
-
-        <div style="font-size: 12px; color: var(--text-sub); margin-bottom: 4px;">Plano da Conta:</div>
-        <div id="perfil-status-plano" style="font-size: 13px; font-weight: 700;">-</div>
-
-        <div id="perfil-vips-detalhes" style="margin-top: 10px; font-size: 12px; color: #d1d5db; border-top: 1px dashed rgba(255,255,255,0.1); padding-top: 8px;">
-        </div>
-      </div>
-
-      <div style="background: #060910; border: 1px solid var(--border-neon); padding: 14px; border-radius: 12px; margin-bottom: 16px;">
-        <h4 style="font-size: 13px; color: #fff; margin-bottom: 10px;">🔑 Alterar Senha</h4>
-        <input type="password" id="pass-atual" placeholder="Sua Senha Atual" style="font-size: 12px; padding: 10px;" />
-        <input type="password" id="pass-nova" placeholder="Nova Senha (mínimo 6 caracteres)" style="font-size: 12px; padding: 10px;" />
-        <button onclick="alterarSenhaPerfil()" class="btn-buy" style="width: 100%; margin-top: 8px; padding: 10px; font-size: 12px;">Salvar Nova Senha</button>
-      </div>
-
-      <div style="display: flex; gap: 10px;">
-        <button class="auth-btn" style="flex: 1; background: rgba(239, 68, 68, 0.15); border-color: rgba(239, 68, 68, 0.4); color: #f87171;" onclick="deslogar()">Sair da Conta</button>
-        <button onclick="fecharModalPerfil()" style="flex: 1; background: none; border: 1px solid var(--border-neon); color: var(--text-sub); border-radius: 20px; cursor: pointer; font-size: 13px;">Fechar</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- MODAL ADM -->
-  <div class="modal-overlay" id="modalAdmin">
-    <div class="modal" style="max-width: 550px; text-align: left;">
-      <h3 style="color:#ef4444; font-size:18px; margin-bottom:6px;">⚙️ Painel de Moderação ADM</h3>
-      <p class="subtitle">Gerencie as palavras proibidas, banimentos e mensagens:</p>
-
-      <div style="background:#060910; border:1px solid var(--border-neon); padding:12px; border-radius:10px; margin-bottom:16px;">
-        <h4 style="font-size:13px; color:#fff; margin-bottom:8px;">🚫 Adicionar Palavra Proibida</h4>
-        <div style="display:flex; gap:6px; margin-bottom:10px;">
-          <input type="text" id="inputPalavraProibida" placeholder="Ex: golpe, pessimo, etc." style="flex:1; padding:8px; background:#10161f; border:1px solid var(--border-neon); color:#fff; border-radius:8px; font-size:12px;" />
-          <button onclick="adicionarPalavraProibida()" style="background:linear-gradient(135deg,#facc15,#eab308); color:#000; border:none; padding:8px 14px; border-radius:8px; font-weight:bold; font-size:12px; cursor:pointer;">Add</button>
-        </div>
-        <div id="listaPalavrasProibidas" style="display:flex; flex-wrap:wrap; gap:6px; max-height:80px; overflow-y:auto;">
-          <span style="font-size:11px; color:var(--text-sub);">Carregando termos...</span>
-        </div>
-      </div>
-
-      <div style="background:#060910; border:1px solid var(--border-neon); padding:12px; border-radius:10px; margin-bottom:16px;">
-        <h4 style="font-size:13px; color:#fff; margin-bottom:8px;">🚫 Lista de Usuários Banidos / Restritos</h4>
-        <div id="listaUsuariosBanidos" style="display:flex; flex-direction:column; gap:6px; max-height:100px; overflow-y:auto;">
-          <span style="font-size:11px; color:var(--text-sub);">Carregando banidos...</span>
-        </div>
-      </div>
-
-      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
-        <span style="font-size:12px; color:var(--text-sub);"><b>Mensagens Recentes no Chat:</b></span>
-        <button onclick="limparChatInteiro()" style="
-          background: linear-gradient(135deg,#ef4444,#dc2626);
-          color: #fff;
-          border: none;
-          padding: 5px 12px;
-          border-radius: 8px;
-          font-size: 11px;
-          font-weight: bold;
-          cursor: pointer;
-        ">🧹 Limpar Todo o Chat</button>
-      </div>
-
-      <div id="admin-lista-msgs" style="
-        height: 160px;
-        overflow-y: auto;
-        background: #060910;
-        border: 1px solid var(--border-neon);
-        padding: 10px;
-        border-radius: 10px;
-        display: flex;
-        flex-direction: column;
-        gap: 8px;
-      ">
-        <div style="font-size:12px; color:var(--text-sub); text-align:center;">Carregando mensagens...</div>
-      </div>
-
-      <button onclick="fecharModalAdmin()" class="auth-btn" style="width:100%; margin-top:16px;">Fechar Painel</button>
-    </div>
-  </div>
-
-  <!-- MODAL FOTO FULLSCREEN -->
-  <div id="modalFotoFullscreen" class="modal-foto-fullscreen" onclick="fecharFotoFullscreen()">
-    <span class="modal-foto-fechar">&times;</span>
-    <img id="imgFullscreenSrc" src="" alt="Foto expandida">
-  </div>
-
-  <script src="links-cam.js"></script>
-
-  <!-- FUNÇÃO PARA FECHAR A BARRA SUPERIOR -->
+  <!-- SEU SCRIPT COMPLETO (funcional) -->
   <script>
-    function fecharBarraTopDomain() {
-      const bar = document.getElementById('topDomainBar');
-      if (bar) {
-        bar.style.display = 'none';
-        const header = document.querySelector('header');
-        if (header) header.style.top = '0';
-      }
-    }
-  </script>
-
-  <!-- SISTEMA DE SOCIAL PROOF (COMPRAS FICTÍCIAS NO CANTO INFERIOR ESQUERDO) -->
-  <script>
-    (function iniciarNotificacoesCompras() {
-      const nomes = [
-        'J***o', 'M***us', 'C***ber', 'L***as', 'R***ro', 'G***el', 
-        'F***pe', 'B***no', 'D***el', 'A***re', 'E***on', 'V***or', 
-        'M***el', 'T***go', 'H***ro', 'P***ro', 'I***r', 'F***do'
-      ];
-
-      const planos = [
-        'PROMOÇÃO DUPLA (Leve 2 Pague 1)',
-        'Plano Amador Premium 30 Dias',
-        'Plano Amador Premium 90 Dias',
-        'Plano Spycam VIP Dark 30 Dias',
-        'Plano Spycam VIP Dark 90 Dias'
-      ];
-
-      const toast = document.getElementById('socialProofToast');
-      const elName = document.getElementById('socialProofName');
-      const elPlan = document.getElementById('socialProofPlan');
-
-      if (!toast || !elName || !elPlan) return;
-
-      function dispararNotificacao() {
-        const nomeSorteado = nomes[Math.floor(Math.random() * nomes.length)];
-        const planoSorteado = planos[Math.floor(Math.random() * planos.length)];
-
-        elName.innerText = nomeSorteado;
-        elPlan.innerText = planoSorteado;
-
-        toast.classList.add('visible');
-
-        setTimeout(() => {
-          toast.classList.remove('visible');
-          agendarProxima();
-        }, 5000);
-      }
-
-      function agendarProxima() {
-        const tempoProximo = Math.floor(Math.random() * (60000 - 10000 + 1)) + 10000;
-        setTimeout(dispararNotificacao, tempoProximo);
-      }
-
-      setTimeout(dispararNotificacao, 8000);
-    })();
-  </script>
-
-  <script>
-    document.addEventListener('click', function (e) {
-      if (e.target && e.target.matches('.photo-wrapper img')) {
-        const modal = document.getElementById('modalFotoFullscreen');
-        const imgModal = document.getElementById('imgFullscreenSrc');
-        imgModal.src = e.target.src;
-        modal.style.display = 'flex';
-      }
-    });
-
-    function fecharFotoFullscreen() {
-      document.getElementById('modalFotoFullscreen').style.display = 'none';
-    }
-  </script>
-
-  <script>
-    (function() {
-      const popup = document.getElementById("popup-idade");
-      const btnSim = document.getElementById("btn-pop-sim");
-      const btnNao = document.getElementById("btn-pop-nao");
-
-      if (localStorage.getItem("aviso_18_confirmado") === "true") {
-        popup.style.display = "none";
-      }
-
-      btnSim.addEventListener("click", function () {
-        localStorage.setItem("aviso_18_confirmado", "true");
-        popup.style.display = "none";
-      });
-
-      btnNao.addEventListener("click", function () {
-        window.location.href = "https://www.google.com";
-      });
-    })();
-  </script>
-
-  <!-- PARTÍCULAS: SÓ NO DESKTOP -->
-  <script>
-    (function gerarParticulas() {
-      if (window.innerWidth < 900) return;
-      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-
-      const container = document.getElementById('particlesBg');
-      if (!container) return;
-      container.style.display = 'block';
-
-      const total = 12;
-      const fragment = document.createDocumentFragment();
-
-      for (let i = 0; i < total; i++) {
-        const p = document.createElement('div');
-        p.className = 'particle';
-        p.style.left = Math.random() * 100 + '%';
-        p.style.animationDuration = (12 + Math.random() * 12) + 's';
-        p.style.animationDelay = (Math.random() * 12) + 's';
-        p.style.width = p.style.height = (2 + Math.random() * 2) + 'px';
-        const cores = ['#eab308', '#facc15'];
-        const cor = cores[Math.floor(Math.random() * cores.length)];
-        p.style.background = cor;
-        fragment.appendChild(p);
-      }
-      container.appendChild(fragment);
-    })();
-  </script>
-
-  <!-- SUPABASE + CHAT + PERFIL + MODERAÇÃO -->
-  <script>
-    const SUPABASE_URL = 'https://xjvkyofktqojuyequuxe.supabase.co';
-    const SUPABASE_ANON_KEY = 'sb_publishable__w-crANhzjiYKJuh2AX39w_Kz1-Rf74';
-    const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-
-    const EMAIL_ADMIN = 'chico@teste.com';
-    let usuarioAtual = null;
-    let ehAdmin = false;
-    let usuarioPossuiVip = false;
-    let vipsAtivosLista = [];
-    let categoriaPendente = null;
-
-    const TERMOS_PADRAO = [
-      'golpe', 'fraude', 'fake', 'mentira', 'enganacao', 'lixo', 'ruim',
-      'merda', 'puta', 'caralho', 'fdp', 'viado', 'corno', 'vadia',
-      'infantil', 'cp', 'estupro', 'pedofilia', 'droga', 'armas', 'vender'
-    ];
-
-    let palavrasProibidasBanco = [];
+    const _supabase = window.supabase.createClient(
+      'https://seu-project.supabase.co',
+      'seu-anon-key'
+    );
 
     const CHECKOUTS = {
-      promo_30: "https://link.syncpayments.com.br/ronwrZ",
-      amador_30: "https://link.syncpayments.com.br/MicvMz",
-      amador_90: "https://link.syncpayments.com.br/dmpxmp",
-      cam_30: "https://link.syncpayments.com.br/SEl2IQ",
-      cam_90: "https://link.syncpayments.com.br/zXDVl7"
+      amador: 'https://link.syncpayments.com.br/cG8rFc',
+      cam: 'https://link.syncpayments.com.br/outro-link'
     };
+
+    const EMAIL_ADMIN = 'seuemail@admin.com';
+
+    let usuarioAtual = null;
+    let ehAdmin = false;
+    let categoriaPendente = null;
+    let meuApelidoChat = '';
+    let palavrasProibidasBanco = [];
+
+    const TERMOS_PADRAO = ['t.me', 'wa.me', 'http', 'www', '@'];
 
     window.onload = async () => {
       const { data: { session } } = await _supabase.auth.getSession();
       if (session) {
         usuarioAtual = session.user;
         verificarSeEhAdmin();
-        carregarApelidoDoUsuario();
-        await checarPermissoes();
         atualizarHeader();
+        await checarPermissoes();
+        carregarApelidoDoUsuario();
       }
 
       await carregarPalavrasProibidasBanco();
@@ -1771,192 +281,7 @@
       escutarNovasMensagens();
     };
 
-    let meuApelidoChat = '';
-
-    function carregarApelidoDoUsuario() {
-      if (usuarioAtual) {
-        const apelidoSalvo = localStorage.getItem(`chat_apelido_${usuarioAtual.id}`);
-        if (apelidoSalvo) {
-          meuApelidoChat = apelidoSalvo;
-        } else {
-          meuApelidoChat = usuarioAtual.email.split('@')[0];
-          localStorage.setItem(`chat_apelido_${usuarioAtual.id}`, meuApelidoChat);
-        }
-      }
-    }
-
-    async function verificarSeUsuarioEstaBanido(userId) {
-      if (!userId) return false;
-      try {
-        const { data, error } = await _supabase
-          .from('usuarios_banidos')
-          .select('*')
-          .eq('user_id', userId);
-
-        if (error || !data || data.length === 0) return false;
-
-        const agora = new Date();
-        for (const registro of data) {
-          if (!registro.expira_em) return true;
-          if (new Date(registro.expira_em) > agora) return true;
-        }
-        return false;
-      } catch (err) {
-        return false;
-      }
-    }
-
-    async function banirUsuario(userId, dias) {
-      if (!ehAdmin) return;
-      let expiraEm = null;
-
-      if (dias > 0) {
-        const dataExp = new Date();
-        dataExp.setDate(dataExp.getDate() + dias);
-        expiraEm = dataExp.toISOString();
-      }
-
-      const { error } = await _supabase
-        .from('usuarios_banidos')
-        .insert([{ user_id: userId, expira_em: expiraEm }]);
-
-      if (error) {
-        alert("Erro ao aplicar banimento: " + error.message);
-      } else {
-        alert(dias === 0 ? "Usuário Banido PERMANENTEMENTE!" : `Usuário suspenso por ${dias} dia(s)!`);
-        carregarListaBanidosAdmin();
-      }
-    }
-
-    async function promptBanirUsuario(userId) {
-      if (!ehAdmin) return;
-      const diasStr = prompt("Quantos dias de banimento? (Digite 0 para banimento permanente):", "1");
-      if (diasStr !== null) {
-        const dias = parseInt(diasStr, 10);
-        if (!isNaN(dias) && dias >= 0) {
-          await banirUsuario(userId, dias);
-        } else {
-          alert("Valor de dias inválido.");
-        }
-      }
-    }
-
-    async function removerBanimento(banId) {
-      if (!ehAdmin) return;
-      const { error } = await _supabase
-        .from('usuarios_banidos')
-        .delete()
-        .eq('id', banId);
-
-      if (!error) {
-        carregarListaBanidosAdmin();
-      } else {
-        alert("Erro ao remover banimento.");
-      }
-    }
-
-    async function carregarListaBanidosAdmin() {
-      const container = document.getElementById('listaUsuariosBanidos');
-      if (!container) return;
-
-      const { data, error } = await _supabase
-        .from('usuarios_banidos')
-        .select('*')
-        .order('created_at', { ascending: false });
-
-      container.innerHTML = '';
-      if (error || !data || data.length === 0) {
-        container.innerHTML = '<span style="font-size:11px; color:var(--text-sub);">Nenhum usuário banido no momento.</span>';
-        return;
-      }
-
-      data.forEach(item => {
-        const div = document.createElement('div');
-        div.style.cssText = 'display:flex; justify-content:space-between; align-items:center; background:#10161f; padding:6px 10px; border-radius:8px; font-size:11px;';
-        const status = item.expira_em ? `Restrito até: ${new Date(item.expira_em).toLocaleDateString()}` : 'Banido Permanente';
-        div.innerHTML = `
-          <span>ID: <b>${item.user_id.substring(0,8)}...</b> (${status})</span>
-          <button onclick="removerBanimento(${item.id})" style="background:linear-gradient(135deg,#facc15,#eab308); color:#000; border:none; padding:2px 8px; border-radius:6px; cursor:pointer; font-weight:bold;">Desbanir</button>
-        `;
-        container.appendChild(div);
-      });
-    }
-
-    async function carregarPalavrasProibidasBanco() {
-      try {
-        const { data, error } = await _supabase
-          .from('palavras_proibidas')
-          .select('*')
-          .order('palavra', { ascending: true });
-
-        if (!error && data) {
-          palavrasProibidasBanco = data.map(item => item.palavra.toLowerCase());
-          if (ehAdmin) renderizarChipsPalavrasProibidas(data);
-        }
-      } catch (err) {
-        console.error("Erro ao buscar palavras proibidas:", err);
-      }
-    }
-
-    function renderizarChipsPalavrasProibidas(lista) {
-      const container = document.getElementById('listaPalavrasProibidas');
-      if (!container) return;
-
-      container.innerHTML = '';
-      if (lista.length === 0) {
-        container.innerHTML = '<span style="font-size:11px; color:var(--text-sub);">Nenhuma palavra cadastrada.</span>';
-        return;
-      }
-
-      lista.forEach(item => {
-        const badge = document.createElement('span');
-        badge.style.cssText = 'display:inline-flex; align-items:center; gap:4px; background:rgba(239,68,68,0.2); color:#ef4444; border:1px solid rgba(239,68,68,0.4); padding:2px 8px; border-radius:14px; font-size:11px; font-weight:bold;';
-        badge.innerHTML = `
-          ${escaparHTML(item.palavra)}
-          <button onclick="removerPalavraProibida(${item.id})" style="background:none; border:none; color:#ef4444; cursor:pointer; font-weight:bold; font-size:12px; margin-left:2px;">&times;</button>
-        `;
-        container.appendChild(badge);
-      });
-    }
-
-    async function adicionarPalavraProibida() {
-      const input = document.getElementById('inputPalavraProibida');
-      const palavra = input.value.trim().toLowerCase();
-
-      if (!palavra) return;
-
-      const { error } = await _supabase
-        .from('palavras_proibidas')
-        .insert([{ palavra }]);
-
-      if (error) {
-        alert('Erro ao adicionar palavra.');
-      } else {
-        input.value = '';
-        await carregarPalavrasProibidasBanco();
-      }
-    }
-
-    async function removerPalavraProibida(id) {
-      const { error } = await _supabase
-        .from('palavras_proibidas')
-        .delete()
-        .eq('id', id);
-
-      if (!error) await carregarPalavrasProibidasBanco();
-    }
-
-    function contemPalavrasProibidasOuLinks(texto) {
-      const textoLower = texto.toLowerCase();
-      const regexLinksEAt = /(https?:\/\/|[a-zA-Z0-9-]+\.[a-zA-Z]{2,}|www\.|t\.me|wa\.me|@)/i;
-      if (regexLinksEAt.test(textoLower)) {
-        return true;
-      }
-
-      const todosOsTermos = [...TERMOS_PADRAO, ...palavrasProibidasBanco];
-      return todosOsTermos.some(termo => termo && textoLower.includes(termo.toLowerCase()));
-    }
-
+    // ==================== FUNÇÕES DE AUTENTICAÇÃO E PERMISSÕES ====================
     function verificarSeEhAdmin() {
       if (usuarioAtual && usuarioAtual.email.toLowerCase() === EMAIL_ADMIN.toLowerCase()) {
         ehAdmin = true;
@@ -1981,79 +306,6 @@
     function fecharModal() {
       categoriaPendente = null;
       document.getElementById('modalAuth').style.display = 'none';
-    }
-
-    function abrirModalPerfil() {
-      if (!usuarioAtual) return;
-
-      document.getElementById('perfil-apelido').innerText = meuApelidoChat || 'Não definido';
-      document.getElementById('perfil-email').innerText = usuarioAtual.email;
-
-      const divStatus = document.getElementById('perfil-status-plano');
-      const divVips = document.getElementById('perfil-vips-detalhes');
-
-      if (ehAdmin) {
-        divStatus.innerHTML = `<span style="color: #ef4444;">ADMINISTRADOR 🔴</span>`;
-        divVips.innerHTML = `<b>Acessos:</b> Controle total e moderação do sistema.`;
-      } else if (usuarioPossuiVip) {
-        divStatus.innerHTML = `<span style="color: #facc15;">MEMBRO VIP 🟨</span>`;
-
-        const nomesFormatados = vipsAtivosLista.map(cat => {
-          if (cat.startsWith('amador')) return '⭐ Amador Premium';
-          if (cat.startsWith('cam')) return '🔥 Spycam Dark';
-          if (cat.includes('promo')) return '💥 Oferta Dupla (Amador + Spycam)';
-          return cat.toUpperCase();
-        });
-
-        divVips.innerHTML = `<b>Galerias VIP Ativas:</b><br>• ` + Array.from(new Set(nomesFormatados)).join('<br>• ');
-      } else {
-        divStatus.innerHTML = `<span style="color: var(--text-sub);">MEMBRO COMUM ⚪</span>`;
-        divVips.innerHTML = `Você ainda não possui galerias VIP liberadas. Libere um plano para ter acesso exclusivo!`;
-      }
-
-      document.getElementById('pass-atual').value = '';
-      document.getElementById('pass-nova').value = '';
-      document.getElementById('modalPerfil').style.display = 'flex';
-    }
-
-    function fecharModalPerfil() {
-      document.getElementById('modalPerfil').style.display = 'none';
-    }
-
-    async function alterarSenhaPerfil() {
-      const passAtual = document.getElementById('pass-atual').value;
-      const passNova = document.getElementById('pass-nova').value;
-
-      if (!passAtual || !passNova) {
-        alert("Preencha a senha atual e a nova senha.");
-        return;
-      }
-
-      if (passNova.length < 6) {
-        alert("A nova senha deve ter no mínimo 6 caracteres.");
-        return;
-      }
-
-      const { error: errorAuth } = await _supabase.auth.signInWithPassword({
-        email: usuarioAtual.email,
-        password: passAtual
-      });
-
-      if (errorAuth) {
-        alert("A senha atual informada está incorreta.");
-        return;
-      }
-
-      const { error: errorUpdate } = await _supabase.auth.updateUser({
-        password: passNova
-      });
-
-      if (errorUpdate) {
-        alert("Erro ao alterar senha: " + errorUpdate.message);
-      } else {
-        alert("Senha alterada com sucesso!");
-        fecharModalPerfil();
-      }
     }
 
     function abrirModalAdmin() {
@@ -2093,7 +345,7 @@
       }
 
       let { data, error } = await _supabase.auth.signInWithPassword({ email, password });
-
+      
       if (error) {
         const create = await _supabase.auth.signUp({ email, password });
         if (create.error) {
@@ -2110,14 +362,14 @@
       }
 
       const session = data?.session || (await _supabase.auth.getSession()).data.session;
-
+      
       if (session) {
         usuarioAtual = session.user;
         verificarSeEhAdmin();
-        carregarApelidoDoUsuario();
         fecharModal();
-        await checarPermissoes();
         atualizarHeader();
+        await checarPermissoes();
+        carregarApelidoDoUsuario();
 
         if (categoriaPendente) {
           irParaCheckout(categoriaPendente, usuarioAtual.email);
@@ -2128,20 +380,9 @@
     }
 
     function atualizarHeader() {
-      if (!usuarioAtual) return;
-
-      let tagVipHeader = '';
-      if (ehAdmin) {
-        tagVipHeader = `<span class="tag-adm-vermelha">[ADM] 🔴</span>`;
-      } else if (usuarioPossuiVip) {
-        tagVipHeader = `<span class="tag-vip-amarela">[VIP] 🟨</span>`;
-      }
-
       document.getElementById('user-area').innerHTML = `
-        <div class="user-profile-trigger" onclick="abrirModalPerfil()">
-          <span>${escaparHTML(usuarioAtual.email)}</span>
-          ${tagVipHeader}
-        </div>
+        <span style="margin-right:12px; font-size:12px; color:var(--text-sub);">${usuarioAtual.email} ${ehAdmin ? '<b style="color:#ef4444;">[ADMIN]</b>' : ''}</span>
+        <button class="auth-btn" onclick="deslogar()">Sair</button>
       `;
     }
 
@@ -2160,41 +401,154 @@
           .eq('user_id', usuarioAtual.id)
           .gt('data_expiracao', new Date().toISOString());
 
-        vipsAtivosLista = [];
         if (compras && compras.length > 0 && !error) {
-          usuarioPossuiVip = true;
           compras.forEach(item => {
-            const catFull = item.categoria_id.toLowerCase();
-            vipsAtivosLista.push(catFull);
+            const cat = item.categoria_id;
+            const badge = document.getElementById(`badge-${cat}`);
+            const btnBuy = document.getElementById(`buy-${cat}`);
+            const btnPaypal = document.getElementById(`paypal-${cat}`);
+            const btnAccess = document.getElementById(`access-${cat}`);
 
-            if (catFull.includes('promo') || catFull.includes('combo') || catFull.includes('amador_e_cam')) {
-              liberarCardVisual('amador');
-              liberarCardVisual('cam');
-              liberarCardVisual('promo_30');
-            } else {
-              const catBase = catFull.split('_')[0];
-              liberarCardVisual(catBase);
+            if (badge) { 
+              badge.innerHTML = "🔓 Liberado"; 
+              badge.className = "status-badge liberado"; 
             }
+            if (btnBuy) btnBuy.style.setProperty('display', 'none', 'important');
+            if (btnPaypal) btnPaypal.style.setProperty('display', 'none', 'important');
+            if (btnAccess) btnAccess.style.display = "block";
           });
-        } else {
-          usuarioPossuiVip = false;
         }
       } catch (err) {
         console.error("Erro ao verificar compras:", err);
       }
     }
 
-    function liberarCardVisual(catBase) {
-      const badge = document.getElementById(`badge-${catBase}`);
-      const actions = document.getElementById(`actions-${catBase}`);
-      const btnAccess = document.getElementById(`access-${catBase}`);
+    // ==================== FUNÇÕES DO CHAT ====================
+    async function verificarSeUsuarioEstaBanido(userId) {
+      if (!userId) return false;
+      try {
+        const { data, error } = await _supabase
+          .from('usuarios_banidos')
+          .select('*')
+          .eq('user_id', userId);
 
-      if (badge) {
-        badge.innerHTML = "🔓 Liberado";
-        badge.className = "status-badge liberado";
+        if (error || !data || data.length === 0) return false;
+
+        const agora = new Date();
+        for (const registro of data) {
+          if (!registro.expira_em) return true;
+          if (new Date(registro.expira_em) > agora) return true;
+        }
+        return false;
+      } catch (err) {
+        return false;
       }
-      if (actions) actions.style.setProperty('display', 'none', 'important');
-      if (btnAccess) btnAccess.style.display = "block";
+    }
+
+    async function banirUsuario(userId, dias) {
+      if (!ehAdmin) return;
+      let expiraEm = null;
+      if (dias > 0) {
+        const dataExp = new Date();
+        dataExp.setDate(dataExp.getDate() + dias);
+        expiraEm = dataExp.toISOString();
+      }
+
+      const { error } = await _supabase
+        .from('usuarios_banidos')
+        .insert([{ user_id: userId, expira_em: expiraEm }]);
+
+      if (error) {
+        alert("Erro ao aplicar banimento: " + error.message);
+      } else {
+        alert(dias === 0 ? "Usuário Banido PERMANENTEMENTE!" : `Usuário suspenso por ${dias} dia(s)!`);
+        carregarListaBanidosAdmin();
+      }
+    }
+
+    async function removerBanimento(banId) {
+      if (!ehAdmin) return;
+      const { error } = await _supabase
+        .from('usuarios_banidos')
+        .delete()
+        .eq('id', banId);
+
+      if (!error) carregarListaBanidosAdmin();
+      else alert("Erro ao remover banimento.");
+    }
+
+    async function carregarListaBanidosAdmin() {
+      const container = document.getElementById('listaUsuariosBanidos');
+      if (!container) return;
+
+      const { data, error } = await _supabase
+        .from('usuarios_banidos')
+        .select('*')
+        .order('created_at', { ascending: false });
+
+      container.innerHTML = '';
+      if (error || !data || data.length === 0) {
+        container.innerHTML = '<span style="font-size:11px; color:var(--text-sub);">Nenhum usuário banido no momento.</span>';
+        return;
+      }
+
+      data.forEach(item => {
+        const div = document.createElement('div');
+        div.style.cssText = 'display:flex; justify-content:space-between; align-items:center; background:#131a24; padding:6px 10px; border-radius:6px; font-size:11px;';
+        const status = item.expira_em ? `Restrito até: ${new Date(item.expira_em).toLocaleDateString()}` : 'Banido Permanente';
+        div.innerHTML = `
+          <span>ID: <b>${item.user_id.substring(0,8)}...</b> (${status})</span>
+          <button onclick="removerBanimento(${item.id})" style="background:#22c55e; color:#fff; border:none; padding:2px 8px; border-radius:4px; cursor:pointer; font-weight:bold;">Desbanir</button>
+        `;
+        container.appendChild(div);
+      });
+    }
+
+    async function carregarPalavrasProibidasBanco() {
+      try {
+        const { data, error } = await _supabase
+          .from('palavras_proibidas')
+          .select('*')
+          .order('palavra', { ascending: true });
+
+        if (!error && data) palavrasProibidasBanco = data.map(item => item.palavra.toLowerCase());
+      } catch (err) {
+        console.error("Erro ao buscar palavras proibidas:", err);
+      }
+    }
+
+    async function adicionarPalavraProibida() {
+      const input = document.getElementById('inputPalavraProibida');
+      const palavra = input.value.trim().toLowerCase();
+      if (!palavra) return;
+
+      const { error } = await _supabase
+        .from('palavras_proibidas')
+        .insert([{ palavra }]);
+
+      if (error) alert('Erro ao adicionar palavra.');
+      else {
+        input.value = '';
+        await carregarPalavrasProibidasBanco();
+      }
+    }
+
+    async function removerPalavraProibida(id) {
+      const { error } = await _supabase
+        .from('palavras_proibidas')
+        .delete()
+        .eq('id', id);
+
+      if (!error) await carregarPalavrasProibidasBanco();
+    }
+
+    function contemPalavrasProibidasOuLinks(texto) {
+      const textoLower = texto.toLowerCase();
+      const regexLinksEAt = /(https?:\/\/|[a-zA-Z0-9-]+\.[a-zA-Z]{2,}|www\.|t\.me|wa\.me|@)/i;
+      if (regexLinksEAt.test(textoLower)) return true;
+
+      const todosOsTermos = [...TERMOS_PADRAO, ...palavrasProibidasBanco];
+      return todosOsTermos.some(termo => termo && textoLower.includes(termo.toLowerCase()));
     }
 
     async function verificarSeUserEhVip(userId) {
@@ -2257,7 +611,7 @@
         .on('postgres_changes', { event: 'DELETE', schema: 'public', table: 'chat_mensagens' }, payload => {
           const el = document.getElementById(`msg-item-${payload.old.id}`);
           if (el) el.remove();
-
+          
           const box = document.getElementById('chat-mensagens');
           if (box && box.children.length === 0) {
             box.innerHTML = '<div style="font-size: 12px; color: var(--text-sub); text-align: center;">Seja o primeiro a enviar uma mensagem no chat!</div>';
@@ -2275,7 +629,7 @@
       }
 
       const ehEsseUserAdmin = (nome.toLowerCase() === 'chico' || userId === 'ADMIN_ID' || (usuarioAtual && usuarioAtual.email.toLowerCase() === EMAIL_ADMIN.toLowerCase() && usuarioAtual.id === userId));
-
+      
       let seloTag = '';
       if (ehEsseUserAdmin) {
         seloTag = `<span class="tag-adm-vermelha">[ADM] 🔴</span>`;
@@ -2304,33 +658,35 @@
       const div = document.createElement('div');
       div.id = `msg-item-${msgId}`;
       div.style.cssText = `
-        background: #060910;
-        border: 1px solid rgba(234, 179, 8, 0.18);
-        padding: 9px 13px;
-        border-radius: 11px;
+        background: rgba(0, 0, 0, 0.25);
+        border: 1px solid var(--border);
+        padding: 8px 12px;
+        border-radius: 8px;
         font-size: 13px;
-        line-height: 1.45;
+        line-height: 1.4;
         word-break: break-word;
       `;
-
-      div.innerHTML = `
-        ${botoesAcao}
-        <strong style="color: #facc15;">${escaparHTML(nome)}</strong>${seloTag}: 
-        <span style="color: #e5e7eb;">${escaparHTML(texto)}</span>
-      `;
-
+      div.innerHTML = `${botoesAcao}<b style="color: var(--yellow-pix);">${escaparHTML(nome)}</b>${seloTag}: <span style="color: #e5e7eb;">${escaparHTML(texto)}</span>`;
       box.appendChild(div);
+    }
+
+    function promptBanirUsuario(userId) {
+      const opcao = prompt("Escolha a duração do banimento:\n1 = 1 dia\n3 = 3 dias\n7 = 7 dias\n15 = 15 dias\n0 = BAN PERMANENTE");
+      if (opcao === null) return;
+      const dias = parseInt(opcao);
+      if (!isNaN(dias)) banirUsuario(userId, dias);
     }
 
     async function enviarMensagemChat() {
       if (!usuarioAtual) {
+        alert("Você precisa criar uma conta ou entrar para participar do chat!");
         abrirModal();
         return;
       }
 
       const estaBanido = await verificarSeUsuarioEstaBanido(usuarioAtual.id);
       if (estaBanido) {
-        alert("Sua conta está temporariamente ou permanentemente proibida de enviar mensagens no chat.");
+        alert("Sua conta está impossibilitada de enviar mensagens no chat no momento.");
         return;
       }
 
@@ -2340,122 +696,133 @@
       if (!texto) return;
 
       if (contemPalavrasProibidasOuLinks(texto)) {
-        alert("Sua mensagem contém links, divulgações ou termos não permitidos.");
+        alert("Proibido o envio de links, redes sociais (@) ou palavras não permitidas.");
         return;
       }
 
+      input.value = '';
+
       const { error } = await _supabase
         .from('chat_mensagens')
-        .insert([{
-          user_id: usuarioAtual.id,
-          nome_exibicao: meuApelidoChat,
-          mensagem: texto
-        }]);
+        .insert([
+          { 
+            user_id: usuarioAtual.id, 
+            nome_exibicao: meuApelidoChat, 
+            mensagem: texto 
+          }
+        ]);
 
       if (error) {
-        alert("Erro ao enviar mensagem: " + error.message);
-      } else {
-        input.value = '';
+        console.error("Erro no envio:", error);
+        alert("Erro ao enviar mensagem no chat.");
       }
     }
 
-    async function deletarMensagem(msgId) {
-      if (!ehAdmin) return;
-      const { error } = await _supabase
-        .from('chat_mensagens')
-        .delete()
-        .eq('id', msgId);
+    function alterarNomeChat() {
+      if (!usuarioAtual) {
+        alert("Você precisa estar logado para alterar seu apelido.");
+        abrirModal();
+        return;
+      }
 
-      if (error) {
-        alert("Erro ao excluir mensagem.");
+      const novoNome = prompt("Digite seu novo apelido:", meuApelidoChat);
+      if (novoNome && novoNome.trim()) {
+        meuApelidoChat = novoNome.trim();
+        localStorage.setItem(`chat_apelido_${usuarioAtual.id}`, meuApelidoChat);
+        alert("Apelido alterado com sucesso para: " + meuApelidoChat);
       }
     }
 
     async function deletarMinhaMensagem(msgId) {
       if (!usuarioAtual) return;
+      if (!confirm("Deseja apagar sua mensagem?")) return;
+
       const { error } = await _supabase
         .from('chat_mensagens')
         .delete()
         .eq('id', msgId)
         .eq('user_id', usuarioAtual.id);
 
-      if (error) {
-        alert("Erro ao apagar sua mensagem.");
+      if (error) alert("Erro ao apagar mensagem.");
+      else {
+        const el = document.getElementById(`msg-item-${msgId}`);
+        if (el) el.remove();
+      }
+    }
+
+    async function deletarMensagem(msgId) {
+      if (!ehAdmin) return;
+      if (!confirm("Deseja apagar esta mensagem como Administrador?")) return;
+
+      const { error } = await _supabase
+        .from('chat_mensagens')
+        .delete()
+        .eq('id', msgId);
+
+      if (error) alert("Erro ao excluir mensagem.");
+      else {
+        const el = document.getElementById(`msg-item-${msgId}`);
+        if (el) el.remove();
+        carregarListaAdmin();
       }
     }
 
     async function limparChatInteiro() {
       if (!ehAdmin) return;
-      if (!confirm("Tem certeza que deseja apagar TODAS as mensagens do chat?")) return;
+      if (!confirm("⚠️ ATENÇÃO: Tem certeza que deseja APAGAR TODAS as mensagens do chat? Esta ação não pode ser desfeita!")) return;
 
       const { error } = await _supabase
         .from('chat_mensagens')
         .delete()
-        .neq('id', '00000000-0000-0000-0000-000000000000');
+        .gt('id', 0);
 
-      if (error) {
-        alert("Erro ao limpar chat.");
-      } else {
-        carregarListaAdmin();
+      if (error) alert("Erro ao limpar chat: " + error.message);
+      else {
+        alert("Chat limpo com sucesso!");
         carregarMensagensAntigas();
+        carregarListaAdmin();
       }
     }
 
     async function carregarListaAdmin() {
-      const container = document.getElementById('admin-lista-msgs');
-      if (!container) return;
-
-      const { data, error } = await _supabase
+      const box = document.getElementById('admin-lista-msgs');
+      if (!box) return;
+      
+      const { data: mensagens } = await _supabase
         .from('chat_mensagens')
         .select('*')
         .order('created_at', { ascending: false })
-        .limit(20);
+        .limit(30);
 
-      container.innerHTML = '';
-      if (error || !data || data.length === 0) {
-        container.innerHTML = '<div style="font-size:12px; color:var(--text-sub); text-align:center;">Nenhuma mensagem encontrada.</div>';
+      box.innerHTML = '';
+      if (!mensagens || mensagens.length === 0) {
+        box.innerHTML = '<div style="font-size:12px; color:var(--text-sub); text-align:center;">Nenhuma mensagem enviada.</div>';
         return;
       }
 
-      data.forEach(m => {
-        const div = document.createElement('div');
-        div.style.cssText = 'display:flex; justify-content:space-between; align-items:center; background:#10161f; padding:6px 10px; border-radius:8px; font-size:12px;';
-        div.innerHTML = `
-          <div style="overflow:hidden; text-overflow:ellipsis; white-space:nowrap; max-width:75%;">
-            <b style="color:#facc15;">${escaparHTML(m.nome_exibicao)}:</b> <span style="color:#ccc;">${escaparHTML(m.mensagem)}</span>
+      mensagens.forEach(m => {
+        const item = document.createElement('div');
+        item.style.cssText = 'display:flex; justify-content:space-between; align-items:center; background:#131a24; padding:6px; border-radius:6px; font-size:11px;';
+        item.innerHTML = `
+          <div>
+            <b style="color:var(--yellow-pix);">${escaparHTML(m.nome_exibicao)}:</b> 
+            <span style="color:#fff;">${escaparHTML(m.mensagem)}</span>
           </div>
-          <button onclick="deletarMensagem('${m.id}')" style="background:#ef4444; color:#fff; border:none; padding:2px 8px; border-radius:6px; cursor:pointer; font-size:10px; font-weight:bold;">Excluir</button>
+          <div style="display:flex; gap:4px;">
+            <button onclick="promptBanirUsuario('${m.user_id}')" style="background:#7c3aed; color:#fff; border:none; padding:2px 6px; border-radius:4px; font-weight:bold; cursor:pointer;">Banir</button>
+            <button onclick="deletarMensagem('${m.id}')" style="background:#ef4444; color:#fff; border:none; padding:2px 6px; border-radius:4px; font-weight:bold; cursor:pointer;">Apagar</button>
+          </div>
         `;
-        container.appendChild(div);
+        box.appendChild(item);
       });
-    }
-
-    function alterarNomeChat() {
-      if (!usuarioAtual) {
-        abrirModal();
-        return;
-      }
-
-      const novoNome = prompt("Digite seu novo apelido para o chat:", meuApelidoChat);
-      if (novoNome && novoNome.trim() !== "") {
-        meuApelidoChat = novoNome.trim().substring(0, 20);
-        localStorage.setItem(`chat_apelido_${usuarioAtual.id}`, meuApelidoChat);
-        alert("Apelido alterado com sucesso para: " + meuApelidoChat);
-      }
     }
 
     function escaparHTML(str) {
-      if (!str) return '';
-      return str.replace(/[&<>"']/g, function(m) {
-        return {
-          '&': '&amp;',
-          '<': '&lt;',
-          '>': '&gt;',
-          '"': '&quot;',
-          "'": '&#039;'
-        }[m];
-      });
+      return str.replace(/[&<>'"]/g, 
+        tag => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[tag] || tag)
+      );
     }
   </script>
+
 </body>
 </html>
